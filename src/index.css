@@ -1,0 +1,37 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background: #e0f0ff;
+}
+
+div.app-top {
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+div.app-top > img {
+  width: 3em;
+  height: 3em;
+}
+
+div.app-top > div {
+  margin-left: 20px;
+}
+
+div.app-top > div > header {
+  font-weight: bold;
+}
+
+div.app-top > div > div {
+  display: flex;
+  margin-top: 4px;
+  flex-direction: row;
+  font-size: smaller;
+}
+
+div.app-top > div > div > label {
+  width: 6em;
+  margin: 0;
+}
