@@ -1,6 +1,6 @@
-import {ApiNav, User} from 'tonva-tools';
+import {CenterApi, User} from 'tonva-tools';
 
-class MainApi extends ApiNav {
+class MainApi extends CenterApi {
     async stickies():Promise<any[]> {
         return await this.get('sticky/list', {start:0, pageSize:30});
     }
@@ -15,6 +15,10 @@ class MainApi extends ApiNav {
 
     async appApi(unit:number, app:number, apiName:string) {
         return await this.get('tie/app-api', {unit:unit, app:app, apiName:apiName});
+    }
+
+    async unitAdmins(unit:number) {
+        return await this.get('unit/admins', {unit:unit});
     }
 
     loadFollows(pageSize:number, minName:string) {

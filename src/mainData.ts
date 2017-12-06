@@ -1,12 +1,13 @@
 import {observable} from 'mobx';
-import consts from '../consts';
+import consts from './consts';
 import mainApi from './mainApi';
-import {Sticky, Tie, UnitApps, App, Api} from './model';
+import {Sticky, Tie, UnitApps, App, Api, UnitAdmin} from './model';
 
 class MainData {
     @observable stickies: Sticky[];
     @observable ties: Tie[];
     @observable unitApps: {[id:number]:UnitApps} = {};
+    @observable unitAdmins: UnitAdmin[] = undefined;
 
     logout() {
         this.stickies = undefined;
@@ -55,6 +56,10 @@ class MainData {
             }
         }
         return api;
+    }
+
+    async loadUnitAdmins(unitId: number): Promise<void> {
+        this.unitAdmins = await mainApi.unitAdmins(unitId);
     }
 };
 

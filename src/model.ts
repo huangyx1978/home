@@ -48,6 +48,18 @@ export interface UnitApps {
     apps: App[];
 }
 
+export interface UnitAdmin {
+    id: number;
+    name: string;
+    nick: string;
+    icon: string;
+    country: string;
+    mobile: string;
+    email: string;
+    isOwner: number;
+    isAdmin: number;
+}
+
 /*
 export interface FollowItem {
     followId: number;

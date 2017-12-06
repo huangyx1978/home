@@ -1,8 +1,10 @@
 import * as React from 'react';
+import {Button} from 'reactstrap';
 import {nav, Page, ListView, ListItem} from 'tonva-tools';
 import consts from '../consts';
-import {UnitApps, App} from './model';
-import {mainData} from './mainData';
+import {UnitApps, App} from '../model';
+import {mainData} from '../mainData';
+import UnitMan from '../unit-man';
 
 interface TieAppsProps extends UnitApps {
 }
@@ -14,9 +16,10 @@ export class TieApps extends React.Component<TieAppsProps> {
         this.appConverter = this.appConverter.bind(this);
     }
     async appClick(app:App) {
-        let api = await mainData.getAppApi(this.props.id, app.id, 'apis');
-        //alert(JSON.stringify(api));
-        nav.navToApp('http://jjol.cn');
+        //let url = app.url + '#' + this.props.id + '-' + app.id;
+        nav.navToApp(app.url, this.props.id, app.id);
+        // let api = await mainData.getAppApi(this.props.id, app.id, 'apis');
+        // nav.navToApp('http://jjol.cn', false);
     }
     appConverter(app:App):ListItem {
         return {
@@ -28,11 +31,18 @@ export class TieApps extends React.Component<TieAppsProps> {
             unread: 0,
         }
     }
+    clickToManager() {
+        nav.push(<UnitMan {...this.props} />);
+    }
     render() {
-        let {name, discription, apps, icon, ownerName, ownerNick} = this.props;
+        let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = this.props;
         if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
-        return <Page header={name}>
-            <div className='app-top'>
+        let right;
+        if (isOwner !== 0 || isAdmin !== 0) {
+            right = <Button color="success" size="sm" onClick={()=>this.clickToManager()}>进入管理</Button>;
+        }
+        return <Page header={name} right={right}>
+            <div className='apps-list-top'>
                 <img src={icon || consts.appItemIcon} />
                 <div>
                     <header>{name}</header>

@@ -3,7 +3,7 @@ import * as classNames from 'classnames';
 import {Button} from 'reactstrap'; 
 import {nav, Page, ListView} from 'tonva-tools';
 import homeApi from './homeApi';
-import {Sticky} from './model';
+import {Sticky} from '../model';
 import consts from '../consts';
 
 export function navToHao(hao:number) {

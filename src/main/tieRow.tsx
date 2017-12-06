@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 import {nav, Page, ListView} from 'tonva-tools';
 import homeApi from './homeApi';
-import {Sticky} from './model';
+import {Sticky} from '../model';
 import {navToHao, navToHaoAttributes} from './tieHaoPage';
 import consts from '../consts';
 //import '../../css/app-row.css';

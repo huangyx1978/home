@@ -2,7 +2,7 @@ import * as React from 'react';
 import {nav, ActionRow, User} from 'tonva-tools';
 //import {LoginView, ApplyView} from '../../Views';
 import homeApi from './homeApi';
-import {mainData} from './mainData';
+import {mainData} from '../mainData';
 import consts from '../consts';
 
 class Me extends React.Component {

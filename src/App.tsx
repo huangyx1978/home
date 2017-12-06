@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
-import { Api, NavView, nav, Page, User, decodeToken } from 'tonva-tools';
-import LoginView from './entry/login';
+import * as t from 'tonva-tools';
 import AppView from './main';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import {NavView, nav, Page, Api} from 'tonva-tools';
 
+/*
 const logo = require('./logo.svg');
 const apiHost = process.env.REACT_APP_APIHOST;
 
@@ -16,7 +17,7 @@ class TieApi extends Api {
   }
 }
 const tieApi = new TieApi('tv/tie');
-
+*/
 /*
 class LoginView extends React.Component {
   render() {
@@ -55,40 +56,20 @@ class AppView extends React.Component {
   }
 }
 */
-nav.setViews(<LoginView />, <AppView />);
+// nav.setViews(<LoginView />, <AppView />);
 
 class App extends React.Component {
   async componentDidMount() {
-    // nav.show(<LoginView />);
     /*
-    try {
-      let ret = await tieApi.list({start: 0, pageSize: 30});
-      console.log(ret);
-    } catch (e) {
-      console.log(e);
+    if (window === window.parent) {
+      console.log('window === window.parent');
     }
-    */
-
-    let user: User;
-    let token = undefined;
-    if (token) {
-        user = decodeToken(token);
-    } else {
-        // window.addEventListener('message', e => this.receiveMessage(e));
-        user = nav.local.user.get();
-    }
-    if (user !== undefined) {
-        nav.logined(user);
-    } else {
-        // if (this.loginingView === undefined)
-            // nav.show(<div>no token</div>);
-        // else
-        // nav.show(this.loginingView); //<LoginView />);
-        nav.showLogin();
-    }
+    else {
+      console.log('window !== window.parent');
+    }*/
   }
   render() {
-    return (<NavView />);
+    return (<NavView view={<AppView />} />);
     /*
     return (
       <div className="App">

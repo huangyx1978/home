@@ -1,6 +1,6 @@
-import {Api, User} from 'tonva-tools';
+import {CenterApi, User} from 'tonva-tools';
 
-class HomeApi extends Api {
+class HomeApi extends CenterApi {
     items() {
         return this.get('items', undefined);
             // .then(res => res); //this.getItems(res));

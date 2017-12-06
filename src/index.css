@@ -5,33 +5,34 @@ body {
   background: #e0f0ff;
 }
 
-div.app-top {
+div.apps-list-top {
   padding: 20px;
   display: flex;
   flex-direction: row;
 }
 
-div.app-top > img {
+div.apps-list-top > img {
   width: 3em;
   height: 3em;
 }
 
-div.app-top > div {
+div.apps-list-top > div {
   margin-left: 20px;
+  flex: 1;
 }
 
-div.app-top > div > header {
+div.apps-list-top > div > header {
   font-weight: bold;
 }
 
-div.app-top > div > div {
+div.apps-list-top > div > div {
   display: flex;
   margin-top: 4px;
   flex-direction: row;
   font-size: smaller;
 }
 
-div.app-top > div > div > label {
+div.apps-list-top > div > div > label {
   width: 6em;
   margin: 0;
 }

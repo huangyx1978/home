@@ -5,12 +5,12 @@ import {nav, Page, ListView, ListItem} from 'tonva-tools'; //views, View,
 //import {Unit, UnitsGroup, UnitRole, UnitApp, UnitMessage,
 //    HomeApp as HomeRowData, HomeAppItem as HomeRowItemData} from '../home/model';
 import consts from '../consts';
-import {mainData} from './mainData';
+import {mainData} from '../mainData';
 import {TieApps} from './tieApps';
 //import api from '../../api';
 //import {loadHome} from '../home/action';
 
-import {Sticky} from './model';
+import {Sticky} from '../model';
 import TieRow from './tieRow';
 
 @observer
