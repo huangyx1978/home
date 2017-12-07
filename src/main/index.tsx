@@ -1,20 +1,44 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import {nav, Page, Tab, DropdownActions, Action} from 'tonva-tools';
+import {computed} from 'mobx';
+import {nav, Page, Tab, DropdownActions, Action, ws} from 'tonva-tools';
 import {ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
     Row, Col, Button, Form, FormGroup, Label, Input, 
     FormText, FormFeedback} from 'reactstrap';
+import {mainData} from '../mainData';
 import Home from './home';
 import Follow from './follow';
 import Find from './find';
 import Me from './me';
 import HaoSearch from './haoSearch';
 
-/*
-interface State {
-    dropdownOpen: boolean;
-}*/
+const tabs:Tab[] = [
+    {
+        title: '同花',
+        content: <Home />,
+        redDot: computed(()=>-2),
+    },
+    {
+        title: '收录',
+        content: <Follow />,
+        redDot: computed(()=>mainData.newFollow),
+    },
+    {
+        title: 'b',
+        content: <div />,
+    },
+    {
+        title: '发现',
+        content: <Find />,
+    },
+    {
+        title: '我',
+        content: <Me />,
+    }
+];
+
 export default class View extends React.Component<{}, null> {
+    private wsId:number;  
     private rightMenu:Action[] = [
         {
             caption: '新建App',
@@ -31,38 +55,16 @@ export default class View extends React.Component<{}, null> {
             dropdownOpen: false
         };*/
     }
+    componentDidMount() {
+        this.wsId = ws.onWsReceiveAny((msg) => mainData.onWs(msg));
+    }
+    componentWillUnmount() {
+        ws.endWsReceive(this.wsId);
+    }
     newApp() {
         nav.push(<HaoSearch />);
     }
-    /*
-    toggle() {
-        this.setState({
-            dropdownOpen: !this.state.dropdownOpen
-        });
-    }*/
     render() {
-        let tabs:Tab[] = [
-            {
-                title: '同花',
-                content: <Home />,
-            },
-            {
-                title: '收录',
-                content: <Follow />,
-            },
-            {
-                title: 'b',
-                content: <div />,
-            },
-            {
-                title: '发现',
-                content: <Find />,
-            },
-            {
-                title: '我',
-                content: <Me />,
-            }
-        ];
         let loc = parent===null? 'null':parent.location.href;
         let right = <DropdownActions actions={this.rightMenu} />;
         return <Page tabs={tabs} right={right} />

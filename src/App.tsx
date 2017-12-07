@@ -59,15 +59,6 @@ class AppView extends React.Component {
 // nav.setViews(<LoginView />, <AppView />);
 
 class App extends React.Component {
-  async componentDidMount() {
-    /*
-    if (window === window.parent) {
-      console.log('window === window.parent');
-    }
-    else {
-      console.log('window !== window.parent');
-    }*/
-  }
   render() {
     return (<NavView view={<AppView />} />);
     /*

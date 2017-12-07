@@ -28,18 +28,20 @@ export class TieApps extends React.Component<TieAppsProps> {
             main: app.name,
             vice: app.discription,
             icon : app.icon || consts.appItemIcon,
-            unread: 0,
+            //unread: 0,
         }
     }
-    clickToManager() {
-        nav.push(<UnitMan {...this.props} />);
+    async clickToAdmin() {
+        let adminApp = await mainData.getAdminApp();
+        //nav.push(<UnitMan {...this.props} />);
+        nav.navToApp(adminApp.url, this.props.id, adminApp.id);
     }
     render() {
         let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = this.props;
         if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
         let right;
         if (isOwner !== 0 || isAdmin !== 0) {
-            right = <Button color="success" size="sm" onClick={()=>this.clickToManager()}>进入管理</Button>;
+            right = <Button color="success" size="sm" onClick={()=>this.clickToAdmin()}>进入管理</Button>;
         }
         return <Page header={name} right={right}>
             <div className='apps-list-top'>

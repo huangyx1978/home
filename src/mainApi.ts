@@ -1,4 +1,5 @@
 import {CenterApi, User} from 'tonva-tools';
+import {App} from './model';
 
 class MainApi extends CenterApi {
     async stickies():Promise<any[]> {
@@ -13,12 +14,21 @@ class MainApi extends CenterApi {
         return await this.get('tie/apps', {unit:unit});
     }
 
+    async adminUrl():Promise<App> {
+        let ret = await this.get('tie/admin-url', {});
+        return ret;
+    }
+
     async appApi(unit:number, app:number, apiName:string) {
         return await this.get('tie/app-api', {unit:unit, app:app, apiName:apiName});
     }
 
     async unitAdmins(unit:number) {
         return await this.get('unit/admins', {unit:unit});
+    }
+
+    async postMessage(toUser:number, msg:any) {
+        return await this.post('test/post', {to: toUser, message: msg});
     }
 
     loadFollows(pageSize:number, minName:string) {

@@ -19,8 +19,8 @@ export default class UnitAdminsView extends React.Component<UnitApps, null> {
             main: admin.name,
             vice: admin.nick,
             icon : admin.icon || consts.appItemIcon,
-            unread: 0,
             right: <aside>ddd</aside>
+            //unread: 0,
         };
     }
     render() {

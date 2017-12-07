@@ -4,14 +4,28 @@ import mainApi from './mainApi';
 import {Sticky, Tie, UnitApps, App, Api, UnitAdmin} from './model';
 
 class MainData {
+    private adminApp: App;
+
     @observable stickies: Sticky[];
     @observable ties: Tie[];
     @observable unitApps: {[id:number]:UnitApps} = {};
     @observable unitAdmins: UnitAdmin[] = undefined;
+    @observable newFollow:number = 0;
+
+    onWs(msg: any) {
+        switch (msg.type) {
+            case 'new-follow': this.newFollow = msg.count; break;
+        }
+    }
 
     logout() {
         this.stickies = undefined;
         this.ties = undefined;
+    }
+
+    async getAdminApp():Promise<App> {
+        if (this.adminApp !== undefined) return this.adminApp;
+        return this.adminApp = await mainApi.adminUrl();
     }
 
     async loadStickies() {
