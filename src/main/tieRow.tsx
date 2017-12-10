@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import * as classNames from 'classnames';
 import {nav, Page, ListView} from 'tonva-tools';
@@ -75,4 +76,4 @@ export default class TieRow extends React.Component<Props, null> {
         </li>;
     }
 }
-
+*/

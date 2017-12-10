@@ -5,7 +5,6 @@ import {Container, ButtonGroup,
     Row, Col, Button, Form, FormGroup, Label, Input, 
     FormText, FormFeedback} from 'reactstrap';
 import {nav, Page, LabelRow} from 'tonva-tools';
-import {navToHao} from './tieHaoPage';
 import consts from '../consts';
 //import api from '../../api';
 
@@ -120,8 +119,9 @@ class HaoSearch extends React.Component<HaoSearchProps, State> {
         //}, 3000);
     }
     haoClicked(hao:Hao) {
-        if (hao.followed)
-            navToHao(hao.id);
+        if (hao.followed) {
+            //navToHao(hao.id);
+        }
         else
             nav.push(<HaoFollow 
                 unit={hao.unit}

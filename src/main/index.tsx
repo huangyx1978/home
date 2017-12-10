@@ -21,7 +21,7 @@ const tabs:Tab[] = [
     {
         title: '收录',
         content: <Follow />,
-        redDot: computed(()=>mainData.newFollow),
+        redDot: computed(()=>mainData.newFellowInvitesCount),
     },
     {
         title: 'b',
@@ -55,11 +55,14 @@ export default class View extends React.Component<{}, null> {
             dropdownOpen: false
         };*/
     }
-    componentDidMount() {
+    async componentDidMount() {
+        await ws.connect();
         this.wsId = ws.onWsReceiveAny((msg) => mainData.onWs(msg));
+        await mainData.loadMessages();
     }
     componentWillUnmount() {
         ws.endWsReceive(this.wsId);
+        ws.close();
     }
     newApp() {
         nav.push(<HaoSearch />);

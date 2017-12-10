@@ -5,8 +5,8 @@ import * as classNames from 'classnames';
 import {nav, ListView, ListItem} from 'tonva-tools';
 import {mainData} from '../mainData';
 import {Sticky} from '../model';
-import TieRow from './tieRow';
 import {NewFollows} from '../follows';
+import consts from '../consts';
 
 const bkStyle={backgroundColor: '#cfcfff', margin:'0', padding:'6px'};
 const iconStyle={color:'green'};
@@ -17,19 +17,26 @@ class Follow extends React.Component {
     private actions:ListItem[] = [
         {
             key: 1,
-            main: '新收录',
+            main: '来自小号的邀请',
             //right: '增删管理员',
             icon: icon('user-plus'),
             onClick: () => nav.push(<NewFollows />),
-            unread: computed(()=>mainData.newFollow),
+            unread: computed(()=>mainData.newFellowInvitesCount),
         },
     ];
     constructor(props) {
         super(props);
-        this.rowMapper = this.rowMapper.bind(this);
+        //this.rowMapper = this.rowMapper.bind(this);
     }
-    private rowMapper(tie:Sticky, index:number) {
-        return <TieRow key={tie.id} {...tie} isHome={false} />;
+    private tieConverter(tie:Sticky):ListItem {
+        return {
+            key: tie.id,
+            date: undefined,
+            main: tie.main,
+            //vice: tie..discription,
+            icon : tie.icon || consts.appItemIcon,
+            //unread: 0,
+        }
     }
     render() {
         //let nf = mainData.newFollow;
@@ -37,7 +44,7 @@ class Follow extends React.Component {
         return <div>
             <ListView items={this.actions} />
             <div style={{height:'20px'}} />
-            <ListView items={[]} renderRow={this.rowMapper} />
+            <ListView items={[]} converter={this.tieConverter} />
         </div>;
     }
 }

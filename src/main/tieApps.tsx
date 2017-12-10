@@ -4,7 +4,6 @@ import {nav, Page, ListView, ListItem} from 'tonva-tools';
 import consts from '../consts';
 import {UnitApps, App} from '../model';
 import {mainData} from '../mainData';
-import UnitMan from '../unit-man';
 
 interface TieAppsProps extends UnitApps {
 }

@@ -48,16 +48,19 @@ export interface UnitApps {
     apps: App[];
 }
 
-export interface UnitAdmin {
+export interface UserMessage {
     id: number;
-    name: string;
-    nick: string;
-    icon: string;
-    country: string;
-    mobile: string;
-    email: string;
-    isOwner: number;
-    isAdmin: number;
+    unit: number;
+    type: string;
+    date: Date;
+    message: any;
+    from: {
+        id: number;
+        name: string;
+        nick: string;
+        icon: string;
+    },
+    isNew: boolean;
 }
 
 /*
