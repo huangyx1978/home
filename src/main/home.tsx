@@ -6,7 +6,7 @@ import {nav, Page, ListView, ListItem} from 'tonva-tools'; //views, View,
 //import {Unit, UnitsGroup, UnitRole, UnitApp, UnitMessage,
 //    HomeApp as HomeRowData, HomeAppItem as HomeRowItemData} from '../home/model';
 import consts from '../consts';
-import {mainData} from '../mainData';
+import {store} from '../store';
 import {TieApps} from './tieApps';
 //import api from '../../api';
 //import {loadHome} from '../home/action';
@@ -36,7 +36,7 @@ class Home extends React.Component {
         this.itemClick = this.itemClick.bind(this);
     }
     async componentDidMount() {
-        await mainData.loadStickies();
+        await store.loadStickies();
         //this.props.dispatch(loadHome(undefined));
         //dispatch(loadHome(undefined));
     }
@@ -52,12 +52,12 @@ class Home extends React.Component {
     }
     async itemClick(item:Sticky) {
         let objId = item.objId;
-        let unitApps = await mainData.loadApps(objId);
+        let unitApps = await store.loadApps(objId);
         if (unitApps === undefined) {
             console.log('cannot load unit apps of ' + objId);
             return;
         }
-        nav.push(<TieApps {...unitApps} />);
+        nav.push(<TieApps />);
 /*
         setTimeout(()=>{
             alert(JSON.stringify(unitApps));
@@ -83,7 +83,7 @@ class Home extends React.Component {
         return <div>
             {actions}
             <ListView
-                items={mainData.stickies}
+                items={store.stickies}
                 itemClick={this.itemClick}
                 converter={this.converter}
                 //mapper={this.rowMapper}

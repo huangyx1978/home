@@ -2,20 +2,38 @@ import {observable, computed} from 'mobx';
 import consts from '../consts';
 import mainApi, { messageApi } from '../mainApi';
 import {Sticky, Tie, UnitApps, App, UserMessage} from '../model';
+import {Fellow} from './fellow';
 
-class MainData {
+export class Store {
     private adminApp: App;
 
     @observable stickies: Sticky[];
     @observable ties: Tie[];
-    @observable unitApps: {[id:number]:UnitApps} = {};
+    @observable unitAppsDict: {[id:number]:UnitApps} = {};
+    @observable unitApps:UnitApps = undefined;
     @observable userMessages: UserMessage[] = undefined;
-    @observable fellowInvites: UserMessage[] = [];
-    @observable fellowArchivedInvites: UserMessage[] = undefined;
-    @computed get newFellowInvitesCount():number {return this.fellowInvites.length;}
+
+    fellow = new Fellow(this);
 
     onWs(msg: any) {
-        this.onMessage(msg, true);
+        let um = this.convertMessage(msg);
+        this.processMessage(um);
+    }
+
+    onTypeCount(type:string, count:number) {
+        switch (type) {
+            case 'unit-fellow-invite': this.fellow.newInvitesCount = count; break;
+        }
+    }
+    processMessage(um:UserMessage) {
+        switch (um.type) {
+            default: break;
+            case 'unit-fellow-invite': this.fellow.msgUnitInvited(um); break;
+            case 'unit-fellow-admin': this.msgUnitFellowAdmin(um); break;
+        }
+    }
+
+    private msgUnitFellowAdmin(um:UserMessage) {        
     }
 
     logout() {
@@ -41,12 +59,20 @@ class MainData {
     }
 
     async loadApps(unit: number): Promise<UnitApps> {
-        let ret = this.unitApps[unit];
+        let ret = this.unitAppsDict[unit];
         if (ret === undefined) {
-            this.unitApps[unit] = ret = await mainApi.apps(unit);
+            this.unitApps = this.unitAppsDict[unit] = ret = await mainApi.apps(unit);
         }
         return ret;
     }
+
+    async acceptFellowInvite(um:UserMessage):Promise<void> {
+        let sticky:Sticky = await mainApi.unitAddFellow(um.id);
+        this.fellow.removeInvite(um);
+        if (sticky !== undefined) this.stickies.unshift(sticky);
+    }
+
+    
 /*
     async getAppApi(unitId: number, appId: number, apiName): Promise<Api> {
         let unit = this.unitApps[unitId];
@@ -76,25 +102,22 @@ class MainData {
         this.unitAdmins = await mainApi.unitAdmins(unitId);
     }
 */
-    async loadMessages(): Promise<void> {
-        let ret = await messageApi.messages();
-        let len = ret.length;
-        for (let i=0; i<len; i++) {
-            let {unit, count} = ret[0];
-            if (unit === 0) {
-                await this.sysMessages(count);
-            }
+    async loadMessageCount(): Promise<void> {
+        let ret0 = await messageApi.unitMessageCount();
+        let len0 = ret0.length;
+        for (let i=0; i<len0; i++) {
+        }
+
+        let ret1 = await messageApi.typeMessageCount();
+        let len1 = ret1.length;
+        for (let i=0; i<len1; i++) {
+            let {type, count} = ret1[0];
+            this.onTypeCount(type, count);
         }
     }
 
-    private async sysMessages(count:number) {
-        if (count === 0) return;
-        let ret = await messageApi.unitMessages(0);
-        ret.forEach(v => this.onMessage(v, true));
-    }
-
-    private onMessage(msg:any, isNew:boolean) {
-        let {id, unit, type, date, message, from, fromName, fromNick, fromIcon} = msg;
+    private convertMessage(msg:any):UserMessage {
+        let {id, unit, type, date, message, from, fromName, fromNick, fromIcon, isNew} = msg;
         let um:UserMessage = {
             id: id,
             unit: unit,
@@ -107,48 +130,16 @@ class MainData {
                 nick: fromNick,
                 icon: fromIcon,
             },
-            isNew: isNew,
-        }
-        if (type==='unit-fellow-invite') {
-            if (isNew === true) {
-                if (this.fellowInvites.find(v => v.id === um.id) === undefined) {
-                    this.fellowInvites.push(um);
-                }
-            }
-            else {
-                this.fellowArchivedInvites.push(um);
-            }
-        }
+            isNew: isNew !== 0,
+        };
+        return um;
     }
 
-    async loadFellowInvites(): Promise<void> {
-        if (this.fellowArchivedInvites === undefined) {
-            this.fellowArchivedInvites = [];
-            let ret = await mainApi.unitArchived(0);
-            ret.forEach(v => this.onMessage(v, false));
-        }
-        let ids = this.fellowInvites.map(v => v.id);
-        await messageApi.readMessages(ids);
-        this.fellowInvites.forEach(v => {
-            let index = this.fellowArchivedInvites.findIndex(av => av.from.id === v.from.id);
-            if (index >= 0) this.fellowArchivedInvites.splice(index, 1);
-            this.fellowArchivedInvites.push(...this.fellowInvites);
-        });
-        this.fellowInvites.splice(0);
-    }
 
-    async acceptFellowInvite(um:UserMessage):Promise<void> {
-        await mainApi.unitAddFellow(um.id);
-        this.removeFellowInvite(um);
-    }
-
-    async refuseFellowInvite(um:UserMessage):Promise<void> {
-        await mainApi.removeMessage(um.id);
-        this.removeFellowInvite(um);
-    }
-    private removeFellowInvite(um:UserMessage) {
-        let index = this.fellowArchivedInvites.findIndex(v => v.id === um.id);
-        this.fellowArchivedInvites.splice(index, 1);
+    changeIsAdmin() {
+        //thisunitApps = this.unitAppsDict[unitId];
+        this.unitApps.isAdmin = 0;
+        this.unitApps.isOwner = 0;
     }
     
     async unitMessages(): Promise<void> {
@@ -182,4 +173,4 @@ class MainData {
     }
 };
 
-export const mainData = new MainData();
+export const store = new Store();

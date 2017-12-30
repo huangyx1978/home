@@ -5,7 +5,7 @@ import {Card, CardHeader, CardBody, CardText, CardTitle, Button,
     Container, Row, Col} from 'reactstrap';
 import {nav, Page, ListView, ListItem} from 'tonva-tools';
 import mainApi from '../mainApi';
-import {mainData} from '../mainData';
+import {store} from '../store';
 import {UserMessage} from '../model';
 import consts from '../consts';
 
@@ -24,10 +24,15 @@ export default class NewFollows extends React.Component<{}, null> {
         await mainApi.postMessage(1, {type:'new-follow', count: 1});
     }
     async componentDidMount() {
-        await mainData.loadFellowInvites();
+        let fellow = store.fellow;
+        await fellow.loadInvites();
+        fellow.newInvitesCount = undefined;
+    }
+    async componentWillUnmount() {
+        store.fellow.newInvitesCount = 0;
     }
     private async accept(um:UserMessage) {
-        await mainData.acceptFellowInvite(um);
+        await store.acceptFellowInvite(um);
         nav.replace(<Page header='接受邀请' close={true}>
             <Card>
                 <CardBody>
@@ -39,7 +44,7 @@ export default class NewFollows extends React.Component<{}, null> {
         </Page>);
 }
     private async refuse(um:UserMessage) {
-        await mainData.refuseFellowInvite(um);
+        await store.fellow.refuseInvite(um);
     }
     converter(um:UserMessage):ListItem {
         let {name, nick, icon} = um.from;
@@ -60,7 +65,7 @@ export default class NewFollows extends React.Component<{}, null> {
         };
     }
     render() {
-        let fai = mainData.fellowArchivedInvites;
+        let fai = store.fellow.invites;
         return <Page header="邀请">
             新收录
             <Button onClick={this.test1}>WS1</Button>

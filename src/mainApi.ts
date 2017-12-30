@@ -23,12 +23,16 @@ class MainApi extends CenterApi {
         return await this.get('tie/app-api', {unit:unit, app:app, apiName:apiName});
     }
 
-    async unitArchived(unit:number):Promise<any[]> {
-        return await this.get('tie/unit-archived', {unit:unit});
+    async unitMessages(unit:number):Promise<any[]> {
+        return await this.get('tie/unit-messages', {unit:unit});
     }
 
-    async unitAddFellow(invite:number):Promise<void> {
-        await this.get('unit/add-fellow', {invite:invite});
+    async typeMessages(type:string):Promise<any[]> {
+        return await this.get('tie/type-messages', {type:type});
+    }
+
+    async unitAddFellow(invite:number):Promise<any> {
+        return await this.get('unit/add-fellow', {invite:invite});
     }
 
     async removeMessage(id:number):Promise<void> {
@@ -39,10 +43,14 @@ class MainApi extends CenterApi {
         return await this.get('unit/admins', {unit:unit});
     }
 
+    async sendMessage(param:{to:string, unit:number, app:number, type:string, message:any, norepeat?:boolean}):Promise<any> {
+        return await this.post('tie/send-message', param);
+    }
+
     async postMessage(toUser:number, msg:any) {
         return await this.post('test/post', {to: toUser, message: msg});
     }
-
+    /*
     loadFollows(pageSize:number, minName:string) {
         return this.get('follows', {pageSize:pageSize, minName: minName});
     }
@@ -54,18 +62,21 @@ class MainApi extends CenterApi {
     }
     dbInit() {
         return this.get('dbInit', undefined).then(res => res);
-    }
+    }*/
 }
 
 const mainApi = new MainApi('tv/');
 export default mainApi;
 
 class MessageApi extends CenterApi {
-    async messages():Promise<any[]> {
-        return await this.get('tie/messages', {});
+    //async messages():Promise<any[]> {
+    //    return await this.get('tie/messages', {});
+    //}
+    async unitMessageCount():Promise<any[]> {
+        return await this.get('tie/message-unit-count', {});
     }
-    async unitMessages(unit:number):Promise<any[]> {
-        return await this.get('tie/unit-messages', {unit:unit});
+    async typeMessageCount():Promise<any[]> {
+        return await this.get('tie/message-type-count', {});
     }
     async readMessages(ids:number[]):Promise<void> {
         if (ids.length === 0) return;

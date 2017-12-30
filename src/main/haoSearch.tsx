@@ -4,6 +4,7 @@ import {Container, ButtonGroup,
     ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
     Row, Col, Button, Form, FormGroup, Label, Input, 
     FormText, FormFeedback} from 'reactstrap';
+import {SearchBox} from 'tonva-react-form';
 import {nav, Page, LabelRow} from 'tonva-tools';
 import consts from '../consts';
 //import api from '../../api';
@@ -57,6 +58,7 @@ class HaoSearch extends React.Component<HaoSearchProps, State> {
         };
         this.onTextChange = this.onTextChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.onSearch = this.onSearch.bind(this);
         this.onScroll = this.onScroll.bind(this);
         this.onScrollBottom = this.onScrollBottom.bind(this);
     }
@@ -110,6 +112,9 @@ class HaoSearch extends React.Component<HaoSearchProps, State> {
         });
         */
     }
+    onSearch(key:string) {
+        alert('search：' + key);
+    }
     onScroll(e) {
     }
     onScrollBottom() {
@@ -131,13 +136,18 @@ class HaoSearch extends React.Component<HaoSearchProps, State> {
                 icon={hao.icon} />)
     }
     render() {
+        /*
         let center = (<form onSubmit={this.onSubmit} style={{display:'flex', flex:1, padding:'1px'}}>
             <input ref={(input) => this.input = input}
                 onChange={this.onTextChange}
                 style={{display:'flex', flex:1}} 
                 type="text" name="text" placeholder="搜索小号" />
             <button>S</button>
-        </form>);
+        </form>); */
+        let center = <SearchBox onSearch={this.onSearch} 
+            className="w-100 mx-1" 
+            placeholder="搜索小号" 
+            maxLength={100} />;
         let content;
         let haos = this.state.haos;
         if (haos !== undefined) {

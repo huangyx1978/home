@@ -1,14 +1,16 @@
 import * as React from 'react';
+import {observer} from 'mobx-react';
 import {Button} from 'reactstrap';
 import {nav, Page, ListView, ListItem} from 'tonva-tools';
 import consts from '../consts';
 import {UnitApps, App} from '../model';
-import {mainData} from '../mainData';
+import {store} from '../store';
 
-interface TieAppsProps extends UnitApps {
-}
+// interface TieAppsProps extends UnitApps {
+//}
 
-export class TieApps extends React.Component<TieAppsProps> {
+@observer
+export class TieApps extends React.Component {
     constructor(props) {
         super(props);
         this.appClick = this.appClick.bind(this);
@@ -16,7 +18,7 @@ export class TieApps extends React.Component<TieAppsProps> {
     }
     async appClick(app:App) {
         //let url = app.url + '#' + this.props.id + '-' + app.id;
-        nav.navToApp(app.url, this.props.id, app.id);
+        nav.navToApp(app.url, store.unitApps.id, app.id);
         // let api = await mainData.getAppApi(this.props.id, app.id, 'apis');
         // nav.navToApp('http://jjol.cn', false);
     }
@@ -31,12 +33,12 @@ export class TieApps extends React.Component<TieAppsProps> {
         }
     }
     async clickToAdmin() {
-        let adminApp = await mainData.getAdminApp();
+        let adminApp = await store.getAdminApp();
         //nav.push(<UnitMan {...this.props} />);
-        nav.navToApp(adminApp.url, this.props.id, adminApp.id);
+        nav.navToApp(adminApp.url, store.unitApps.id, adminApp.id);
     }
     render() {
-        let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = this.props;
+        let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = store.unitApps;
         if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
         let right;
         if (isOwner !== 0 || isAdmin !== 0) {
@@ -55,6 +57,7 @@ export class TieApps extends React.Component<TieAppsProps> {
                         <label>发布者：</label>
                         <span>{ownerName} {ownerNick}</span>
                     </div>
+                    <Button onClick={()=>store.changeIsAdmin()}>Test</Button>
                 </div>
             </div>
             <ListView items={apps} converter={this.appConverter} itemClick={this.appClick} />

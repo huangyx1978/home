@@ -1,11 +1,12 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import {computed} from 'mobx';
-import {nav, Page, Tab, DropdownActions, Action, ws} from 'tonva-tools';
+import {nav, Page, Tab, ws} from 'tonva-tools';
+import {Action, DropdownActions} from 'tonva-react-form';
 import {ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
     Row, Col, Button, Form, FormGroup, Label, Input, 
     FormText, FormFeedback} from 'reactstrap';
-import {mainData} from '../mainData';
+import {store} from '../store';
 import Home from './home';
 import Follow from './follow';
 import Find from './find';
@@ -21,11 +22,7 @@ const tabs:Tab[] = [
     {
         title: '收录',
         content: <Follow />,
-        redDot: computed(()=>mainData.newFellowInvitesCount),
-    },
-    {
-        title: 'b',
-        content: <div />,
+        redDot: computed(()=>store.fellow.newInvitesCount),
     },
     {
         title: '发现',
@@ -41,30 +38,25 @@ export default class View extends React.Component<{}, null> {
     private wsId:number;  
     private rightMenu:Action[] = [
         {
-            caption: '新建App',
-            action: this.newApp,
+            caption: '添加小号',
+            icon: 'plus',
+            action: this.addXiaoHao,
         }
     ];
     constructor(props) {
         super(props);
-        //this.toggle = this.toggle.bind(this);
-        this.newApp = this.newApp.bind(this);
-        //this.onAppGroupChanged = this.onAppGroupChanged.bind(this);
-        /*
-        this.state = {
-            dropdownOpen: false
-        };*/
+        this.addXiaoHao = this.addXiaoHao.bind(this);
     }
     async componentDidMount() {
         await ws.connect();
-        this.wsId = ws.onWsReceiveAny((msg) => mainData.onWs(msg));
-        await mainData.loadMessages();
+        this.wsId = ws.onWsReceiveAny((msg) => store.onWs(msg));
+        await store.loadMessageCount();
     }
     componentWillUnmount() {
         ws.endWsReceive(this.wsId);
         ws.close();
     }
-    newApp() {
+    addXiaoHao() {
         nav.push(<HaoSearch />);
     }
     render() {
