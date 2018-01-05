@@ -14,6 +14,7 @@ class Me extends React.Component {
         this.apply = this.apply.bind(this);
         this.applyUnit = this.applyUnit.bind(this);
         this.applyDev = this.applyDev.bind(this);
+        this.onApplySubmit = this.onApplySubmit.bind(this);
     }
     private exit() {
         if (confirm('退出当前账号不会删除任何历史数据，下次登录依然可以使用本账号')) {
@@ -60,17 +61,15 @@ class Me extends React.Component {
             {label: '单位', field: fields.owner, face: {type: 'textarea', placeholder: '申请单位'}},
         ];
         nav.push(<Page header={type==='unit'?'申请创建小号':'申请开发应用'}>
-            <TonvaForm formRows={rows} onSubmit={this.onApplySubmit} />
+            <TonvaForm formRows={rows} onSubmit={(values:any) => this.onApplySubmit(type, values)} />
         </Page>);
     }
-    private async onApplySubmit(values:any):Promise<SubmitResult> {
-        let ret = await mainApi.sendMessage({
-            to:undefined,
-            unit: 0,
-            app: 0,
-            type: 'apply-unit',
-            message: values,
-            norepeat: true
+    private async onApplySubmit(type:'unit'|'dev', values:any):Promise<SubmitResult> {
+        let ret = await mainApi.saveMessage({
+            toUser: -1,
+            fromApp: 0,
+            type: 'apply-' + type,
+            content: values,
         });
         nav.pop(2);
         nav.push(<Page header="完成" close={true}>

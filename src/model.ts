@@ -7,7 +7,7 @@ export interface Sticky {
     objId: number;
     ex: string;
     icon: string;
-    unread: number;
+    //unread: number;
 }
 
 export interface Tie {
@@ -34,7 +34,18 @@ export interface App {
     apis?: {[name:string]: Api};
 }
 
-export interface UnitApps {
+export interface Message {
+    id: number;
+    toUser: number;
+    toUnit: number;
+    fromUser: number;
+    fromUnit: number;
+    type: string;
+    date: Date;
+    content: any;
+}
+
+export interface Unit {
     id: number;
     name: string;
     discription: string;
@@ -46,21 +57,8 @@ export interface UnitApps {
     ownerNick: string;
     ownerIcon: string;
     apps: App[];
-}
-
-export interface UserMessage {
-    id: number;
-    unit: number;
-    type: string;
-    date: Date;
-    message: any;
-    from: {
-        id: number;
-        name: string;
-        nick: string;
-        icon: string;
-    },
-    isNew: boolean;
+    messages: Message[];
+    unread: number;
 }
 
 /*

@@ -2,92 +2,68 @@ import * as React from 'react';
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
 import * as classNames from 'classnames';
-import {nav, Page, ListView, ListItem} from 'tonva-tools'; //views, View,
-//import {Unit, UnitsGroup, UnitRole, UnitApp, UnitMessage,
-//    HomeApp as HomeRowData, HomeAppItem as HomeRowItemData} from '../home/model';
+import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA} from 'tonva-react-form';
+import {nav, Page} from 'tonva-tools';
 import consts from '../consts';
 import {store} from '../store';
 import {TieApps} from './tieApps';
-//import api from '../../api';
-//import {loadHome} from '../home/action';
-
 import {Sticky} from '../model';
 import { Fragment } from 'react';
 
-const bkStyle={backgroundColor: '#cfcfff', margin:'0', padding:'6px'};
-const iconStyle={color:'green'};
-const icon=(name) => <div style={bkStyle}><i style={iconStyle} className={'fa fa-lg fa-' + name} /></div>;
-
 @observer
 class Home extends React.Component {
-    private actions:ListItem[] = [
-        {
-            key: 1,
-            main: '创建小号',
-            //right: '增删管理员',
-            icon: icon('user-plus'),
-            onClick: () => alert('a'), //nav.push(<NewFollows />),
-            //unread: computed(()=>mainData.newFollow),
-        },
-    ];
-
     constructor(props) {
         super(props);
-        this.itemClick = this.itemClick.bind(this);
+        this.stickyClick = this.stickyClick.bind(this);
+        this.stickyRender = this.stickyRender.bind(this);
     }
     async componentDidMount() {
         await store.loadStickies();
-        //this.props.dispatch(loadHome(undefined));
-        //dispatch(loadHome(undefined));
     }
-    converter(s:Sticky):ListItem {
-        return {
-            key: s.id,
-            main: s.main,
-            icon: s.icon || consts.appItemIcon,
-            date: s.date,
-            vice: s.ex,
-            unread: s.unread || 2,
-        };
-    }
-    async itemClick(item:Sticky) {
+    async stickyClick(item:Sticky) {
         let objId = item.objId;
-        let unitApps = await store.loadApps(objId);
+        await store.loadApps(objId);
+        /*
         if (unitApps === undefined) {
             console.log('cannot load unit apps of ' + objId);
             return;
-        }
+        }*/
         nav.push(<TieApps />);
-/*
-        setTimeout(()=>{
-            alert(JSON.stringify(unitApps));
-        }, 100);
-        //alert(JSON.stringify(mainData.ties));
-
-        //this.showAlert(JSON.stringify(mainData.ties)).then(()=>{});
-*/
     }
-    /*
-    showAlert(msg:string):Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            alert(msg);
-            resolve();
-        });
-    }*/
+    private stickyRender(s:Sticky, index:number):JSX.Element {
+        let {type, icon, date, main, ex, objId} = s;
+        let unread:number;
+        if (type === 3) { // unit
+            let unit = store.unitDict.get(objId);
+            if (unit !== undefined) unread = unit.unread;
+            //unread = store.messageUnreadDict.get(objId);
+        }
+        return <LMR className="p-2"
+            left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}
+            right={<small className="text-muted"><EasyDate date={date} /></small>}
+        >
+            <b>{main}</b>
+            <small className="text-muted">{ex}</small>
+        </LMR>;
+    }
     render() {
-        let actions = <Fragment>
-            <ListView items={this.actions} />
-            <div style={{height:'10px'}} />
-        </Fragment>
+        let rows:Prop[] = [
+            {
+                type: 'component',
+                onClick: () => alert('a'),
+                component: <LMR
+                    className="py-2 align-items-center"
+                    left={<FA className="text-primary" name="user-plus" size="lg" fixWidth={true} />}
+                >
+                    创建小号
+                </LMR>,
+            },
+            '=',
+        ];
         
         return <div>
-            {actions}
-            <ListView
-                items={store.stickies}
-                itemClick={this.itemClick}
-                converter={this.converter}
-                //mapper={this.rowMapper}
-            />
+            <PropGrid rows={rows} values={undefined} />
+            <List items={store.stickies} item={{render: this.stickyRender, onClick: this.stickyClick}} />
         </div>;
     }
 }

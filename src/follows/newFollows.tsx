@@ -6,7 +6,7 @@ import {Card, CardHeader, CardBody, CardText, CardTitle, Button,
 import {nav, Page, ListView, ListItem} from 'tonva-tools';
 import mainApi from '../mainApi';
 import {store} from '../store';
-import {UserMessage} from '../model';
+import {Message} from '../model';
 import consts from '../consts';
 
 @observer
@@ -31,23 +31,23 @@ export default class NewFollows extends React.Component<{}, null> {
     async componentWillUnmount() {
         store.fellow.newInvitesCount = 0;
     }
-    private async accept(um:UserMessage) {
+    private async accept(um:Message) {
         await store.acceptFellowInvite(um);
         nav.replace(<Page header='接受邀请' close={true}>
             <Card>
                 <CardBody>
                     <CardTitle>小号成员</CardTitle>
-                    <CardText>你已成为{um.from.name}-{um.from.nick}的成员。</CardText>
+                    <CardText>你已成为{/*um.from.name*/}-{/*um.from.nick*/}的成员。</CardText>
                     <Button color='primary' onClick={()=>nav.back()}>完成</Button>
                 </CardBody>
             </Card>
         </Page>);
 }
-    private async refuse(um:UserMessage) {
+    private async refuse(um:Message) {
         await store.fellow.refuseInvite(um);
     }
-    converter(um:UserMessage):ListItem {
-        let {name, nick, icon} = um.from;
+    converter(um:Message):ListItem {
+        let {name, nick, icon} = {name:'name', nick:'nick', icon:'icon'};
         let main:string = name;
         if (nick !== undefined) main += ' - ' + nick;
         let accept = async ()=>await this.accept(um);

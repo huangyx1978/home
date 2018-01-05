@@ -2,9 +2,11 @@ import * as React from 'react';
 import {observer} from 'mobx-react';
 import {Button} from 'reactstrap';
 import {nav, Page, ListView, ListItem} from 'tonva-tools';
+import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA} from 'tonva-react-form';
 import consts from '../consts';
-import {UnitApps, App} from '../model';
+import {Unit, App} from '../model';
 import {store} from '../store';
+import {Chat} from './chat';
 
 // interface TieAppsProps extends UnitApps {
 //}
@@ -14,14 +16,21 @@ export class TieApps extends React.Component {
     constructor(props) {
         super(props);
         this.appClick = this.appClick.bind(this);
-        this.appConverter = this.appConverter.bind(this);
+        //this.appConverter = this.appConverter.bind(this);
+        this.renderRow = this.renderRow.bind(this);
     }
     async appClick(app:App) {
-        //let url = app.url + '#' + this.props.id + '-' + app.id;
-        nav.navToApp(app.url, store.unitApps.id, app.id);
-        // let api = await mainData.getAppApi(this.props.id, app.id, 'apis');
-        // nav.navToApp('http://jjol.cn', false);
+        let appId = app.id;
+        let unitId = store.unit.id;
+        let url = app.url;
+        if (appId === 0) {
+            nav.push(<Chat />);
+        }
+        else {
+            nav.navToApp(url, unitId, appId);
+        }
     }
+    /*
     appConverter(app:App):ListItem {
         return {
             key: app.id,
@@ -31,14 +40,29 @@ export class TieApps extends React.Component {
             icon : app.icon || consts.appItemIcon,
             //unread: 0,
         }
+    }*/
+    private renderRow(app:App, index:number):JSX.Element {
+        let {id:appId, name, icon, discription} = app;
+        let unread:number = undefined;
+        if (appId === 0) {
+            unread = store.unit.unread;
+            //let dict = store.messageUnreadDict;
+            //unread = dict.get(unit);
+        }
+        return <LMR className="p-2"
+            left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}
+        >
+            <b>{name}</b>
+            <small className="text-muted">{discription}</small>
+        </LMR>;
     }
     async clickToAdmin() {
         let adminApp = await store.getAdminApp();
         //nav.push(<UnitMan {...this.props} />);
-        nav.navToApp(adminApp.url, store.unitApps.id, adminApp.id);
+        nav.navToApp(adminApp.url, store.unit.id, adminApp.id);
     }
     render() {
-        let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = store.unitApps;
+        let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = store.unit;
         if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
         let right;
         if (isOwner !== 0 || isAdmin !== 0) {
@@ -57,10 +81,10 @@ export class TieApps extends React.Component {
                         <label>发布者：</label>
                         <span>{ownerName} {ownerNick}</span>
                     </div>
-                    <Button onClick={()=>store.changeIsAdmin()}>Test</Button>
                 </div>
             </div>
-            <ListView items={apps} converter={this.appConverter} itemClick={this.appClick} />
+            <List items={apps} item={{render:this.renderRow, onClick:this.appClick}} />
         </Page>;
+        // <ListView items={apps} converter={this.appConverter} itemClick={this.appClick} />
     }
 }

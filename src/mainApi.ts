@@ -43,8 +43,11 @@ class MainApi extends CenterApi {
         return await this.get('unit/admins', {unit:unit});
     }
 
-    async sendMessage(param:{to:string, unit:number, app:number, type:string, message:any, norepeat?:boolean}):Promise<any> {
-        return await this.post('tie/send-message', param);
+    async saveMessage(
+        param:{toUser:number, fromApp:number, type:string, content:string}
+        //to:string, unit:number, app:number, type:string, message:any, norepeat?:boolean}
+    ):Promise<any> {
+        return await this.post('tie/message-save', param);
     }
 
     async postMessage(toUser:number, msg:any) {
@@ -72,8 +75,8 @@ class MessageApi extends CenterApi {
     //async messages():Promise<any[]> {
     //    return await this.get('tie/messages', {});
     //}
-    async unitMessageCount():Promise<any[]> {
-        return await this.get('tie/message-unit-count', {});
+    async messageUnread():Promise<any[]> {
+        return await this.get('tie/message-unread', {});
     }
     async typeMessageCount():Promise<any[]> {
         return await this.get('tie/message-type-count', {});

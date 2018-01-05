@@ -17,7 +17,16 @@ const tabs:Tab[] = [
     {
         title: '同花',
         content: <Home />,
-        redDot: computed(()=>-2),
+        redDot: computed(()=>{
+            let sum = 0;
+            //store.messageUnreadDict.forEach(v=>sum+=v);
+            let unitDict = store.unitDict;
+            unitDict.forEach(unit => {
+                let unread = unit.unread;
+                if (unread !== undefined) sum += unread;
+            });
+            return -sum;
+        }),
     },
     {
         title: '收录',
@@ -50,7 +59,7 @@ export default class View extends React.Component<{}, null> {
     async componentDidMount() {
         await ws.connect();
         this.wsId = ws.onWsReceiveAny((msg) => store.onWs(msg));
-        await store.loadMessageCount();
+        await store.loadMessageUnread();
     }
     componentWillUnmount() {
         ws.endWsReceive(this.wsId);
