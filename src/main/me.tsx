@@ -87,7 +87,10 @@ class Me extends React.Component {
         const {user} = nav;
         let rows:Prop[] = [
             '',
-            {type: 'component', component: <Media icon={consts.appIcon} main={user.name} discription={String(user.id)} />},
+            {
+                type: 'component', 
+                component: <Media icon={consts.appIcon} main={user.name} discription={String(user.id)} />
+            },
             '',
             {
                 type: 'component', 

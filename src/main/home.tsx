@@ -7,7 +7,7 @@ import {nav, Page} from 'tonva-tools';
 import consts from '../consts';
 import {store} from '../store';
 import {TieApps} from './tieApps';
-import {Sticky} from '../model';
+import {Sticky, StickyUnit} from '../model';
 import { Fragment } from 'react';
 
 @observer
@@ -22,21 +22,22 @@ class Home extends React.Component {
     }
     async stickyClick(item:Sticky) {
         let objId = item.objId;
-        await store.loadApps(objId);
-        /*
-        if (unitApps === undefined) {
-            console.log('cannot load unit apps of ' + objId);
-            return;
-        }*/
+        await store.setUnit(objId);
         nav.push(<TieApps />);
     }
     private stickyRender(s:Sticky, index:number):JSX.Element {
-        let {type, icon, date, main, ex, objId} = s;
+        let {type, date, objId, obj} = s;
+        switch (type) {
+            case 3:
+                if (obj === undefined) return;
+                let unread:number;
+                let unit = store.units.get(objId);
+                if (unit !== undefined) unread = unit.messages.unread;
+                return this.stickyUnit(date, obj as StickyUnit, unread);
+        }
+        /*
         let unread:number;
-        if (type === 3) { // unit
-            let unit = store.unitDict.get(objId);
-            if (unit !== undefined) unread = unit.unread;
-            //unread = store.messageUnreadDict.get(objId);
+        if (type === 0 || type === 3) { // unit
         }
         return <LMR className="p-2"
             left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}
@@ -45,25 +46,22 @@ class Home extends React.Component {
             <b>{main}</b>
             <small className="text-muted">{ex}</small>
         </LMR>;
+        */
+    }
+    private stickyUnit(date:Date, unit:StickyUnit, unread:number):JSX.Element {
+        let {name, nick, discription, icon} = unit;
+        return <LMR className="p-2"
+            left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}
+            right={<small className="text-muted"><EasyDate date={date} /></small>}
+        >
+            <b>{nick || name}</b>
+            <small className="text-muted">{discription}</small>
+        </LMR>;
     }
     render() {
-        let rows:Prop[] = [
-            {
-                type: 'component',
-                onClick: () => alert('a'),
-                component: <LMR
-                    className="py-2 align-items-center"
-                    left={<FA className="text-primary" name="user-plus" size="lg" fixWidth={true} />}
-                >
-                    创建小号
-                </LMR>,
-            },
-            '=',
-        ];
-        
+        let stickies = store.stickies;
         return <div>
-            <PropGrid rows={rows} values={undefined} />
-            <List items={store.stickies} item={{render: this.stickyRender, onClick: this.stickyClick}} />
+            <List items={stickies} item={{render: this.stickyRender, onClick: this.stickyClick}} />
         </div>;
     }
 }

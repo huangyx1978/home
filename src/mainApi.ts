@@ -2,7 +2,7 @@ import {CenterApi, User} from 'tonva-tools';
 import {App} from './model';
 
 class MainApi extends CenterApi {
-    async stickies():Promise<any[]> {
+    async stickies():Promise<any[][]> {
         return await this.get('sticky/list', {start:0, pageSize:30});
     }
 
@@ -23,12 +23,12 @@ class MainApi extends CenterApi {
         return await this.get('tie/app-api', {unit:unit, app:app, apiName:apiName});
     }
 
-    async unitMessages(unit:number):Promise<any[]> {
-        return await this.get('tie/unit-messages', {unit:unit});
+    async unitMessages(unit:number, pageStart:number, pageSize:number):Promise<any[]> {
+        return await this.get('tie/message-inbox', {unit:unit, pageStart:pageStart, pageSize:pageSize});
     }
 
-    async typeMessages(type:string):Promise<any[]> {
-        return await this.get('tie/type-messages', {type:type});
+    async readMessages(unit:number):Promise<any[]> {
+        return await this.get('tie/message-read', {unit:unit});
     }
 
     async unitAddFellow(invite:number):Promise<any> {
@@ -39,8 +39,12 @@ class MainApi extends CenterApi {
         await this.get('tie/remove-message', {id:id});
     }
 
-    async unitAdmins(unit:number) {
+    async unitAdmins(unit:number):Promise<any[]> {
         return await this.get('unit/admins', {unit:unit});
+    }
+
+    async unitCreate(name:string, message:number):Promise<any> {
+        return await this.post('unit/create', {name:name, message:message});
     }
 
     async saveMessage(
@@ -50,22 +54,20 @@ class MainApi extends CenterApi {
         return await this.post('tie/message-save', param);
     }
 
+    async actMessage(param:{unit:number, id:number, action: 'approve'|'refuse'}):Promise<void> {
+        await this.post('tie/message-act', param);
+    }
+
+    async userBase(id:number):Promise<any> {
+        return await this.get('tie/user', {id:id});
+    }
+    async unitBase(id:number):Promise<any> {
+        return await this.get('tie/unit', {id:id});
+    }
+    
     async postMessage(toUser:number, msg:any) {
         return await this.post('test/post', {to: toUser, message: msg});
     }
-    /*
-    loadFollows(pageSize:number, minName:string) {
-        return this.get('follows', {pageSize:pageSize, minName: minName});
-    }
-    tieHao(tie:number) {
-        return this.get('tie-hao', {tie: tie});
-    }
-    toHome(tie:number) {
-        return this.post('to-home', {tie: tie});
-    }
-    dbInit() {
-        return this.get('dbInit', undefined).then(res => res);
-    }*/
 }
 
 const mainApi = new MainApi('tv/');

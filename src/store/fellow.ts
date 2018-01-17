@@ -25,9 +25,9 @@ export class Fellow {
     async loadInvites(): Promise<void> {
         if (this.invites === undefined) {
             this.invites = [];
-            let ret = await mainApi.typeMessages('unit-fellow-invite');
+            let ret; // = await mainApi.typeMessages('unit-fellow-invite');
             if (ret === undefined) return;
-            ret.forEach(v => this.mainData.processMessage(v));
+            //ret.forEach(v => this.mainData.processMessage(v));
         }
         //let ids = this.invites.filter(v => v.isNew === true).map(v => v.id);
         //await messageApi.readMessages(ids);

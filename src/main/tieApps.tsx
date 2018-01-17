@@ -45,7 +45,7 @@ export class TieApps extends React.Component {
         let {id:appId, name, icon, discription} = app;
         let unread:number = undefined;
         if (appId === 0) {
-            unread = store.unit.unread;
+            unread = store.unit.messages.unread;
             //let dict = store.messageUnreadDict;
             //unread = dict.get(unit);
         }
@@ -65,7 +65,7 @@ export class TieApps extends React.Component {
         let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = store.unit;
         if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
         let right;
-        if (isOwner !== 0 || isAdmin !== 0) {
+        if (isOwner === 1 || isAdmin === 1) {
             right = <Button color="success" size="sm" onClick={()=>this.clickToAdmin()}>进入管理</Button>;
         }
         return <Page header={name} right={right}>

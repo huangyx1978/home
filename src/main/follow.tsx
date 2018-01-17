@@ -32,9 +32,9 @@ class Follow extends React.Component {
         return {
             key: tie.id,
             date: undefined,
-            main: tie.main,
+            main: undefined, // tie.main,
             //vice: tie..discription,
-            icon : tie.icon || consts.appItemIcon,
+            icon : consts.appItemIcon,
             //unread: 0,
         }
     }

@@ -1,12 +1,27 @@
 
+export interface StickyUnit {
+    id: number;
+    name: string;
+    nick: string;
+    discription: string;
+    icon: string;
+}
+
+export interface StickyGroup {
+    id: number;
+    discription: string;
+    icon: string;
+}
+
 export interface Sticky {
     id: number;
     date: Date;
     type: number;
-    main: string;
     objId: number;
-    ex: string;
-    icon: string;
+    obj: StickyUnit | StickyGroup;
+    //main: string;
+    //ex: string;
+    //icon: string;
     //unread: number;
 }
 
@@ -43,13 +58,24 @@ export interface Message {
     type: string;
     date: Date;
     content: any;
+    state: number;
 }
 
-export interface Unit {
+export interface UserBase {
+    id: number;
+    name: string;
+    nick: string;
+    icon: string;
+}
+
+export interface UnitBase {
     id: number;
     name: string;
     discription: string;
     icon: string;
+}
+
+export interface Unit extends UnitBase {
     isOwner: number;
     isAdmin: number;
     owner: number;

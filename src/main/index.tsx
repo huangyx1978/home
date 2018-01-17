@@ -20,9 +20,9 @@ const tabs:Tab[] = [
         redDot: computed(()=>{
             let sum = 0;
             //store.messageUnreadDict.forEach(v=>sum+=v);
-            let unitDict = store.unitDict;
+            let unitDict = store.units;
             unitDict.forEach(unit => {
-                let unread = unit.unread;
+                let unread = unit.messages.unread;
                 if (unread !== undefined) sum += unread;
             });
             return -sum;
