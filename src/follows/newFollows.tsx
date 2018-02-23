@@ -33,7 +33,7 @@ export default class NewFollows extends React.Component<{}, null> {
     }
     private async accept(um:Message) {
         await store.acceptFellowInvite(um);
-        nav.replace(<Page header='接受邀请' close={true}>
+        nav.replace(<Page header='接受邀请' back="close">
             <Card>
                 <CardBody>
                     <CardTitle>小号成员</CardTitle>

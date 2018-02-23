@@ -21,13 +21,18 @@ export class TieApps extends React.Component {
     }
     async appClick(app:App) {
         let appId = app.id;
-        let unitId = store.unit.id;
-        let url = app.url;
         if (appId === 0) {
             nav.push(<Chat />);
         }
         else {
-            nav.navToApp(url, unitId, appId);
+            let unitId = store.unit.id;
+            let url = app.url;
+            if (url === undefined) {
+                alert('APP: ' + app.name + '\n' + app.discription + '\n尚未绑定服务');
+            }
+            else {
+                nav.navToApp(url, unitId, appId);
+            }
         }
     }
     /*

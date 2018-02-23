@@ -72,7 +72,7 @@ class Me extends React.Component {
             content: values,
         });
         nav.pop(2);
-        nav.push(<Page header="完成" close={true}>
+        nav.push(<Page header="完成" back="close">
             <Card>
                 <CardBody>
                     <CardTitle>申请已发送</CardTitle>
