@@ -1,11 +1,17 @@
 import * as React from 'react';
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
-import * as t from 'tonva-tools';
+import {NavView, nav, Page, Api} from 'tonva-tools';
+
 import AppView from './main';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
-import {NavView, nav, Page, Api} from 'tonva-tools';
+import 'font-awesome/css/font-awesome.min.css';
+
+const logo = require('./img/logo.svg');
+import './css/va.css';
+import './css/va-row.css';
+import './css/va-form.css';
 
 /*
 const logo = require('./logo.svg');
@@ -60,7 +66,7 @@ class AppView extends React.Component {
 
 class App extends React.Component {
   render() {
-    return (<NavView view={<AppView />} />);
+    return (<NavView logo={logo} view={<AppView />} />);
     /*
     return (
       <div className="App">

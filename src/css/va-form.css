@@ -1,0 +1,41 @@
+
+div.entry-form {
+	display: flex;
+	flex-direction: column;
+	max-width: 400px;
+	margin: 20px auto;
+	padding: 0 30px;
+}
+div.entry-form>form {
+	margin-top: 50px;
+}
+div.entry-form>form>input, 
+div.entry-form>form>button,
+div.entry-form>form>span,
+div.entry-form>form>div {
+	margin-top: 20px;
+}
+div.entry-form>form>span {
+	display: block;
+	color: red;
+	padding: 1px 15px;
+}
+div.entry-form>form>span.info {
+	color: green;
+}
+div.entry-form>form>header {
+	display: flex;
+	margin: 0;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+div.entry-form>form>header>img {
+	position: absolute;
+	left: 0;
+}
+div.entry-form>form>header>span {
+	font-size: x-large;
+	display: inline-block;
+	margin-left: 20px;
+}
