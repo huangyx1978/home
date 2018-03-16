@@ -136,7 +136,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/";
+/******/ 	__webpack_require__.p = "./";
 /******/
 /******/ 	// on error function for async loading
 /******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
@@ -30905,14 +30905,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 
 
 
-const debugAppId = Number(Object({"NODE_ENV":"production","PUBLIC_URL":"","REACT_APP_CENTER_URL":"http://101.200.46.56/","REACT_APP_WSHOST":"ws://101.200.46.56/tv/"}).REACT_APP_DEBUG_APPID);
-const debugUnitId = Number(Object({"NODE_ENV":"production","PUBLIC_URL":"","REACT_APP_CENTER_URL":"http://101.200.46.56/","REACT_APP_WSHOST":"ws://101.200.46.56/tv/"}).REACT_APP_DEBUG_UNITID);
+const debugAppId = Number(Object({"NODE_ENV":"production","PUBLIC_URL":".","REACT_APP_CENTER_URL":"http://101.200.46.56/","REACT_APP_WSHOST":"ws://101.200.46.56/tv/"}).REACT_APP_DEBUG_APPID);
+const debugUnitId = Number(Object({"NODE_ENV":"production","PUBLIC_URL":".","REACT_APP_CENTER_URL":"http://101.200.46.56/","REACT_APP_WSHOST":"ws://101.200.46.56/tv/"}).REACT_APP_DEBUG_UNITID);
 const apiTokens = {};
 const appsInFrame = {};
 let meInFrame = {
     hash: undefined,
-    unit: Number(Object({"NODE_ENV":"production","PUBLIC_URL":"","REACT_APP_CENTER_URL":"http://101.200.46.56/","REACT_APP_WSHOST":"ws://101.200.46.56/tv/"}).REACT_APP_DEBUG_UNITID),
-    app: Number(Object({"NODE_ENV":"production","PUBLIC_URL":"","REACT_APP_CENTER_URL":"http://101.200.46.56/","REACT_APP_WSHOST":"ws://101.200.46.56/tv/"}).REACT_APP_DEBUG_APPID)
+    unit: Number(Object({"NODE_ENV":"production","PUBLIC_URL":".","REACT_APP_CENTER_URL":"http://101.200.46.56/","REACT_APP_WSHOST":"ws://101.200.46.56/tv/"}).REACT_APP_DEBUG_UNITID),
+    app: Number(Object({"NODE_ENV":"production","PUBLIC_URL":".","REACT_APP_CENTER_URL":"http://101.200.46.56/","REACT_APP_WSHOST":"ws://101.200.46.56/tv/"}).REACT_APP_DEBUG_APPID)
 };
 window.addEventListener('message', function (evt) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -80378,7 +80378,7 @@ class Api extends __WEBPACK_IMPORTED_MODULE_0__apiBase__["a" /* ApiBase */] {
                 if (owner === '$$$')
                     owner = '___';
                 let apiUsql = 'REACT_APP_APIHOST_USQL_' + owner + '_' + this.apiName;
-                usqlApiHost = Object({"NODE_ENV":"production","PUBLIC_URL":"","REACT_APP_CENTER_URL":"http://101.200.46.56/","REACT_APP_WSHOST":"ws://101.200.46.56/tv/"})[apiUsql];
+                usqlApiHost = Object({"NODE_ENV":"production","PUBLIC_URL":".","REACT_APP_CENTER_URL":"http://101.200.46.56/","REACT_APP_WSHOST":"ws://101.200.46.56/tv/"})[apiUsql];
                 console.log('name:' + apiUsql + ' value:' + usqlApiHost);
             }
             else {
@@ -96429,7 +96429,7 @@ const isLocalhost = Boolean(window.location.hostname === 'localhost' ||
 function register() {
     if ("production" === 'production' && 'serviceWorker' in navigator) {
         // The URL constructor is available in all browsers that support SW.
-        const publicUrl = new URL("", window.location.toString());
+        const publicUrl = new URL(".", window.location.toString());
         if (publicUrl.origin !== window.location.origin) {
             // Our service worker won't work if PUBLIC_URL is on a different origin
             // from what our page is served on. This might happen if a CDN is used to
@@ -96437,7 +96437,7 @@ function register() {
             return;
         }
         window.addEventListener('load', () => {
-            const swUrl = `${""}/service-worker.js`;
+            const swUrl = `${"."}/service-worker.js`;
             if (!isLocalhost) {
                 // Is not local host. Just register service worker
                 registerValidSW(swUrl);
@@ -96520,4 +96520,4 @@ function unregister() {
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=main.1709b7ce.js.map
+//# sourceMappingURL=main.40189105.js.map
