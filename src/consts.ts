@@ -20,8 +20,8 @@ const consts = {
         }
     },
 
-    appIcon: 'http://101.200.46.56/imgs/timg.jpg',
-    appItemIcon: 'http://101.200.46.56/imgs/timg.jpg',
+    appIcon: 'http://101.200.46.56/imgs/Bear-icon.png',
+    appItemIcon: 'http://101.200.46.56/imgs/Bear-icon.png',
 };
 
 export default consts;
