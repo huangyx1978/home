@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import {computed} from 'mobx';
-import {nav, Page, Tab, ws} from 'tonva-tools';
+import {nav, Page, Tab, WSChannel} from 'tonva-tools';
 import {Action, DropdownActions} from 'tonva-react-form';
 import {ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
     Row, Col, Button, Form, FormGroup, Label, Input, 
@@ -12,6 +12,8 @@ import Follow from './follow';
 import Find from './find';
 import Me from './me';
 import HaoSearch from './haoSearch';
+
+const ws = new WSChannel(process.env.REACT_APP_WSHOST, undefined);
 
 const tabs:Tab[] = [
     {

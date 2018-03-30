@@ -7,6 +7,9 @@ import {store} from '../store';
 import consts from '../consts';
 import mainApi from '../mainApi';
 
+const applyUnit = "申请创建小号";
+const applyDev = "申请开发应用";
+
 class Me extends React.Component {
     constructor(props) {
         super(props);
@@ -29,13 +32,13 @@ class Me extends React.Component {
             '',
             {
                 type: 'component', 
-                component: <IconText iconClass="text-info" icon="envelope" text="申请创建小号" />,
+                component: <IconText iconClass="text-info" icon="envelope" text={applyUnit} />,
                 onClick: this.applyUnit
             },
             '=',
             {
                 type: 'component', 
-                component: <IconText iconClass="text-info" icon="envelope-o" text="申请开发应用" />,
+                component: <IconText iconClass="text-info" icon="envelope-o" text={applyDev} />,
                 onClick: this.applyDev
             },
         ];
@@ -60,8 +63,10 @@ class Me extends React.Component {
             {label: '电话', field: fields.phone},
             {label: '单位', field: fields.owner, face: {type: 'textarea', placeholder: '申请单位'}},
         ];
-        nav.push(<Page header={type==='unit'?'申请创建小号':'申请开发应用'}>
-            <TonvaForm formRows={rows} onSubmit={(values:any) => this.onApplySubmit(type, values)} />
+        nav.push(<Page header={type==='unit'? applyUnit: applyDev}>
+            <TonvaForm 
+                className="m-3" 
+                formRows={rows} onSubmit={(values:any) => this.onApplySubmit(type, values)} />
         </Page>);
     }
     private async onApplySubmit(type:'unit'|'dev', values:any):Promise<SubmitResult> {

@@ -115,7 +115,10 @@ class UnitCreatePage extends React.Component<{title:string, unitType:number}&Mes
         let {title} = this.props;
         return <Page header={title}>
             <div className="m-4" />
-            <TonvaForm ref={tv => this.form = tv} formRows={rows} onSubmit={this.onSubmit} />
+            <TonvaForm ref={tv => this.form = tv} 
+                className="m-3" 
+                formRows={rows} 
+                onSubmit={this.onSubmit} />
         </Page>
     }
 }
