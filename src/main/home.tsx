@@ -27,12 +27,15 @@ class Home extends React.Component {
     }
     private stickyRender(s:Sticky, index:number):JSX.Element {
         let {type, date, objId, obj} = s;
+        let unread:number;
+        let unit = store.units.get(objId);
+        if (unit !== undefined) unread = unit.messages.unread;
         switch (type) {
             case 3:
                 if (obj === undefined) return;
-                let unread:number;
-                let unit = store.units.get(objId);
-                if (unit !== undefined) unread = unit.messages.unread;
+                return this.stickyUnit(date, obj as StickyUnit, unread);
+            case 0:
+                if (obj === undefined) return;
                 return this.stickyUnit(date, obj as StickyUnit, unread);
         }
         /*

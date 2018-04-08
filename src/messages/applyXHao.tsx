@@ -12,6 +12,10 @@ import {tagStyle, tagEndStyle} from './message';
 
 abstract class ApplyItem extends React.Component<Message&{pointer?:boolean}> {
     protected title:string;
+    constructor(props) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+    }
     onClick() {
         if (this.props.pointer === false) return;
         nav.push(<MessagePage title={this.title} {...this.props} />);
@@ -48,7 +52,7 @@ abstract class ApplyItem extends React.Component<Message&{pointer?:boolean}> {
             py = 'py-2';
         }
         return <div>
-            <div onClick={()=>onClick()} className={className('px-3', py, 'my-1', 'mx-3', bg)} style={style}>
+            <div onClick={()=>this.onClick()} className={className('px-3', py, 'my-1', 'mx-3', bg)} style={style}>
                 <LMR left={<span>{this.title}</span>} right={right} />
                 <div><small>申请人: <UserSpan id={fromUser} /></small></div>
                 <div><small>时间: <EasyDate date={date} /></small></div>

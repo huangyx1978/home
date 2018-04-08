@@ -113,7 +113,7 @@ export class Unit {
 export class Store {
     private adminApp: App;
 
-    @observable stickies: Sticky[];
+    @observable stickies: Sticky[] = [];
     //@observable ties: Tie[];
     @observable units = new Map<number, Unit>();
     @observable unit:Unit = undefined;
@@ -163,7 +163,7 @@ export class Store {
     }
 
     logout() {
-        this.stickies = undefined;
+        this.stickies.splice(0, this.stickies.length); // = []; //undefined;
     }
 
     async getAdminApp():Promise<App> {
@@ -173,7 +173,7 @@ export class Store {
 
     async loadStickies() {
         let ret = await mainApi.stickies();
-        if (this.stickies === undefined) this.stickies = [];
+        //if (this.stickies === undefined) this.stickies = [];
         let t0:Sticky[] = ret[0];
         let t4 = ret[4];
         for (let s of t0) {
@@ -235,7 +235,7 @@ export class Store {
     }
 
     private addSysUnitStick() {
-        if (this.stickies === undefined) return;
+        //if (this.stickies === undefined) this.stickies = []; // return;
 
         let index = this.stickies.findIndex(v => (v.type === 0 || v.type === 3) && v.objId === 0);
         if (index < 0) {
