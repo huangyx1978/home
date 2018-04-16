@@ -4,13 +4,18 @@ import {Message} from '../model';
 import { Store } from './index';
 
 export class Fellow {
-    private mainData:Store;
-    constructor(mainData:Store) {
-        this.mainData = mainData;
+    private store:Store;
+    constructor(store:Store) {
+        this.store = store;
     }
 
     @observable invites: Message[] = undefined;
     @observable newInvitesCount:number = 0;
+
+    logout() {
+        this.invites = undefined;
+        this.newInvitesCount = 0;
+    }
 
     msgUnitInvited(um:Message) {
         if (this.invites === undefined) {

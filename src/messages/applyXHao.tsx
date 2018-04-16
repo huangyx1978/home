@@ -10,14 +10,16 @@ import {UnitSpan, UserSpan} from '../tools';
 import {store} from '../store';
 import {tagStyle, tagEndStyle} from './message';
 
-abstract class ApplyItem extends React.Component<Message&{pointer?:boolean}> {
+abstract class ApplyItem extends React.Component<Message> {
     protected title:string;
     constructor(props) {
         super(props);
         this.onClick = this.onClick.bind(this);
     }
     onClick() {
-        if (this.props.pointer === false) return;
+        //if (this.props.pointer === false) return;
+        let {state} = this.props;
+        if (state===1 || state===-1) return;
         nav.push(<MessagePage title={this.title} {...this.props} />);
     }
     render() {
@@ -48,7 +50,8 @@ abstract class ApplyItem extends React.Component<Message&{pointer?:boolean}> {
         else {
             //bg = 'bg-white';
             style = _.assign({}, tagStyle);
-            if (this.props.pointer !== false) _.assign(style, {cursor: 'pointer'});
+            _.assign(style, {cursor: 'pointer'});
+            //if (this.props.pointer !== false) _.assign(style, {cursor: 'pointer'});
             py = 'py-2';
         }
         return <div>
@@ -77,7 +80,7 @@ class MessagePage extends React.Component<{title:string}&Message> {
     render() {
         return <Page header="消息">
             <div className="m-4" />
-            <ApplyDev pointer={false} {...this.props} />
+            <ApplyDev {...this.props} />
             <div className="mx-3 my-4">
                 <Button
                     onClick={() => this.onProcessMessage('approve')}

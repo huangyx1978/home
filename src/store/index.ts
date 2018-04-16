@@ -163,7 +163,12 @@ export class Store {
     }
 
     logout() {
-        this.stickies.splice(0, this.stickies.length); // = []; //undefined;
+        this.stickies.splice(0, this.stickies.length);
+        this.units.clear();
+        this.unit = undefined;
+        this.cacheUsers.dict.clear();
+        this.cacheUnits.dict.clear();
+        this.fellow.logout();
     }
 
     async getAdminApp():Promise<App> {

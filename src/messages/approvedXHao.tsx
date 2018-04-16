@@ -61,7 +61,7 @@ export class ApprovedDev extends Approved {
     protected unitType = 0;
 }
 
-export class ApprovedUnit extends ApprovedDev {
+export class ApprovedUnit extends Approved {
     protected title = '创建小号';
     protected unitType = 1;
 }

@@ -31,7 +31,7 @@ export class TieApps extends React.Component {
                 alert('APP: ' + app.name + '\n' + app.discription + '\n尚未绑定服务');
             }
             else {
-                nav.navToApp(url, unitId, appId);
+                nav.navToApp(url, unitId);
             }
         }
     }
@@ -64,7 +64,7 @@ export class TieApps extends React.Component {
     async clickToAdmin() {
         let adminApp = await store.getAdminApp();
         //nav.push(<UnitMan {...this.props} />);
-        nav.navToApp(adminApp.url, store.unit.id, adminApp.id);
+        nav.navToApp(adminApp.url, store.unit.id);
     }
     render() {
         let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = store.unit;
