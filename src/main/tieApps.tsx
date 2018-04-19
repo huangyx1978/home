@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {observer} from 'mobx-react';
 import {Button} from 'reactstrap';
-import {nav, Page, ListView, ListItem} from 'tonva-tools';
+import {nav, Page, ListView, ListItem, isBridged} from 'tonva-tools';
 import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA} from 'tonva-react-form';
 import consts from '../consts';
 import {Unit, App} from '../model';
@@ -64,7 +64,9 @@ export class TieApps extends React.Component {
     async clickToAdmin() {
         let adminApp = await store.getAdminApp();
         //nav.push(<UnitMan {...this.props} />);
-        nav.navToApp(adminApp.url, store.unit.id);
+        let unitId = store.unit.id;
+        isBridged();
+        nav.navToApp(adminApp.url, unitId);
     }
     render() {
         let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = store.unit;
