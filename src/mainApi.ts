@@ -10,6 +10,18 @@ class MainApi extends CenterApi {
         return await this.get('tie/list', {start:0, pageSize:30});
     }
 
+    async searchUnits(key:string, pageStart:number, pageSize:number):Promise<any[]> {
+        return await this.get('tie/search-unit', {key:key, pageStart:pageStart, pageSize:pageSize});
+    }
+
+    async searchUnitsFollow(unit:number):Promise<number> {
+        return await this.get('tie/search-unit-follow', {unit:unit});
+    }
+
+    async unitNotFollow(unit:number):Promise<void> {
+        await this.get('tie/unit-not-follow', {unit:unit});
+    }
+
     async apps(unit:number):Promise<any> {
         return await this.get('tie/apps', {unit:unit});
     }

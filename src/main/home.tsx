@@ -29,7 +29,10 @@ class Home extends React.Component {
         let {type, date, objId, obj} = s;
         let unread:number;
         let unit = store.units.get(objId);
-        if (unit !== undefined) unread = unit.messages.unread;
+        if (unit !== undefined) {
+            let {messages} = unit;
+            unread = messages === undefined? 0 : messages.unread;
+        }
         switch (type) {
             case 3:
                 if (obj === undefined) return;

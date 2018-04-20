@@ -19,10 +19,6 @@ export interface Sticky {
     type: number;
     objId: number;
     obj: StickyUnit | StickyGroup;
-    //main: string;
-    //ex: string;
-    //icon: string;
-    //unread: number;
 }
 
 export interface Tie {

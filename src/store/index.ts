@@ -183,7 +183,15 @@ export class Store {
         let t4 = ret[4];
         for (let s of t0) {
             switch (s.type) {
-                case 3: s.obj = t4.find(v => v.id === s.objId); break;
+                case 3: 
+                    let u = s.obj = t4.find(v => v.id === s.objId);
+                    let id = u.id;
+                    let unit = new Unit(id);
+                    unit.name = u.name;
+                    unit.discription = u.discription;
+                    unit.icon = u.icon;
+                    this.units.set(id, unit);
+                    break;
             }
         }
         this.stickies.push(...t0);
@@ -279,6 +287,32 @@ export class Store {
             if (unitId === 0 && count > 0) this.addSysUnitStick();
         }
     }
+
+    async followUnit(unitId:number, name:string, nick:string, discription:string, icon:string) {
+        let stickyId = await mainApi.searchUnitsFollow(unitId);
+        let unit = new Unit(unitId);
+        unit.name = name;
+        //unit.nick = nick;
+        unit.discription = discription;
+        unit.icon = icon;
+        this.stickies.unshift({
+            id: stickyId,
+            date: new Date(),
+            type: 3,
+            objId: unitId,
+            obj: unit
+        });
+    }
+
+    async unfollowUnit() {
+        if (this.unit === undefined) return;
+        let unitId = this.unit.id;
+        await mainApi.unitNotFollow(unitId);
+        let index = this.stickies.findIndex(v => v.objId === unitId);
+        if (index < 0) return;
+        this.stickies.splice(index, 1);
+    }
+
 };
 
 export const store = new Store();

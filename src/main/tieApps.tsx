@@ -2,22 +2,32 @@ import * as React from 'react';
 import {observer} from 'mobx-react';
 import {Button} from 'reactstrap';
 import {nav, Page, ListView, ListItem, isBridged} from 'tonva-tools';
-import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA} from 'tonva-react-form';
+import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA, Action, DropdownActions} from 'tonva-react-form';
 import consts from '../consts';
 import {Unit, App} from '../model';
 import {store} from '../store';
 import {Chat} from './chat';
-
-// interface TieAppsProps extends UnitApps {
-//}
+import mainApi from '../mainApi';
 
 @observer
 export class TieApps extends React.Component {
+    private rightMenu:Action[] = [
+        {
+            caption: '取消关注',
+            icon: 'trash',
+            action: this.unleash,
+        }
+    ];
     constructor(props) {
         super(props);
         this.appClick = this.appClick.bind(this);
-        //this.appConverter = this.appConverter.bind(this);
         this.renderRow = this.renderRow.bind(this);
+        this.unleash = this.unleash.bind(this);
+    }
+    async unleash() {
+        if (confirm("真的要取消关注吗？") === false) return;
+        await store.unfollowUnit();
+        nav.pop();
     }
     async appClick(app:App) {
         let appId = app.id;
@@ -35,17 +45,6 @@ export class TieApps extends React.Component {
             }
         }
     }
-    /*
-    appConverter(app:App):ListItem {
-        return {
-            key: app.id,
-            date: undefined,
-            main: app.name,
-            vice: app.discription,
-            icon : app.icon || consts.appItemIcon,
-            //unread: 0,
-        }
-    }*/
     private renderRow(app:App, index:number):JSX.Element {
         let {id:appId, name, icon, discription} = app;
         let unread:number = undefined;
@@ -74,6 +73,9 @@ export class TieApps extends React.Component {
         let right;
         if (isOwner === 1 || isAdmin === 1) {
             right = <Button color="success" size="sm" onClick={()=>this.clickToAdmin()}>进入管理</Button>;
+        }
+        else if (id > 0) {
+            right = <DropdownActions actions={this.rightMenu} />;
         }
         return <Page header={name} right={right}>
             <div className='apps-list-top'>

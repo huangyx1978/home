@@ -4,27 +4,22 @@ import {Container, ButtonGroup,
     ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
     Row, Col, Button, Form, FormGroup, Label, Input, 
     FormText, FormFeedback} from 'reactstrap';
-import {SearchBox} from 'tonva-react-form';
+import {SearchBox, List, LMR, Muted, Badge, Media} from 'tonva-react-form';
 import {nav, Page, LabelRow} from 'tonva-tools';
+import {store} from '../store';
 import consts from '../consts';
-//import api from '../../api';
+import mainApi from '../mainApi';
+import {TieApps} from './tieApps';
 
 interface Hao {
     unit: number;
     id: number;
     name: string;
+    nick: string;
     discription: string;
     icon: string;
-    followed?: boolean;
+    isFollowed: number;
 }
-/*
-interface Hao {
-    id: number;
-    name: string;
-    discription: string;
-    icon: string;
-    owner?: number;
-}*/
 
 interface State {
     hasMore: boolean;
@@ -87,33 +82,18 @@ class HaoSearch extends React.Component<HaoSearchProps, State> {
         this.isSearching = true;
         this.input.blur();
         /*
-        api.search.hao_search({size: pageSize+1, key: this.text, minId: this.minId}).then(res => {
-            this.isSearching = false;
-            let ret:any[] = res;
-            let retSize = ret.length;
-
-            if (ret.length === pageSize+1) {
-                this.hasMore = true;
-                ret.splice(retSize-1, 1);
-            }
-            else {
-                this.hasMore = false;
-            }
-            if (this.haos === undefined) this.haos = [];
-            ret.forEach(v => {
-                this.minId = v.unit - 1;
-                this.haos.splice(this.haos.length, 0, v);
-            });
-            this.setState({
-                hasMore: this.hasMore,
-                loading: this.isSearching,
-                haos: this.haos
-            });
-        });
         */
     }
-    onSearch(key:string) {
-        alert('search：' + key);
+    async onSearch(key:string) {
+        this.setState({
+            loading: true,
+        });
+        let res = await mainApi.searchUnits(key, 0, 30);
+        this.setState({
+            hasMore: false,
+            loading: false,
+            haos: res
+        });
     }
     onScroll(e) {
     }
@@ -124,16 +104,22 @@ class HaoSearch extends React.Component<HaoSearchProps, State> {
         //}, 3000);
     }
     haoClicked(hao:Hao) {
-        if (hao.followed) {
-            //navToHao(hao.id);
-        }
-        else
-            nav.push(<HaoFollow 
-                unit={hao.unit}
-                hao={hao.id} 
-                name={hao.name} 
-                discription={hao.discription} 
-                icon={hao.icon} />)
+        nav.push(<HaoFollow 
+            unit={hao.unit}
+            hao={hao.id} 
+            name={hao.name} 
+            nick={hao.nick}
+            discription={hao.discription} 
+            icon={hao.icon}
+            isFollowed={hao.isFollowed} />);
+    }
+    renderUnit(item:any, index:number):JSX.Element {
+        let {nick, discription, name, icon} = item;
+        let left = <Badge><img src={icon || consts.appItemIcon} /></Badge>;
+        return <LMR className="p-2" left={left}>
+            <div>{name}</div>
+            <Muted>{discription}</Muted>
+        </LMR>;
     }
     render() {
         /*
@@ -155,10 +141,10 @@ class HaoSearch extends React.Component<HaoSearchProps, State> {
                 content = <div>没有找到小号</div>;
             }
             else {
-                content = <ul className='search-apps'>{
-                    haos.map((v, i) => 
-                        <HaoRow key={i} index={i} haoClicked={this.haoClicked} hao={v} />)}
-                </ul>;
+                content = <List items={haos} item={{
+                    render: this.renderUnit,
+                    onClick: this.haoClicked
+                }} />;
             }
         }
         let textMore;
@@ -207,8 +193,10 @@ interface HaoFollowProps {
     unit: number;
     hao: number;
     name: string;
+    nick: string;
     discription: string;
     icon: string;
+    isFollowed: number;
 }
 interface HaoFollowState {
     loaded: boolean;
@@ -223,52 +211,38 @@ class HaoFollow extends React.Component<HaoFollowProps, HaoFollowState> {
                 unit: this.props.unit,
                 id: this.props.hao,
                 name: props.name,
+                nick: props.nick,
                 discription: props.discription,
                 icon: props.icon,
+                isFollowed: props.isFollowed,
             }
         }
         this.follow = this.follow.bind(this);
     }
-    follow() {
-        let hao = this.props.hao;
-        /*
-        api.search.hao_follow({hao: hao}).then(res => {
-            if (res.length === 0) {
-                alert('无法关注');
-                return;
-            }
-            let row = res[0];
-            navToHao(hao);
-        });
-        */
+    async follow() {
+        let {hao, name, nick, discription, icon} = this.props;
+        await store.followUnit(hao, name, nick, discription, icon);
+        nav.pop(2);
+        await store.setUnit(hao);
+        nav.push(<TieApps />);
     }
     componentDidMount() {
-        /*
-        api.search.hao({hao: this.props.hao}).then(res => {
-            if (res.length === 0) return;
-            let hao = res[0];
-            this.setState({
-                loaded: true,
-                hao: hao
-            });
-        });
-        */
     }
     render() {
         let unit = this.state.hao;
+        let {nick, discription, name, icon, isFollowed} = unit;
         return <Page header='详细资料'>
             <Container>
-                <div className='unit-detail-header'>
-                    <img src={unit.icon || consts.appIcon} />
-                    <div>{unit.name}</div>
-                </div>
-                <LabelRow label='简述'>
-                    {unit.discription}
-                </LabelRow>
+                <div className='row-gap' />
+                <Media icon={icon || consts.appIcon} main={name} discription={discription} />
                 <div className='row-gap' />
                 <Row>
                     <Col xs={{offset:2, size: 8}}>
-                        <Button color='primary form-control' onClick={this.follow}>关注</Button>
+                        {
+                            isFollowed===1?
+                                <Button color='form-control' disabled={true}>已关注</Button>:
+                                <Button color='primary form-control' onClick={this.follow}>关注</Button>
+                        }
                     </Col>
                 </Row>
             </Container>
