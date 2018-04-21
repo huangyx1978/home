@@ -55,6 +55,7 @@ export class Unit {
     id: number;
     name: string;
     discription: string;
+    nick: string;
     icon: string;
     isOwner: number;
     isAdmin: number;
@@ -68,6 +69,22 @@ export class Unit {
     constructor(id:number) {
         this.id = id;
         this.messages = new UnitMessages(this);
+    }
+
+    async loadProps(): Promise<void> {
+        let ret = await mainApi.unitBase(this.id);
+        if (ret === undefined) return;
+        let {name, discription, icon, nick, isOwner, isAdmin, owner, ownerName, ownerNick, ownerIcon} = ret;
+        this.name = name;
+        this.discription = discription;
+        this.nick = nick;
+        this.icon = icon;
+        this.isOwner = isOwner;
+        this.isAdmin = isAdmin;
+        this.owner = owner;
+        this.ownerName = ownerName;
+        this.ownerNick = ownerNick;
+        this.ownerIcon = ownerIcon;
     }
 
     async loadApps(): Promise<void> {
@@ -198,12 +215,16 @@ export class Store {
         this.addSysUnitStick();
     }
 
+    async newUnit(unitId:number):Promise<Unit> {
+        let unit = new Unit(unitId);
+        await unit.loadProps();
+        this.units.set(unitId, unit);
+        return unit;
+    }
+
     async setUnit(unitId: number): Promise<void> {
         let unit = this.units.get(unitId);
-        if (unit === undefined) {
-            unit = new Unit(unitId);
-            this.units.set(unitId, unit);
-        }
+        if (unit === undefined) unit = await this.newUnit(unitId);
         if (unit.apps === undefined) {
             await unit.loadApps();
         }
@@ -279,22 +300,20 @@ export class Store {
         for (let i=0; i<len; i++) {
             let {unit:unitId, unread, count} = ret[i];
             let unit = this.units.get(unitId);
-            if (unit === undefined) {
-                unit = new Unit(unitId);
-                this.units.set(unitId, unit);
-            }
+            if (unit === undefined) unit = await this.newUnit(unitId);
             unit.messages.unread = unread;
             if (unitId === 0 && count > 0) this.addSysUnitStick();
         }
     }
 
-    async followUnit(unitId:number, name:string, nick:string, discription:string, icon:string) {
+    async followUnit(unitId:number) {//, name:string, nick:string, discription:string, icon:string) {
         let stickyId = await mainApi.searchUnitsFollow(unitId);
-        let unit = new Unit(unitId);
-        unit.name = name;
+        let unit = this.units.get(unitId);
+        if (unit === undefined) unit = await this.newUnit(unitId);
+        //unit.name = name;
         //unit.nick = nick;
-        unit.discription = discription;
-        unit.icon = icon;
+        //unit.discription = discription;
+        //unit.icon = icon;
         this.stickies.unshift({
             id: stickyId,
             date: new Date(),

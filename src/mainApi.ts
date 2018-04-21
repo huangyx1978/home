@@ -80,6 +80,7 @@ class MainApi extends CenterApi {
     async postMessage(toUser:number, msg:any) {
         return await this.post('test/post', {to: toUser, message: msg});
     }
+
 }
 
 const mainApi = new MainApi('tv/');

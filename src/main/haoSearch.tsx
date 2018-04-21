@@ -221,7 +221,7 @@ class HaoFollow extends React.Component<HaoFollowProps, HaoFollowState> {
     }
     async follow() {
         let {hao, name, nick, discription, icon} = this.props;
-        await store.followUnit(hao, name, nick, discription, icon);
+        await store.followUnit(hao); //, name, nick, discription, icon);
         nav.pop(2);
         await store.setUnit(hao);
         nav.push(<TieApps />);
