@@ -309,7 +309,12 @@ export class Store {
     async followUnit(unitId:number) {//, name:string, nick:string, discription:string, icon:string) {
         let stickyId = await mainApi.searchUnitsFollow(unitId);
         let unit = this.units.get(unitId);
-        if (unit === undefined) unit = await this.newUnit(unitId);
+        if (unit === undefined) {
+            unit = await this.newUnit(unitId);
+        }
+        else {
+            unit.apps = undefined;
+        }
         //unit.name = name;
         //unit.nick = nick;
         //unit.discription = discription;
@@ -325,6 +330,7 @@ export class Store {
 
     async unfollowUnit() {
         if (this.unit === undefined) return;
+        this.unit.apps = undefined;
         let unitId = this.unit.id;
         await mainApi.unitNotFollow(unitId);
         let index = this.stickies.findIndex(v => v.objId === unitId);
