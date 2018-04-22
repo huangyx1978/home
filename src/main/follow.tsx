@@ -41,11 +41,12 @@ class Follow extends React.Component {
     render() {
         //let nf = mainData.newFollow;
         //this.actions[0].unread = nf;
-        return <div>
-            <ListView className='mb-2' items={this.actions} />
-            <ListView items={[]} converter={this.tieConverter} />
+        return <div className="p2">
+            关注的小号，正在开发中...
         </div>;
     }
+    // <ListView className='mb-2' items={this.actions} />
+    // <ListView items={[]} converter={this.tieConverter} />
 }
 
 export default Follow;
