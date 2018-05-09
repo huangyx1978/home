@@ -21,7 +21,7 @@ class Follow extends React.Component {
             //right: '增删管理员',
             icon: icon('user-plus'),
             onClick: () => nav.push(<NewFollows />),
-            unread: computed(()=>store.fellow.newInvitesCount),
+            unread: computed(()=>store.follow.newInvitesCount),
         },
     ];
     constructor(props) {

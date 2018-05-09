@@ -24,12 +24,12 @@ export default class NewFollows extends React.Component<{}, null> {
         await mainApi.postMessage(1, {type:'new-follow', count: 1});
     }
     async componentDidMount() {
-        let fellow = store.fellow;
+        let fellow = store.follow;
         await fellow.loadInvites();
         fellow.newInvitesCount = undefined;
     }
     async componentWillUnmount() {
-        store.fellow.newInvitesCount = 0;
+        store.follow.newInvitesCount = 0;
     }
     private async accept(um:Message) {
         await store.acceptFellowInvite(um);
@@ -44,7 +44,7 @@ export default class NewFollows extends React.Component<{}, null> {
         </Page>);
 }
     private async refuse(um:Message) {
-        await store.fellow.refuseInvite(um);
+        await store.follow.refuseInvite(um);
     }
     converter(um:Message):ListItem {
         let {name, nick, icon} = {name:'name', nick:'nick', icon:'icon'};
@@ -65,7 +65,7 @@ export default class NewFollows extends React.Component<{}, null> {
         };
     }
     render() {
-        let fai = store.fellow.invites;
+        let fai = store.follow.invites;
         return <Page header="邀请">
             新收录
             <Button onClick={this.test1}>WS1</Button>

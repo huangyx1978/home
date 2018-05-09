@@ -35,7 +35,7 @@ const tabs:Tab[] = [
     {
         title: '收录',
         content: <Follow />,
-        redDot: computed(()=>store.fellow.newInvitesCount),
+        redDot: computed(()=>store.follow.newInvitesCount),
     },
     {
         title: '发现',

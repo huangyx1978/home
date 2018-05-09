@@ -10,15 +10,16 @@ import {store} from '../store';
 import mainApi from '../mainApi';
 import {tagStyle, tagEndStyle} from './message';
 
-abstract class Approved extends React.Component<Message&{pointer?:boolean}> {
+abstract class Approved extends React.Component<{msg:Message;pointer?:boolean}> {
     protected title:string;
     protected unitType:number;
     onClick() {
-        if (this.props.pointer === false) return;
-        nav.push(<UnitCreatePage title={this.title} unitType={this.unitType} {...this.props} />);
+        let {msg, pointer} = this.props;
+        if (pointer === false) return;
+        nav.push(<UnitCreatePage title={this.title} unitType={this.unitType} msg={msg} />);
     }
     render() {
-        let {fromUser, date, state} = this.props;
+        let {fromUser, date, state} = this.props.msg;
         let bg, py, style;
         let right;
         if (state !== 0) {
@@ -66,7 +67,7 @@ export class ApprovedUnit extends Approved {
     protected unitType = 1;
 }
 
-class UnitCreatePage extends React.Component<{title:string, unitType:number}&Message> {
+class UnitCreatePage extends React.Component<{title:string, unitType:number, msg:Message}> {
     private form:TonvaForm;
     private fields:Fields = {
         name: {name:'name', type:'string', maxLength:250, required:true },
@@ -76,13 +77,15 @@ class UnitCreatePage extends React.Component<{title:string, unitType:number}&Mes
         this.onSubmit = this.onSubmit.bind(this);
     }
     private async onProcessMessage(action:'approve'|'refuse') {
-        await store.unit.messageAct(this.props.id, action);
+        let {msg} = this.props;
+        let {id} = msg;
+        await store.unit.messageAct(id, action);
         nav.pop();
     }
     private async onSubmit(values:any):Promise<SubmitResult> {
-        //values.unitType = this.props.unitType;
-        //alert(JSON.stringify(values));
-        let unitId = await store.unitCreate(values.name, this.props.id);
+        let {msg} = this.props;
+        let {id} = msg;
+        let unitId = await store.unitCreate(values.name, id);
         let error:string;
         switch (unitId) {
             default:

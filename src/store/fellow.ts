@@ -30,7 +30,7 @@ export class Fellow {
     async loadInvites(): Promise<void> {
         if (this.invites === undefined) {
             this.invites = [];
-            let ret; // = await mainApi.typeMessages('unit-fellow-invite');
+            let ret; // = await mainApi.typeMessages('unit-follow-invite');
             if (ret === undefined) return;
             //ret.forEach(v => this.mainData.processMessage(v));
         }

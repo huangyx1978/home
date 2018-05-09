@@ -10,8 +10,8 @@ import {UnitSpan, UserSpan} from '../tools';
 import {store} from '../store';
 import {tagStyle, tagEndStyle} from './message';
 
-abstract class ApplyItem extends React.Component<{msg: Message}> {
-    protected title:string;
+export class UnitFollowInvite extends React.Component<{msg: Message}> {
+    private title:string = '小号邀请';
     constructor(props) {
         super(props);
         this.onClick = this.onClick.bind(this);
@@ -65,25 +65,17 @@ abstract class ApplyItem extends React.Component<{msg: Message}> {
     }
 }
 
-export class ApplyDev extends ApplyItem {
-    protected title:string = '申请开发权限';
-}
-
-export class ApplyUnit extends ApplyItem {
-    protected title:string = '申请小号权限';
-}
-
-class MessagePage extends React.Component<{title:string, msg:Message}> {
+class MessagePage extends React.Component<{title:string; msg:Message}> {
     private async onProcessMessage(action:'approve'|'refuse') {
         let {msg} = this.props;
         await store.unit.messageAct(msg.id, action);
         nav.pop();
     }
     render() {
-        let {msg} = this.props;
+        let {title, msg} = this.props;
         return <Page header="消息">
             <div className="m-4" />
-            <ApplyDev msg={msg} />
+            <UnitFollowInvite msg={msg} />
             <div className="mx-3 my-4">
                 <Button
                     onClick={() => this.onProcessMessage('approve')}
@@ -98,6 +90,6 @@ class MessagePage extends React.Component<{title:string, msg:Message}> {
                     拒绝
                 </Button>
             </div>
-        </Page>
+        </Page>;
     }
 }

@@ -7,13 +7,14 @@ import {Page, nav} from 'tonva-tools';
 import {store} from '../store';
 import {Message} from '../model';
 import {UnitSpan, UserSpan} from '../tools';
-import {ApplyDev, ApplyUnit, ApprovedDev, ApprovedUnit} from '../messages';
+import {ApplyDev, ApplyUnit, ApprovedDev, ApprovedUnit, UnitFollowInvite} from '../messages';
 
-const typeMessageMap:{[type:string]:new(props:any)=>React.Component} = {
+const typeMessageMap:{[type:string]: new (props:{msg:Message}) => React.Component<{msg:Message}>} = {
     "apply-unit": ApplyUnit,
     "apply-dev": ApplyDev,
     "approve-unit": ApprovedUnit,
     "approve-dev": ApprovedDev,
+    "unit-follow-invite": UnitFollowInvite,
 };
 
 @observer
@@ -50,7 +51,7 @@ export class Chat extends React.Component {
         if (Tag === undefined)
             return <div>{JSON.stringify(msg)}</div>;
 
-        return <Tag {...msg} />;
+        return <Tag msg={msg} />;
         /*
         switch (msg.type) {
             default: return <div>{JSON.stringify(msg)}</div>;

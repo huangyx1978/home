@@ -138,7 +138,7 @@ export class Store {
     cacheUsers: CacheUsers = new CacheUsers();
     cacheUnits: CacheUnits = new CacheUnits();
 
-    fellow = new Fellow(this);
+    follow = new Fellow(this);
 
     onWs(msg: any) {
         //let um = this.convertMessage(msg);
@@ -185,7 +185,7 @@ export class Store {
         this.unit = undefined;
         this.cacheUsers.dict.clear();
         this.cacheUnits.dict.clear();
-        this.fellow.logout();
+        this.follow.logout();
     }
 
     async getAdminApp():Promise<App> {
@@ -264,7 +264,7 @@ export class Store {
 
     async acceptFellowInvite(um:Message):Promise<void> {
         let sticky:Sticky = await mainApi.unitAddFellow(um.id);
-        this.fellow.removeInvite(um);
+        this.follow.removeInvite(um);
         if (sticky !== undefined) this.stickies.unshift(sticky);
     }
 
