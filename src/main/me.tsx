@@ -6,6 +6,7 @@ import {nav, User, Page} from 'tonva-tools';
 import {store} from '../store';
 import consts from '../consts';
 import mainApi from '../mainApi';
+import {About} from './about';
 
 const applyUnit = "申请创建小号";
 const applyDev = "申请开发应用";
@@ -29,8 +30,20 @@ class Me extends React.Component {
         }
     }
     private about() {
-        nav.showAbout();
+        let right = <button className='btn btn-success' onClick={this.showLogs}>log</button>;
+        nav.push(<Page header="关于同花" right={right}>
+            <About />
+        </Page>);
     }
+    
+    private showLogs() {
+        nav.push(<Page header="Logs">
+            {nav.logs.map((v,i) => {
+                return <div key={i} className="px-3 py-1">{v}</div>;
+            })}
+        </Page>);
+    }
+    
     private apply() {
         let rows:Prop[] = [
             '',
