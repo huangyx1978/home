@@ -14,6 +14,7 @@ class Me extends React.Component {
     constructor(props) {
         super(props);
         this.exit = this.exit.bind(this);
+        this.about = this.about.bind(this);
         this.apply = this.apply.bind(this);
         this.applyUnit = this.applyUnit.bind(this);
         this.applyDev = this.applyDev.bind(this);
@@ -26,6 +27,9 @@ class Me extends React.Component {
             //nav.show(views.login);
             //nav.show(<LoginView />);
         }
+    }
+    private about() {
+        nav.showAbout();
     }
     private apply() {
         let rows:Prop[] = [
@@ -101,6 +105,12 @@ class Me extends React.Component {
                 type: 'component', 
                 component: <IconText iconClass="text-info" icon="envelope" text="申请" />,
                 onClick: this.apply
+            },
+            '',
+            {
+                type: 'component', 
+                component: <IconText iconClass="text-info" icon="envelope" text="关于同花" />,
+                onClick: this.about
             },
             '',
             '',
