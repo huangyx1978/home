@@ -6,7 +6,7 @@ import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA, Action, DropdownA
 import consts from '../consts';
 import {Unit, App} from '../model';
 import {store} from '../store';
-import {Chat} from './chat';
+import {Chat} from '../chat';
 import mainApi from '../mainApi';
 
 @observer
@@ -30,12 +30,14 @@ export class TieApps extends React.Component {
         nav.pop();
     }
     async appClick(app:App) {
+        let unitId = store.unit.id;
         let appId = app.id;
         if (appId === 0) {
-            nav.push(<Chat />);
+            let entities = await store.unit.getChatEntities();
+            nav.push(<Chat entities={entities} />);
+            //nav.navToApp('http://localhost:3016/', unitId);
         }
         else {
-            let unitId = store.unit.id;
             let url = app.url;
             if (url === undefined) {
                 alert('APP: ' + app.name + '\n' + app.discription + '\n尚未绑定服务');

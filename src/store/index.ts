@@ -1,12 +1,13 @@
 import {observable, computed} from 'mobx';
 import * as _ from 'lodash';
-import {PagedItems, Page} from 'tonva-tools';
+import {PagedItems, Page, chatApi, AppApi} from 'tonva-tools';
 import consts from '../consts';
 import mainApi, { messageApi } from '../mainApi';
 import {Sticky, Tie, App, Message, StickyUnit} from '../model';
 import {Fellow} from './fellow';
 import {CacheUsers, CacheUnits} from './cacheIds';
 import me from '../main/me';
+import { Entities } from 'tonva-react-usql-entities';
 
 const sysUnit:StickyUnit = {
     id: 0,
@@ -115,6 +116,19 @@ export class Unit {
         this.apps = apps;
     }
 
+    private chatApi: AppApi;
+    private entities: Entities;
+    async getChatEntities():Promise<Entities> {
+        if (this.entities !== undefined) return this.entities;
+        if (this.chatApi === undefined) {
+            this.chatApi = await chatApi(this.id);
+        }
+        let {url, ws, token, apiOwner, apiName, access} = this.chatApi;
+        this.entities = new Entities(url, ws, token, apiOwner+'/'+apiName, access);
+        await this.entities.loadEntities();
+        return this.entities
+    }
+
     async loadMessages(): Promise<void> {
         await mainApi.readMessages(this.id);
         this.messages.unread = 0;
@@ -129,9 +143,10 @@ export class Unit {
 
 export class Store {
     private adminApp: App;
+    private static maxUnitCount = 2;
+    private unitArray:Unit[] = [];
 
     @observable stickies: Sticky[] = [];
-    //@observable ties: Tie[];
     @observable units = new Map<number, Unit>();
     @observable unit:Unit = undefined;
 
@@ -149,6 +164,7 @@ export class Store {
         }
         this.processMessage(msg);
     }
+
     private processCommand(cmd:Message) {
         let {type, content} = cmd;
         switch (type) {
@@ -219,12 +235,26 @@ export class Store {
         let unit = new Unit(unitId);
         await unit.loadProps();
         this.units.set(unitId, unit);
+        this.unitArray.unshift(unit);
+        if (this.unitArray.length > Store.maxUnitCount) {
+            let u = this.unitArray.pop();
+            this.units.delete(u.id);
+        }
         return unit;
     }
 
     async setUnit(unitId: number): Promise<void> {
         let unit = this.units.get(unitId);
-        if (unit === undefined) unit = await this.newUnit(unitId);
+        if (unit === undefined) {
+            unit = await this.newUnit(unitId);
+        }
+        else {
+            let index = this.unitArray.findIndex(v => v === unit);
+            if (index > 0) {
+                this.unitArray.splice(index, 1);
+                this.unitArray.unshift(unit);
+            }
+        }
         if (unit.apps === undefined) {
             await unit.loadApps();
         }

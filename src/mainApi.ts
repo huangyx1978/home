@@ -26,6 +26,10 @@ class MainApi extends CenterApi {
         return await this.get('tie/apps', {unit:unit});
     }
 
+    async chatApi(unit:number):Promise<any> {
+        return await this.get('tie/apps', {unit:unit});
+    }
+
     async adminUrl():Promise<App> {
         let ret = await this.get('tie/admin-url', {});
         return ret;
