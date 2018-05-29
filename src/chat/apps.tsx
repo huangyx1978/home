@@ -10,7 +10,7 @@ import {ChatPage} from '../chat';
 import mainApi from '../mainApi';
 
 @observer
-export class TieApps extends React.Component {
+export class AppsPage extends React.Component {
     private rightMenu:Action[] = [
         {
             caption: '取消关注',

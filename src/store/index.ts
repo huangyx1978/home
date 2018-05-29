@@ -1,13 +1,14 @@
 import {observable, computed} from 'mobx';
 import * as _ from 'lodash';
-import {PagedItems, Page, chatApi, AppApi} from 'tonva-tools';
+import {PagedItems, Page, ChatApi, AppApi} from 'tonva-tools';
 import consts from '../consts';
 import mainApi, { messageApi } from '../mainApi';
 import {Sticky, Tie, App, Message, StickyUnit} from '../model';
 import {Fellow} from './fellow';
 import {CacheUsers, CacheUnits} from './cacheIds';
 import me from '../main/me';
-import { Entities } from 'tonva-react-usql-entities';
+import { Entities, Query } from 'tonva-react-usql-entities';
+import {Chat} from './chat';
 
 const sysUnit:StickyUnit = {
     id: 0,
@@ -17,16 +18,20 @@ const sysUnit:StickyUnit = {
     icon: undefined,
 }
 
-class UnitMessages extends PagedItems<Message> {
+export class UnitMessages extends PagedItems<Message> {
     private unit:Unit;
+    private query:Query;
     @observable unread: number;
 
-    constructor(unit:Unit) {
+    constructor(unit:Unit, query:Query) {
         super();
         this.unit = unit;
+        this.query = query;
+        if (query !== undefined) query.resetPage(30, {});
     }
     protected  async load():Promise<Message[]> {
-        return await mainApi.unitMessages(this.unit.id, this.pageStart, this.pageSize);
+        await this.query.loadPage();
+        return this.query.list;
     }
     protected setPageStart(item:Message) {
         if (item === undefined)
@@ -66,10 +71,12 @@ export class Unit {
     ownerIcon: string;
     @observable apps: App[];
     messages: UnitMessages;
+    chat: Chat;
 
     constructor(id:number) {
         this.id = id;
-        this.messages = new UnitMessages(this);
+        this.messages = new UnitMessages(this, undefined);
+        this.chat = new Chat(this);
     }
 
     async loadProps(): Promise<void> {
@@ -97,6 +104,7 @@ export class Unit {
         else {
             apps = ret.apps;
         }
+        /*
         apps.unshift({
             id: 0,
             owner: 0,
@@ -106,7 +114,7 @@ export class Unit {
             name: '会话',
             icon: undefined,
             discription: '收到的信息',
-        });
+        });*/
         if (ret === undefined || ret.id === 0) {
             _.assign(ret, sysUnit);
         }
@@ -116,19 +124,20 @@ export class Unit {
         this.apps = apps;
     }
 
-    private chatApi: AppApi;
+    /*
+    //private chatApi: AppApi;
     private entities: Entities;
     async getChatEntities():Promise<Entities> {
         if (this.entities !== undefined) return this.entities;
-        if (this.chatApi === undefined) {
-            this.chatApi = await chatApi(this.id);
-        }
-        let {url, ws, token, apiOwner, apiName, access} = this.chatApi;
-        this.entities = new Entities(url, ws, token, apiOwner+'/'+apiName, access);
+        let chatApi = new ChatApi(this.id);
+        //let {url, ws, token, apiOwner, apiName, access} = this.chatApi;
+        let ws = undefined;
+        let access = '*';
+        this.entities = new Entities(chatApi, ws, access);
         await this.entities.loadEntities();
         return this.entities
     }
-
+    */
     async loadMessages(): Promise<void> {
         await mainApi.readMessages(this.id);
         this.messages.unread = 0;

@@ -7,6 +7,7 @@ import {nav, Page} from 'tonva-tools';
 import consts from '../consts';
 import {store} from '../store';
 import {TieApps} from './tieApps';
+import {ChatPage} from '../chat';
 import {Sticky, StickyUnit} from '../model';
 import { Fragment } from 'react';
 
@@ -19,11 +20,18 @@ class Home extends React.Component {
     }
     async componentDidMount() {
         await store.loadStickies();
+        nav.debug();
     }
     async stickyClick(item:Sticky) {
         let objId = item.objId;
         await store.setUnit(objId);
-        nav.push(<TieApps />);
+        //nav.push(<TieApps />);
+        let chat = await store.unit.chat;
+        if (await chat.load() === false) {
+            alert('chat api 创建出错');
+            return;
+        }
+        nav.push(<ChatPage />);
     }
     private stickyRender(s:Sticky, index:number):JSX.Element {
         let {type, date, objId, obj} = s;

@@ -2,13 +2,17 @@ import * as React from 'react';
 import * as className from 'classnames';
 import {observer} from 'mobx-react';
 import {Button} from 'reactstrap';
-import {List, EasyDate, LMR, FA} from 'tonva-react-form';
+import {List, EasyDate, LMR, FA, Muted} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';
 import {Entities} from 'tonva-react-usql-entities';
 import {store} from '../store';
 import {Message} from '../model';
 import {UnitSpan, UserSpan} from '../tools';
 import {ApplyDev, ApplyUnit, ApprovedDev, ApprovedUnit, UnitFollowInvite} from '../messages';
+import {Chat} from '../store/chat';
+import {JobsPage} from './jobs';
+import {JobActionPage} from './jobAction';
+import { AppsPage } from './apps';
 
 const typeMessageMap:{[type:string]: new (props:{msg:Message}) => React.Component<{msg:Message}>} = {
     "apply-unit": ApplyUnit,
@@ -18,12 +22,8 @@ const typeMessageMap:{[type:string]: new (props:{msg:Message}) => React.Componen
     "unit-follow-invite": UnitFollowInvite,
 };
 
-export interface ChatProps {
-    entities: Entities;
-}
-
 @observer
-export class Chat extends React.Component<ChatProps> {
+export class ChatPage extends React.Component {
     constructor(props) {
         super(props);
         /*
@@ -33,22 +33,39 @@ export class Chat extends React.Component<ChatProps> {
         this.onCreateUnitClick = this.onCreateUnitClick.bind(this);
         */
         this.renderMessage = this.renderMessage.bind(this);
+        this.clickMessage = this.clickMessage.bind(this);
     }
     async componentWillMount() {
         //let ret = await store.unit.getChatApi();
-        await store.unit.loadMessages();
+        //let chat = store.unit.chat;
+        //await chat.messages.first(undefined);
+    }
+    private clickMessage(msg:Message) {
+        nav.push(<JobActionPage msg={msg} />);
     }
     private renderMessage(msg:Message, index:number):JSX.Element {
         let Tag = typeMessageMap[msg.type];
         if (Tag === undefined)
-            return <div>{JSON.stringify(msg)}</div>;
+            return <div className="px-2 py-1 bg-white">任务: {JSON.stringify(msg)}</div>;
         return <Tag msg={msg} />;
     }
+    private clickPlus() {
+        nav.push(<JobsPage />);
+    }
+    private clickApps() {
+        nav.push(<AppsPage />);
+    }
     render() {
-        return <Page header={store.unit.name}>
+        let right = <Button onClick={this.clickApps} color="success" size="sm">功能应用</Button>;
+        let footer = <div className="p-1">
+            <Button color="primary" size="sm" onClick={this.clickPlus}><FA name="plus" /></Button>
+            &nbsp; <div onClick={this.clickPlus}>发任务</div>
+        </div>;
+        return <Page header={store.unit.name} footer={footer} right={right}>
             <List className="my-1"
-                items={store.unit.messages.items} 
-                item={{className: 'bg-transparent', render:this.renderMessage}} />
+                before={<Muted>[无内容]</Muted>}
+                items={store.unit.chat.messages.items} 
+                item={{className: 'bg-transparent', render:this.renderMessage, onClick:this.clickMessage}} />
         </Page>;
     }
 }
