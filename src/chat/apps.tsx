@@ -34,7 +34,7 @@ export class AppsPage extends React.Component {
         let appId = app.id;
         if (appId === 0) {
             nav.debug();
-            let api = new Api(undefined, undefined, undefined, undefined);
+            let api = new Api(undefined, undefined, undefined, undefined, undefined);
             let chat = await store.unit.chat;
             if (await chat.load() === false) {
                 alert('chat api 创建出错');

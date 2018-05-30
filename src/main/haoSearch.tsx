@@ -9,7 +9,7 @@ import {nav, Page, LabelRow} from 'tonva-tools';
 import {store} from '../store';
 import consts from '../consts';
 import mainApi from '../mainApi';
-import {TieApps} from './tieApps';
+import {ChatPage} from '../chat';
 
 interface Hao {
     unit: number;
@@ -224,7 +224,7 @@ class HaoFollow extends React.Component<HaoFollowProps, HaoFollowState> {
         await store.followUnit(hao); //, name, nick, discription, icon);
         nav.pop(2);
         await store.setUnit(hao);
-        nav.push(<TieApps />);
+        nav.push(<ChatPage />);
     }
     componentDidMount() {
     }

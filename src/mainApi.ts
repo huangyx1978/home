@@ -87,7 +87,7 @@ class MainApi extends CenterApi {
 
 }
 
-const mainApi = new MainApi('tv/');
+const mainApi = new MainApi('tv/', undefined);
 export default mainApi;
 
 class MessageApi extends CenterApi {
@@ -106,4 +106,4 @@ class MessageApi extends CenterApi {
     }
 }
 
-export const messageApi = new MessageApi('tv/', false);
+export const messageApi = new MessageApi('tv/', undefined, false);

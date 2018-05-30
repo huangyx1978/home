@@ -5,14 +5,15 @@ import {Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';
 import consts from '../consts';
+import {store} from '../store';
 
 export class JobsPage extends React.Component {
     private rows:Prop[] = [
         '',
         {
             type: 'component', 
-            component: <IconText iconClass="text-info" icon="envelope" text="啥任务，不知道" />,
-            //onClick: this.apply
+            component: <IconText iconClass="text-info" icon="envelope" text="新任务" />,
+            onClick: this.newJob
         },
         '',
         {
@@ -33,6 +34,16 @@ export class JobsPage extends React.Component {
     ];
     private onClick() {
 
+    }
+    private async newJob() {
+        let chat = store.unit.chat;
+        let msg = {
+            type: 'a',
+            content: 'bbbb',
+            to: [{user:0}]
+        };
+        let id = await chat.newMessage(msg);
+        alert(JSON.stringify(id));
     }
     render() {
         return <Page header="发任务">

@@ -6,7 +6,6 @@ import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA} from 'tonva-react
 import {nav, Page} from 'tonva-tools';
 import consts from '../consts';
 import {store} from '../store';
-import {TieApps} from './tieApps';
 import {ChatPage} from '../chat';
 import {Sticky, StickyUnit} from '../model';
 import { Fragment } from 'react';
