@@ -43,7 +43,7 @@ export class JobsPage extends React.Component {
             to: [{user:0}]
         };
         let id = await chat.newMessage(msg);
-        alert(JSON.stringify(id));
+        nav.pop();
     }
     render() {
         return <Page header="发任务">

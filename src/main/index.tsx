@@ -62,7 +62,7 @@ export default class View extends React.Component<{}, null> {
     }
     async componentDidMount() {
         await ws.connect();
-        this.wsId = ws.onWsReceiveAny((msg) => store.onWs(msg));
+        this.wsId = ws.onWsReceiveAny((msg):Promise<void> => {store.onWs(msg); return;});
         await store.loadMessageUnread();
     }
     componentWillUnmount() {

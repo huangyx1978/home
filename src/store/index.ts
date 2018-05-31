@@ -27,6 +27,7 @@ export class UnitMessages extends PagedItems<Message> {
         super();
         this.unit = unit;
         this.query = query;
+        this.appendPosition = 'head';
         if (query !== undefined) query.resetPage(30, {});
     }
     protected  async load():Promise<Message[]> {
@@ -49,9 +50,7 @@ export class UnitMessages extends PagedItems<Message> {
         if (index>=0) this.items.splice(index, 1);
     }
     addMessage(um:Message) {
-        if (this.items !== undefined) {
-            this.items.push(um);
-        }
+        this.append(um);
         if (this.unread === undefined) this.unread = 0;
         ++this.unread;
     }
@@ -124,20 +123,6 @@ export class Unit {
         this.apps = apps;
     }
 
-    /*
-    //private chatApi: AppApi;
-    private entities: Entities;
-    async getChatEntities():Promise<Entities> {
-        if (this.entities !== undefined) return this.entities;
-        let chatApi = new ChatApi(this.id);
-        //let {url, ws, token, apiOwner, apiName, access} = this.chatApi;
-        let ws = undefined;
-        let access = '*';
-        this.entities = new Entities(chatApi, ws, access);
-        await this.entities.loadEntities();
-        return this.entities
-    }
-    */
     async loadMessages(): Promise<void> {
         await mainApi.readMessages(this.id);
         this.messages.unread = 0;
@@ -147,6 +132,11 @@ export class Unit {
 
     async messageAct(id:number, action:'approve'|'refuse') {
         await mainApi.actMessage({unit:this.id, id:id, action:action});
+    }
+
+    dispose() {
+        if (this.chat === undefined) return;
+        this.chat.dispose();
     }
 }
 
@@ -203,10 +193,16 @@ export class Store {
         if (unit === undefined) return;
         unit.messages.addMessage(um);
     }
+    private disposeUnits() {
+        this.units.forEach(v => {
+            v.dispose();
+        });
+        this.units.clear();
+    }
 
     logout() {
         this.stickies.splice(0, this.stickies.length);
-        this.units.clear();
+        this.disposeUnits();
         this.unit = undefined;
         this.cacheUsers.dict.clear();
         this.cacheUnits.dict.clear();

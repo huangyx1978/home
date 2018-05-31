@@ -45,8 +45,13 @@ export class ChatPage extends React.Component {
     }
     private renderMessage(msg:Message, index:number):JSX.Element {
         let Tag = typeMessageMap[msg.type];
-        if (Tag === undefined)
-            return <div className="px-2 py-1 bg-white">任务: {JSON.stringify(msg)}</div>;
+        if (Tag === undefined) {
+            //return <div className="px-2 py-1 bg-white">任务: {JSON.stringify(msg)}</div>;
+            let {id, date, content} = msg;
+            return <LMR className="px-2 py-1 bg-white"
+                left={<Muted>{id}</Muted>} 
+                right={<Muted><EasyDate date={date} /></Muted>}>{content}</LMR>;
+        }
         return <Tag msg={msg} />;
     }
     private clickPlus() {
