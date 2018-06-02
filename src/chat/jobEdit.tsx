@@ -133,6 +133,7 @@ class TosInput extends React.Component<{}, TosInputState> {
     }
     async confirmInput():Promise<boolean> {
         let inputName = this.input.value.trim();
+        if (inputName.length === 0) return true;
         let members = await mainApi.membersFromName({unit: store.unit.id, name: inputName});
         if (members.length === 0) {
             this.input.style.color = 'red';
