@@ -44,6 +44,7 @@ export class JobEdit extends React.Component<JobEditProps> {
     }
 
     private async onSubmit(values:any):Promise<SubmitResult> {
+        if (await this.tosControl.confirmInput()===false) return;
         let {templet} = this.props;
         let chat = store.unit.chat;
         let type:string = templet.name;
@@ -95,6 +96,9 @@ export class TosControl extends ControlBase {
     setError(fieldName:string, error:string) {
         this.ti.setError(error);
     }
+    async confirmInput():Promise<boolean> {
+        return await this.ti.confirmInput();
+    }
     renderControl():JSX.Element {
         return <div className="form-control-plaintext">
             <TosInput ref={ti=>this.ti=ti} />
@@ -127,6 +131,28 @@ class TosInput extends React.Component<{}, TosInputState> {
     setError(error:string) {
         this.setState({error:error});
     }
+    async confirmInput():Promise<boolean> {
+        let inputName = this.input.value.trim();
+        let members = await mainApi.membersFromName({unit: store.unit.id, name: inputName});
+        if (members.length === 0) {
+            this.input.style.color = 'red';
+            this.setState({error: '无法发送此接收人'});
+            return false;
+        }
+        for (let m of members) {
+        let {id, name, nick, assigned, icon} = m;
+            this.list.push({
+                id: id,
+                name: name,
+                nick: nick,
+                assigned: assigned,
+                icon: icon,
+            });
+        }
+        this.input.value = '';
+        this.setState({tos: this.list});
+        return true;
+    }
     private onFocus() {
         this.setState({error:undefined});
     }
@@ -140,26 +166,7 @@ class TosInput extends React.Component<{}, TosInputState> {
                 break;
         }
         evt.preventDefault();
-        let inputName = this.input.value.trim();
-        let members = await mainApi.membersFromName({unit: store.unit.id, name: inputName});
-        if (members.length === 0) {
-            this.input.style.color = 'red';
-            return;
-        }
-        else {
-            for (let m of members) {
-            let {id, name, nick, assigned, icon} = m;
-                this.list.push({
-                    id: id,
-                    name: name,
-                    nick: nick,
-                    assigned: assigned,
-                    icon: icon,
-                });
-            }
-            this.input.value = '';
-            this.setState({tos: this.list});
-        }
+        this.confirmInput();
     }
     list: User[] = [];
     render() {
