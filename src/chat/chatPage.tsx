@@ -5,7 +5,7 @@ import {Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA, Muted} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';
 import {Entities} from 'tonva-react-usql-entities';
-import {store} from '../store';
+import {store, templetDict} from '../store';
 import {Message} from '../model';
 import {UnitSpan, UserSpan} from '../tools';
 import {ApplyDev, ApplyUnit, ApprovedDev, ApprovedUnit, UnitFollowInvite} from '../messages';
@@ -21,6 +21,7 @@ const typeMessageMap:{[type:string]: new (props:{msg:Message}) => React.Componen
     "approve-dev": ApprovedDev,
     "unit-follow-invite": UnitFollowInvite,
 };
+const lnRegx = /\\r\\\\n|\\r|\\n/;
 
 @observer
 export class ChatPage extends React.Component {
@@ -47,15 +48,34 @@ export class ChatPage extends React.Component {
         let Tag = typeMessageMap[msg.type];
         if (Tag === undefined) {
             //return <div className="px-2 py-1 bg-white">任务: {JSON.stringify(msg)}</div>;
-            let {id, date, content} = msg;
+            let {id, date, type, subject, discription, content} = msg;
+            let disc, lines:string[];
+            if (discription !== undefined) {
+                lines = discription.split(lnRegx, 3);
+                if (lines.length === 3) {
+                    lines.pop();
+                    lines.push('...');
+                }
+                disc = <div className="chat-row-discription">{
+                    lines.map((v,index) => <React.Fragment key={index}>{v}<br/></React.Fragment>)}
+                </div>
+            }
+            let right = <Muted>
+                <EasyDate date={date} />
+            </Muted>;
+            let td = templetDict[type];
             return <LMR className="px-2 py-1 bg-white"
-                left={<Muted>{id}</Muted>} 
-                right={<Muted><EasyDate date={date} /></Muted>}>{content}</LMR>;
+                left={<FA className="text-info mt-1" name={(td && td.icon) || 'envelope'} />} 
+                right={right}>
+                <div>{subject || content}</div>
+                {disc}
+            </LMR>;
         }
         return <Tag msg={msg} />;
     }
-    private clickPlus() {
-        nav.push(<JobsPage />);
+    private async clickPlus():Promise<void> {
+        //let templets = await store.unit.chat.getTemplets();
+        //nav.push(<JobsPage templets={templets} />);
     }
     private clickApps() {
         nav.push(<AppsPage />);
@@ -66,11 +86,11 @@ export class ChatPage extends React.Component {
             <Button color="primary" size="sm" onClick={this.clickPlus}><FA name="plus" /></Button>
             &nbsp; <div onClick={this.clickPlus}>发任务</div>
         </div>;
-        return <Page header={store.unit.name} footer={footer} right={right}>
-            <List className="my-1"
+        //<Page header={store.unit.name} footer={footer} right={right}>
+        return <List className="my-1"
                 before={<Muted>[无内容]</Muted>}
                 items={store.unit.chat.messages.items} 
                 item={{className: 'bg-transparent', render:this.renderMessage, onClick:this.clickMessage}} />
-        </Page>;
+        //</Page>;
     }
 }

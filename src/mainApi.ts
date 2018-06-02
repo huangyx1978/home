@@ -85,6 +85,9 @@ class MainApi extends CenterApi {
         return await this.post('test/post', {to: toUser, message: msg});
     }
 
+    async membersFromName(param: {unit:number; name:string}):Promise<any[]> {
+        return await this.get('unit/members-from-name', param);
+    }
 }
 
 const mainApi = new MainApi('tv/', undefined);

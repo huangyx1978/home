@@ -6,7 +6,7 @@ import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA, Action, DropdownA
 import consts from '../consts';
 import {Unit, App} from '../model';
 import {store} from '../store';
-import {ChatPage} from '../chat';
+import {MainPage} from '../chat';
 import mainApi from '../mainApi';
 
 @observer
@@ -40,7 +40,7 @@ export class TieApps extends React.Component {
                 alert('chat api 创建出错');
                 return;
             }
-            nav.push(<ChatPage />);
+            nav.push(<MainPage />);
             //nav.navToApp('http://localhost:3016/', unitId);
         }
         else {

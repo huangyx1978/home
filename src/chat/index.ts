@@ -1,1 +1,2 @@
-export * from './chatPage';
+export * from './main';
+//export * from './chatPage';

@@ -53,6 +53,8 @@ export interface Message {
     fromUnit: number;
     type: string;
     date: Date;
+    subject: string;
+    discription: string;
     content: any;
     state: number;
 }

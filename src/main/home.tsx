@@ -6,7 +6,7 @@ import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA} from 'tonva-react
 import {nav, Page} from 'tonva-tools';
 import consts from '../consts';
 import {store} from '../store';
-import {ChatPage} from '../chat';
+import {MainPage} from '../chat';
 import {Sticky, StickyUnit} from '../model';
 import { Fragment } from 'react';
 
@@ -30,7 +30,7 @@ class Home extends React.Component {
             alert('chat api 创建出错');
             return;
         }
-        nav.push(<ChatPage />);
+        nav.push(<MainPage />);
     }
     private stickyRender(s:Sticky, index:number):JSX.Element {
         let {type, date, objId, obj} = s;

@@ -9,6 +9,8 @@ import {CacheUsers, CacheUnits} from './cacheIds';
 import me from '../main/me';
 import { Entities, Query } from 'tonva-react-usql-entities';
 import {Chat} from './chat';
+export * from './templet';
+export * from './sysTemplets';
 
 const sysUnit:StickyUnit = {
     id: 0,
@@ -50,6 +52,7 @@ export class UnitMessages extends PagedItems<Message> {
         if (index>=0) this.items.splice(index, 1);
     }
     addMessage(um:Message) {
+        this.remove(um.id);
         this.append(um);
         if (this.unread === undefined) this.unread = 0;
         ++this.unread;

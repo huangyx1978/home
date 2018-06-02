@@ -22,3 +22,13 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.chat-row-discription {
+  font-size: smaller;
+  max-height: 4.5em;
+  color: gray;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: wrap;
+  margin: 0.3em 0;
+}

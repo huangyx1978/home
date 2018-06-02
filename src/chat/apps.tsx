@@ -6,7 +6,7 @@ import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA, Action, DropdownA
 import consts from '../consts';
 import {Unit, App} from '../model';
 import {store} from '../store';
-import {ChatPage} from '../chat';
+import {MainPage} from '../chat';
 import mainApi from '../mainApi';
 
 @observer
@@ -40,7 +40,7 @@ export class AppsPage extends React.Component {
                 alert('chat api 创建出错');
                 return;
             }
-            nav.push(<ChatPage />);
+            nav.push(<MainPage />);
             //nav.navToApp('http://localhost:3016/', unitId);
         }
         else {
@@ -85,7 +85,8 @@ export class AppsPage extends React.Component {
         else if (id > 0) {
             right = <DropdownActions actions={this.rightMenu} />;
         }
-        return <Page header={name} right={right}>
+        //<Page header={name} right={right}>
+        return <div>
             <div className='apps-list-top'>
                 <img src={icon || consts.appItemIcon} />
                 <div>
@@ -101,7 +102,8 @@ export class AppsPage extends React.Component {
                 </div>
             </div>
             <List items={apps} item={{render:this.renderRow, onClick:this.appClick}} />
-        </Page>;
+        </div>;
+        //</Page>;
         // <ListView items={apps} converter={this.appConverter} itemClick={this.appClick} />
     }
 }
