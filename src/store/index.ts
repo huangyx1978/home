@@ -136,11 +136,11 @@ export class Unit {
     async messageAct(id:number, action:'approve'|'refuse') {
         await mainApi.actMessage({unit:this.id, id:id, action:action});
     }
-
+    /*
     dispose() {
         if (this.chat === undefined) return;
         this.chat.dispose();
-    }
+    }*/
 }
 
 export class Store {
@@ -157,7 +157,13 @@ export class Store {
 
     follow = new Fellow(this);
 
-    onWs(msg: any) {
+    async onWs(msg: any) {
+        let {$unit} = msg;
+        this.units.forEach(async (unit, k) => {
+            if ($unit !== unit.id) return;
+            let {chat} = unit;
+            if (chat !== undefined) await chat.onWsMsg(msg);
+        });
         //let um = this.convertMessage(msg);
         if (msg.id === undefined) {
             // msgId=0，则是发送给界面的操作指令
@@ -196,16 +202,18 @@ export class Store {
         if (unit === undefined) return;
         unit.messages.addMessage(um);
     }
-    private disposeUnits() {
+    //private disposeUnits() {
+        /*
         this.units.forEach(v => {
             v.dispose();
-        });
-        this.units.clear();
-    }
+        });*/
+        //this.units.clear();
+    //}
 
     logout() {
         this.stickies.splice(0, this.stickies.length);
-        this.disposeUnits();
+        //this.disposeUnits();
+        this.units.clear();
         this.unit = undefined;
         this.cacheUsers.dict.clear();
         this.cacheUnits.dict.clear();

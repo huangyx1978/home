@@ -6,7 +6,7 @@ import {sysTemplets} from './sysTemplets';
 
 export class Chat {
     private unit: Unit;
-    private receiveHandles:number[] = [];
+    //private receiveHandles:number[] = [];
     private entities: Entities;
     private newMessageAction: Action;
     private message: Tuid;
@@ -15,8 +15,8 @@ export class Chat {
 
     constructor(unit:Unit) {
         this.unit = unit;
-        this.onWsReceive = this.onWsReceive.bind(this);
-        this.onWsMsg = this.onWsMsg.bind(this);
+        //this.onWsReceive = this.onWsReceive.bind(this);
+        //this.onWsMsg = this.onWsMsg.bind(this);
     }
 
     async load():Promise<boolean> {
@@ -30,11 +30,11 @@ export class Chat {
         await query.loadSchema();
         this.messages = new UnitMessages(this.unit, query);
         this.messages.first(undefined);
-        this.receiveHandles.push(this.entities.onWsReceiveAny(this.onWsReceive));
-        this.receiveHandles.push(this.entities.onWsReceive('msg', this.onWsMsg));
+        //this.receiveHandles.push(this.entities.onWsReceiveAny(this.onWsReceive));
+        //this.receiveHandles.push(this.entities.onWsReceive('msg', this.onWsMsg));
         return true
     }
-
+    /*
     dispose() {
         for (let handle of this.receiveHandles) {
             this.entities.endWsReceive(handle);
@@ -43,10 +43,13 @@ export class Chat {
 
     async onWsReceive(data:any):Promise<void> {
     }
-    async onWsMsg(data: any):Promise<void> {
-        let msg = data.data;
-        if (msg > 0) await this.addToDesk(msg);
-        else await this.removeFromDesk(-msg);
+    */
+    async onWsMsg(msg: any):Promise<void> {
+        let {$type, id} = msg;
+        if ($type !== 'msg') return;
+        //let msg = data.data;
+        if (id > 0) await this.addToDesk(id);
+        else await this.removeFromDesk(-id);
     }
     private async addToDesk(msg:number) {
         if (this.message === undefined) {

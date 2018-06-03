@@ -19,7 +19,9 @@ export class JobEdit extends React.Component<JobEditProps> {
         label: '接收人', 
         //field: {name:'to', type: 'string', required: true},
         //face: {type: 'string', placeholder: '一个或多个接收人'}
-        createControl: (form:FormView, row: FormRow) => {return this.tosControl = new TosControl(form);}
+        createControl: (form:FormView, row: FormRow) => {
+            return this.tosControl = new TosControl(form);
+        }
     };
     private rowSubject:FormRow = {
         label: '主题', 
@@ -44,7 +46,9 @@ export class JobEdit extends React.Component<JobEditProps> {
     }
 
     private async onSubmit(values:any):Promise<SubmitResult> {
-        if (await this.tosControl.confirmInput()===false) return;
+        if (this.tosControl !== undefined) {
+            if (await this.tosControl.confirmInput()===false) return;
+        }
         let {templet} = this.props;
         let chat = store.unit.chat;
         let type:string = templet.name;

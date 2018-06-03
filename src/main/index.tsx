@@ -59,11 +59,16 @@ export default class View extends React.Component<{}, null> {
     constructor(props) {
         super(props);
         this.addXiaoHao = this.addXiaoHao.bind(this);
+        this.onWs = this.onWs.bind(this);
     }
     async componentDidMount() {
         await ws.connect();
-        this.wsId = ws.onWsReceiveAny((msg):Promise<void> => {store.onWs(msg); return;});
+        this.wsId = ws.onWsReceiveAny(this.onWs);
         await store.loadMessageUnread();
+    }
+    private async onWs(msg:any):Promise<void> {
+        console.log('ws received: %s' + msg);
+        store.onWs(msg);
     }
     componentWillUnmount() {
         ws.endWsReceive(this.wsId);
