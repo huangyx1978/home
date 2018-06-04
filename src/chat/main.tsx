@@ -1,27 +1,23 @@
 import * as React from 'react';
+import {computed} from 'mobx';
 import {Page, Tab} from 'tonva-tools';
 import {store, templetDict} from '../store';
 import {ChatPage} from './chatPage';
 import {AppsPage} from './apps';
 import {JobsPage} from './jobs';
+import {Folders} from './folders';
 
 const tabs:Tab[] = [
     {
         title: '待办',
         content: <ChatPage />,
-        /*
         redDot: computed(()=>{
-            let sum = 0;
-            //store.messageUnreadDict.forEach(v=>sum+=v);
-            let unitDict = store.units;
-            unitDict.forEach(unit => {
-                let messages = unit.messages;
-                if (messages === undefined) return;
-                let unread = messages.unread;
-                if (unread !== undefined) sum += unread;
-            });
-            return -sum;
-        }),*/
+            return store.unit.chat.messages.items.length;
+        })
+    },
+    {
+        title: '查看',
+        content: <Folders />,
     },
     {
         title: '新任务',

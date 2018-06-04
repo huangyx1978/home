@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as className from 'classnames';
 import {observer} from 'mobx-react';
-import {Button} from 'reactstrap';
+import {Container, Row, Col, Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA, Muted} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';
 import {Entities} from 'tonva-react-usql-entities';
@@ -27,19 +27,10 @@ const lnRegx = /\\r\\\\n|\\r|\\n/;
 export class ChatPage extends React.Component {
     constructor(props) {
         super(props);
-        /*
-        this.onDevClick = this.onDevClick.bind(this);
-        this.onUnitClick = this.onUnitClick.bind(this);
-        this.onCreateDevClick = this.onCreateDevClick.bind(this);
-        this.onCreateUnitClick = this.onCreateUnitClick.bind(this);
-        */
         this.renderMessage = this.renderMessage.bind(this);
         this.clickMessage = this.clickMessage.bind(this);
     }
     async componentWillMount() {
-        //let ret = await store.unit.getChatApi();
-        //let chat = store.unit.chat;
-        //await chat.messages.first(undefined);
     }
     private clickMessage(msg:Message) {
         nav.push(<JobActionPage msg={msg} />);
@@ -48,7 +39,7 @@ export class ChatPage extends React.Component {
         let Tag = typeMessageMap[msg.type];
         if (Tag === undefined) {
             //return <div className="px-2 py-1 bg-white">任务: {JSON.stringify(msg)}</div>;
-            let {id, date, type, subject, discription, content} = msg;
+            let {id, date, type, fromUser, subject, discription, content} = msg;
             let disc, lines:string[];
             if (discription !== undefined) {
                 lines = discription.split(lnRegx, 3);
@@ -60,14 +51,15 @@ export class ChatPage extends React.Component {
                     lines.map((v,index) => <React.Fragment key={index}>{v}<br/></React.Fragment>)}
                 </div>
             }
-            let right = <Muted>
-                <EasyDate date={date} />
+            let right = <Muted className="text-right">
+                {fromUser}<br/>
+                <span style={{fontSize:'smaller'}}><EasyDate date={date} /></span>
             </Muted>;
             let td = templetDict[type];
             return <LMR className="px-2 py-1 bg-white"
                 left={<FA className="text-info mt-1" name={(td && td.icon) || 'envelope'} />} 
                 right={right}>
-                <div>{subject || content}</div>
+                {subject || content}
                 {disc}
             </LMR>;
         }

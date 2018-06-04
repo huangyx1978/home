@@ -25,11 +25,11 @@ export class Chat {
         let access = '*';
         this.entities = new Entities(chatApi, access);
         await this.entities.loadEntities();
-        let query = this.entities.query('getdesk');
+        let query = this.entities.query('getDesk');
         if (query === undefined) return false;
         await query.loadSchema();
         this.messages = new UnitMessages(this.unit, query);
-        this.messages.first(undefined);
+        await this.messages.first(undefined);
         //this.receiveHandles.push(this.entities.onWsReceiveAny(this.onWsReceive));
         //this.receiveHandles.push(this.entities.onWsReceive('msg', this.onWsMsg));
         return true
@@ -64,7 +64,7 @@ export class Chat {
     }
     async newMessage(msg:any):Promise<number> {
         if (this.newMessageAction === undefined) {
-            this.newMessageAction = this.entities.action('newmessage');
+            this.newMessageAction = this.entities.action('newMessage');
             await this.newMessageAction.loadSchema();
         }
         return await this.newMessageAction.submit(msg);
@@ -72,7 +72,7 @@ export class Chat {
 
     async getTemplets():Promise<Templet[]> {
         if (this.templets === undefined) {
-            let query = this.entities.query('gettemplets');
+            let query = this.entities.query('getTemplets');
             let ret = await query.query({});
             this.templets = ret.ret;
             //this.templets.unshift(...sysTemplets);

@@ -8,7 +8,7 @@ export const sysTemplets:Templet[] = [
         id: Task_Self,
         name: '$self',
         icon: 'tasks',
-        caption: '我的待办',
+        caption: '自己待办',
         discription: undefined,
         content: {
             needTo: false,
@@ -18,8 +18,8 @@ export const sysTemplets:Templet[] = [
         id: Task_Dispatch,
         name: '$dispatch',
         icon: 'share-square',
-        caption: '发出任务',
-        discription: '给同事的任务',
+        caption: '给同事发任务',
+        discription: undefined, //'给同事的任务',
         content: {
             needTo: true,
         }

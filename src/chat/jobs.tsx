@@ -8,11 +8,6 @@ import consts from '../consts';
 import {store, Templet, sysTemplets} from '../store';
 import {JobEdit} from './jobEdit';
 
-/*
-export interface JobsPageProps {
-    templets: Templet[];
-}
-*/
 export interface JobsPageState {
     templets: Templet[];
 }
@@ -71,7 +66,7 @@ export class JobsPage extends React.Component<{}, JobsPageState> {
     renderRow(templet:Templet, index:number):JSX.Element {
         let {icon, name, caption, discription} = templet;
         let left = <>
-            <FA className="text-info" name={icon} size="lg" fixWidth={true} />
+            <FA className="text-success" name={icon} size="lg" fixWidth={true} />
         </>;
         let right = <Muted>{discription}</Muted>;
         return <LMR className='px-3 py-2 align-items-center' left={left} right={right}>

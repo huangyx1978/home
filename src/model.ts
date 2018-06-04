@@ -47,8 +47,6 @@ export interface App {
 
 export interface Message {
     id: number;
-    toUser: number;
-    toUnit: number;
     fromUser: number;
     fromUnit: number;
     type: string;

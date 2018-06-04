@@ -197,10 +197,12 @@ export class Store {
         u.messages.remove(msgId);
     }
     private processMessage(um:Message) {
+        /*
         let toUnit = um.toUnit;
         let unit = this.units.get(toUnit);
         if (unit === undefined) return;
         unit.messages.addMessage(um);
+        */
     }
     //private disposeUnits() {
         /*
