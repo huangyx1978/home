@@ -1,13 +1,13 @@
 import {observable, computed} from 'mobx';
 import * as _ from 'lodash';
-import {PagedItems, Page, ChatApi, AppApi} from 'tonva-tools';
+import {PagedItems, Page, ChatApi, AppApi, CacheIds} from 'tonva-tools';
 import consts from '../consts';
 import mainApi, { messageApi } from '../mainApi';
 import {Sticky, Tie, App, Message, StickyUnit} from '../model';
 import {Fellow} from './fellow';
 import {CacheUsers, CacheUnits} from './cacheIds';
 import me from '../main/me';
-import { Entities, Query } from 'tonva-react-usql-entities';
+import { Entities, Query, Tuid } from 'tonva-react-usql-entities';
 import {Chat} from './chat';
 export * from './templet';
 export * from './sysTemplets';
@@ -20,21 +20,105 @@ const sysUnit:StickyUnit = {
     icon: undefined,
 }
 
+export interface Item {
+    id: number;
+    branch: number;
+    done: number;
+}
+export class Folder<T extends Item> extends PagedItems<T> {
+    private unit:Unit;
+    private query:Query;
+
+    constructor(unit:Unit, query:Query) {
+        super(true);
+        this.unit = unit;
+        this.query = query;
+        this.appendPosition = 'head';
+        //if (query !== undefined) query.resetPage(30, {});
+    }
+    protected  async load():Promise<T[]> {
+        await this.query.loadSchema();
+        let ret = await this.query.page(this.param, this.pageStart, this.pageSize);
+        return ret['$page'];
+    }
+    protected setPageStart(item:T) {
+        if (item === undefined)
+            this.pageStart = undefined;
+        else
+            this.pageStart = item.id;
+    }
+    remove(id:number) {
+        let item = this.items.find(v => v.id === id);
+        if (item !== undefined) this.items.remove(item);
+    }
+    addItem(item:T) {
+        if (this.loaded === true) {
+            let {id, branch, done} = item;
+            let _item = this.items.find(v => v.id === id);
+            if (_item !== undefined) {
+                _item.branch = branch;
+                _item.done = done;
+            }
+            else {
+                this.append(item);
+            }
+        }
+    }
+}
+
+export interface DeskItem extends Item {
+    read: number;
+    //state: string;
+}
+export class Desk extends Folder<DeskItem> {
+    @observable unread: number;
+    addItem(item:DeskItem) {
+        super.addItem(item);
+        if (this.loaded === true) {
+            if (this.unread === undefined) this.unread = 0;
+            ++this.unread;
+        }
+    }
+}
+
+export interface SendFolderItem extends Item {
+}
+export class SendFolder extends Folder<SendFolderItem> {
+}
+
+export interface PassFolderItem extends Item {
+}
+export class PassFolder extends Folder<PassFolderItem> {
+}
+
+export interface CcFolderItem extends Item {
+}
+export class CcFolder extends Folder<CcFolderItem> {
+}
+
+export interface AllFolderItem extends Item {
+}
+export class AllFolder extends Folder<AllFolderItem> {
+}
+
 export class UnitMessages extends PagedItems<Message> {
     private unit:Unit;
     private query:Query;
     @observable unread: number;
 
     constructor(unit:Unit, query:Query) {
-        super();
+        super(true);
         this.unit = unit;
         this.query = query;
         this.appendPosition = 'head';
-        if (query !== undefined) query.resetPage(30, {});
+        //if (query !== undefined) query.resetPage(30, {});
     }
     protected  async load():Promise<Message[]> {
-        await this.query.loadPage();
-        return this.query.list;
+        //await this.query.loadPage();
+        await this.query.loadSchema();
+        let ret = await this.query.page(this.param, this.pageStart, this.pageSize);
+        return ret['$page'];
+        //return this.query.list;
     }
     protected setPageStart(item:Message) {
         if (item === undefined)
@@ -42,14 +126,14 @@ export class UnitMessages extends PagedItems<Message> {
         else
             this.pageStart = item.id;
     }
-    end(id:number, state:number) {
+    end(id:number) {
         let item = this.items.find(v => v.id === id);
         if (item === undefined) return;
-        item.state = state;
+        //item.state = '#';
     }
     remove(id:number) {
-        let index = this.items.findIndex(v => v.id === id);
-        if (index>=0) this.items.splice(index, 1);
+        let item = this.items.find(v => v.id === id);
+        if (item !== undefined) this.items.remove(item);
     }
     addMessage(um:Message) {
         this.remove(um.id);
@@ -176,7 +260,7 @@ export class Store {
     private processCommand(cmd:Message) {
         let {type, content} = cmd;
         switch (type) {
-            default: alert(JSON.stringify(cmd)); break;
+            //default: alert(JSON.stringify(cmd)); break;
             case 'message-end': this.messageEnd(content); break;
             case 'message-removed': this.messageRemoved(content); break;
         }
@@ -185,7 +269,7 @@ export class Store {
         let {id, unit, state} = content;
         let u = this.units.get(unit);
         if (u === undefined) return;
-        u.messages.end(id, state);
+        u.messages.end(id);
     }
     private messageRemoved(content:any) {
         let {id, unit} = content;

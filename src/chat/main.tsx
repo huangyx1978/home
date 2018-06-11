@@ -2,7 +2,7 @@ import * as React from 'react';
 import {computed} from 'mobx';
 import {Page, Tab} from 'tonva-tools';
 import {store, templetDict} from '../store';
-import {ChatPage} from './chatPage';
+import {DeskPage} from './desk';
 import {AppsPage} from './apps';
 import {JobsPage} from './jobs';
 import {Folders} from './folders';
@@ -10,9 +10,9 @@ import {Folders} from './folders';
 const tabs:Tab[] = [
     {
         title: '待办',
-        content: <ChatPage />,
+        content: <DeskPage />,
         redDot: computed(()=>{
-            return store.unit.chat.messages.items.length;
+            return store.unit.chat.desk.items.length;
         })
     },
     {

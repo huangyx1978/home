@@ -28,7 +28,7 @@ export class UnitFollowInvite extends React.Component<{msg: Message}> {
         let onClick;
         let bg, py, style;
         let right;
-        if (state !== 0) {
+        if (state !== '0') {
             bg = 'bg-transparent';
             style = tagEndStyle;
             py = 'py-1';

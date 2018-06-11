@@ -1,4 +1,3 @@
-
 export interface StickyUnit {
     id: number;
     name: string;
@@ -54,7 +53,8 @@ export interface Message {
     subject: string;
     discription: string;
     content: any;
-    state: number;
+    //read: number;
+    state?: string|number;
 }
 
 export interface UserBase {
