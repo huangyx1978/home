@@ -1,12 +1,13 @@
 import {observable} from 'mobx';
 import { Entities, Query, Action, Tuid } from 'tonva-react-usql-entities';
 import {PagedItems, Page, ChatApi, CacheIds, nav} from 'tonva-tools';
-import {Unit, UnitMessages, Desk, SendFolder, PassFolder, CcFolder, AllFolder} from './index';
+import {Unit, UnitMessages, Item, Folder, Desk, SendFolder, PassFolder, CcFolder, AllFolder} from './index';
 import {Templet} from './templet';
 import {sysTemplets} from './sysTemplets';
 import {Message} from '../model';
 
 interface MessageState {
+    id: number;
     message: Message;
     branch:number;
     done:number;
@@ -89,15 +90,20 @@ export class Chat {
     async onWsMsg(message: any):Promise<void> {
         let {$type, msg, to, action, data} = message;
         if ($type !== 'msg') return;
-        switch (action) {
-            case 'to':
-                this.addToDesk(this.dataToMsg(data));
-                break;
-            case 'cc':
-                this.cc(this.dataToMsg(data));
-                break;
-            case 'away': this.removeFromDesk(msg); break;
-            case 'read': this.messageBeReaden(msg); break;
+        if (!action) return;
+        let parts = action.split('\t');
+        for (let p of parts) {
+            switch (p) {
+                default:
+                    this.to(p, this.dataToMsg(data));
+                    break;
+                case '$away':
+                    this.removeFromDesk(msg);
+                    break;
+                case '$read':
+                    this.messageBeReaden(msg);
+                    break;
+            }
         }
         //let msg = data.data;
         //if (id > 0) await this.addToDesk(id);
@@ -105,15 +111,20 @@ export class Chat {
     }
     private dataToMsg(data:string):MessageState {
         let parts = data.split('\t');
-        let id:number;
-        let branch = Number(parts[8]);
-        let done = Number(parts[9]);
-        let m:Message = {
-            id: id = Number(parts[0]),
-            fromUser: Number(parts[1]),
-            fromUnit: Number(parts[2]),
+        function toNum(t:string):number {if (t) return Number(t)}
+        function toDate(t:string):Date {if (t) return new Date(Number(t)*1000)}
+        let id = toNum(parts[0]);
+        let date = toDate(parts[4]);
+        let branch = toNum(parts[8]);
+        let done = toNum(parts[9]);
+        
+        let m:Message;
+        if (date !== undefined) m = {
+            id: id,
+            fromUser: toNum(parts[1]),
+            fromUnit: toNum(parts[2]),
             type: parts[3],
-            date: new Date(Number(parts[4])*1000),
+            date: date,
             subject: parts[5],
             discription: parts[6],
             content: parts[7],
@@ -121,23 +132,54 @@ export class Chat {
             //state: parts[8],
         };
         return {
+            id: id,
             message: m,
             branch: branch,
             done: done
         };
     };
-    private addToDesk(ms:MessageState) {
-        let {message, branch, done} = ms;
-        let {id, fromUser} = message;
+    private to(action:string, ms:MessageState) {
+        let {id, message, branch, done} = ms;
+        let folder: Folder<Item>;
+        switch (action) {
+            default: return;
+            case '$desk': folder = this.desk; break;
+            case '$me': folder = this.sendFolder; break;
+            case '$pass': folder = this.passFolder; break;
+            case '$cc': folder = this.ccFolder; break;
+        }
+        if (message === undefined) {
+            //this.desk.changeState(id, branch, done);
+            //this.sendFolder.changeState(id, branch, done);
+            //this.passFolder.changeState(id, branch, done);
+            //this.ccFolder.changeState(id, branch, done);
+            folder.changeState(id, branch, done);
+            this.allFolder.changeState(id, branch, done);
+            return;
+        }
+        let {fromUser} = message;
         this.tuidMessage.cacheItem(id, message);
         let item = {id:id, read: 0, branch:branch, done:done};
-        this.desk.addItem(item);
-        this.desk.scrollToBottom();
-        if (fromUser === nav.user.id)
+        switch (action) {
+            case '$desk':
+                this.desk.addItem(item);
+                this.desk.scrollToBottom();
+                break;
+            default:
+                folder.addItem(item);
+                break;
+        }
+        this.allFolder.addItem(item);
+        /*
+        if (fromUser === nav.user.id) {
+            this.desk.addItem(item);
+            this.desk.scrollToBottom();
             this.sendFolder.addItem(item);
+        }
         else
             this.passFolder.addItem(item);
         this.allFolder.addItem(item);
+        */
     }
     private removeFromDesk(id:number) {
         this.desk.remove(id);

@@ -48,13 +48,13 @@ export class Folder<T extends Item> extends PagedItems<T> {
             this.pageStart = item.id;
     }
     remove(id:number) {
-        let item = this.items.find(v => v.id === id);
+        let item = this._items.find(v => v.id === id);
         if (item !== undefined) this.items.remove(item);
     }
     addItem(item:T) {
         if (this.loaded === true) {
             let {id, branch, done} = item;
-            let _item = this.items.find(v => v.id === id);
+            let _item = this._items.find(v => v.id === id);
             if (_item !== undefined) {
                 _item.branch = branch;
                 _item.done = done;
@@ -63,6 +63,12 @@ export class Folder<T extends Item> extends PagedItems<T> {
                 this.append(item);
             }
         }
+    }
+    changeState(id:number, branch:number, done:number) {
+        let item = this._items.find(v => v.id === id);
+        if (item === undefined) return;
+        item.branch = branch;
+        item.done = done;
     }
 }
 
