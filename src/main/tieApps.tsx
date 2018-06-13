@@ -76,6 +76,7 @@ export class TieApps extends React.Component {
         nav.navToApp(adminApp.url, unitId);
     }
     render() {
+        let s = null;
         let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = store.unit;
         if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
         let right;

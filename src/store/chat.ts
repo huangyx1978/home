@@ -174,7 +174,7 @@ export class Chat {
         if (this.desk !== undefined) this.desk.remove(id);
     }
     private messageBeReaden(id:number) {
-        if (this.desk !== undefined) return;
+        if (this.desk === undefined) return;
         let msg = this.desk.items.find(v => v.id === id);
         if (msg !== undefined) msg.read = 1;
     }
