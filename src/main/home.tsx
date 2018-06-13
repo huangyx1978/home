@@ -37,8 +37,8 @@ class Home extends React.Component {
         let unread:number;
         let unit = store.units.get(objId);
         if (unit !== undefined) {
-            let {messages} = unit;
-            unread = messages === undefined? 0 : messages.unread;
+            unread = unit.unread;
+            //unread = messages === undefined? 0 : messages.unread;
         }
         switch (type) {
             case 3:

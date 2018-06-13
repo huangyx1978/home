@@ -24,9 +24,9 @@ const tabs:Tab[] = [
             //store.messageUnreadDict.forEach(v=>sum+=v);
             let unitDict = store.units;
             unitDict.forEach(unit => {
-                let messages = unit.messages;
-                if (messages === undefined) return;
-                let unread = messages.unread;
+                //let messages = unit.messages;
+                //if (messages === undefined) return;
+                let unread = unit.unread;
                 if (unread !== undefined) sum += unread;
             });
             return -sum;

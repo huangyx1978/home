@@ -28,6 +28,7 @@ export interface Item {
 export class Folder<T extends Item> extends PagedItems<T> {
     private unit:Unit;
     private query:Query;
+    @observable undone:number;
 
     constructor(unit:Unit, query:Query) {
         super(true);
@@ -51,9 +52,9 @@ export class Folder<T extends Item> extends PagedItems<T> {
         let item = this._items.find(v => v.id === id);
         if (item !== undefined) this.items.remove(item);
     }
-    addItem(item:T) {
+    updateItem(item:T) {
+        let {id, branch, done} = item;
         if (this.loaded === true) {
-            let {id, branch, done} = item;
             let _item = this._items.find(v => v.id === id);
             if (_item !== undefined) {
                 _item.branch = branch;
@@ -63,13 +64,18 @@ export class Folder<T extends Item> extends PagedItems<T> {
                 this.append(item);
             }
         }
+        else {
+            if (done<branch) this.undone++;
+            else this.undone--;
+        }
     }
+    /*
     changeState(id:number, branch:number, done:number) {
         let item = this._items.find(v => v.id === id);
         if (item === undefined) return;
         item.branch = branch;
         item.done = done;
-    }
+    }*/
 }
 
 export interface DeskItem extends Item {
@@ -78,8 +84,8 @@ export interface DeskItem extends Item {
 }
 export class Desk extends Folder<DeskItem> {
     @observable unread: number;
-    addItem(item:DeskItem) {
-        super.addItem(item);
+    updateItem(item:DeskItem) {
+        super.updateItem(item);
         if (this.loaded === true) {
             if (this.unread === undefined) this.unread = 0;
             ++this.unread;
@@ -162,6 +168,7 @@ export class Unit {
     ownerNick: string;
     ownerIcon: string;
     @observable apps: App[];
+    @observable unread: number;
     messages: UnitMessages;
     chat: Chat;
 
@@ -439,7 +446,8 @@ export class Store {
             let {unit:unitId, unread, count} = ret[i];
             let unit = this.units.get(unitId);
             if (unit === undefined) unit = await this.newUnit(unitId);
-            unit.messages.unread = unread;
+            unit.unread = unread;
+            //unit.messages.unread = unread;
             if (unitId === 0 && count > 0) this.addSysUnitStick();
         }
     }

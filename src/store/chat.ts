@@ -54,18 +54,11 @@ export class Chat {
         this.passFolder = new PassFolder(this.unit, getFolder);
         this.ccFolder = new CcFolder(this.unit, getFolder);
         this.allFolder = new AllFolder(this.unit, getFolder);
+
+        this.loadFoldsUndone();
         return true;
     }
-    /*
-    dispose() {
-        for (let handle of this.receiveHandles) {
-            this.entities.endWsReceive(handle);
-        }
-    }
 
-    async onWsReceive(data:any):Promise<void> {
-    }
-    */
     getQuery(name:string):Query {
         return this.entities.query(name);
     }
@@ -91,6 +84,7 @@ export class Chat {
         let {$type, msg, to, action, data} = message;
         if ($type !== 'msg') return;
         if (!action) return;
+        console.log('ws message: %s', JSON.stringify(message));
         let parts = action.split('\t');
         for (let p of parts) {
             switch (p) {
@@ -105,9 +99,6 @@ export class Chat {
                     break;
             }
         }
-        //let msg = data.data;
-        //if (id > 0) await this.addToDesk(id);
-        //else await this.removeFromDesk(-id);
     }
     private dataToMsg(data:string):MessageState {
         let parts = data.split('\t');
@@ -143,48 +134,47 @@ export class Chat {
         let folder: Folder<Item>;
         switch (action) {
             default: return;
-            case '$desk': folder = this.desk; break;
-            case '$me': folder = this.sendFolder; break;
-            case '$pass': folder = this.passFolder; break;
-            case '$cc': folder = this.ccFolder; break;
-        }
-        if (message === undefined) {
-            //this.desk.changeState(id, branch, done);
-            //this.sendFolder.changeState(id, branch, done);
-            //this.passFolder.changeState(id, branch, done);
-            //this.ccFolder.changeState(id, branch, done);
-            folder.changeState(id, branch, done);
-            this.allFolder.changeState(id, branch, done);
-            return;
-        }
-        let {fromUser} = message;
-        this.tuidMessage.cacheItem(id, message);
-        let item = {id:id, read: 0, branch:branch, done:done};
-        switch (action) {
             case '$desk':
-                this.desk.addItem(item);
-                this.desk.scrollToBottom();
+                this.changeUread(1);
+                folder = this.desk;
                 break;
-            default:
-                folder.addItem(item);
+            case '$me': 
+                folder = this.sendFolder;
+                break;
+            case '$pass':
+                folder = this.passFolder;
+                break;
+            case '$cc':
+                folder = this.ccFolder;
                 break;
         }
-        this.allFolder.addItem(item);
-        /*
-        if (fromUser === nav.user.id) {
-            this.desk.addItem(item);
-            this.desk.scrollToBottom();
-            this.sendFolder.addItem(item);
+        // folder === undefined, then chat not loaded
+        if (folder === undefined) return;
+        if (message !== undefined) {
+            let {fromUser} = message;
+            this.tuidMessage.cacheItem(id, message);
+            this.tuidUser.useId(fromUser);
         }
-        else
-            this.passFolder.addItem(item);
-        this.allFolder.addItem(item);
-        */
+        let item = {id:id, read: 0, branch:branch, done:done};
+        this.allFolder.updateItem(item);
+        folder.updateItem(item);
+        folder.scrollToBottom();
+    }
+    private changeUread(delta:number) {
+        let unread = this.unit.unread;
+        if (unread !== undefined) {
+            unread += delta;
+            if (unread >= 0) {
+                this.unit.unread = unread;
+            }
+        }
     }
     private removeFromDesk(id:number) {
-        this.desk.remove(id);
+        this.changeUread(-1);
+        if (this.desk !== undefined) this.desk.remove(id);
     }
     private messageBeReaden(id:number) {
+        if (this.desk !== undefined) return;
         let msg = this.desk.items.find(v => v.id === id);
         if (msg !== undefined) msg.read = 1;
     }
@@ -193,8 +183,8 @@ export class Chat {
         let {id} = message;
         let item = {id:id, branch:branch, done:done};
         this.tuidMessage.cacheItem(id, message);
-        this.ccFolder.addItem(item);
-        this.allFolder.addItem(item);
+        this.ccFolder.updateItem(item);
+        this.allFolder.updateItem(item);
     }
     async newMessage(msg:any):Promise<number> {
         if (this.newMessageAction === undefined) {
@@ -211,6 +201,29 @@ export class Chat {
         return await this.newMessageAction.submit(msg);
     }
 
+    async loadFoldsUndone():Promise<void> {
+        let query = this.entities.query('getFolderUndone');
+        let ret = await query.query({});
+        let {unDesk, unMe, unPass, unCc} = ret.ret[0];
+        this.unit.unread = unDesk;
+        this.sendFolder.undone = unMe;
+        this.passFolder.undone = unPass;
+        this.ccFolder.undone = unCc;
+    }
+
+    async getMessage(id:number):Promise<any> {
+        let query = this.entities.query('getMessage');
+        let result = await query.query({msg:id});
+        let {ret, flow} = result;
+        if (ret.length === 0) return;
+        let r = ret[0];
+        return {
+            msg: ret[0],
+            flow: r.flow,
+            flows: flow,
+        }
+    }
+
     async getTemplets():Promise<Templet[]> {
         if (this.templets === undefined) {
             let query = this.entities.query('getTemplets');
@@ -220,12 +233,4 @@ export class Chat {
         }
         return this.templets;
     }
-
-/*
-    async loadMessages():Promise<boolean> {
-        let query = this.entities.queryArr.find(v => v.name === 'getmymessages');
-        await query.loadPage();
-        return true;
-    }
-*/
 }
