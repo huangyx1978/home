@@ -2,7 +2,7 @@
   "name": "tonva-home",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "/app",
   "dependencies": {
     "bootstrap": "^4.1.0",
     "classnames": "^2.2.5",
