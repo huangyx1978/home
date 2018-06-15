@@ -29,6 +29,7 @@ export class Folder<T extends Item> extends PagedItems<T> {
     private unit:Unit;
     private query:Query;
     @observable undone:number;
+    @observable doing:number;
 
     constructor(unit:Unit, query:Query) {
         super(true);
@@ -203,17 +204,6 @@ export class Unit {
         else {
             apps = ret.apps;
         }
-        /*
-        apps.unshift({
-            id: 0,
-            owner: 0,
-            ownerName: undefined,
-            ownerDiscription: undefined,
-            url: undefined,
-            name: '会话',
-            icon: undefined,
-            discription: '收到的信息',
-        });*/
         if (ret === undefined || ret.id === 0) {
             _.assign(ret, sysUnit);
         }
@@ -224,7 +214,7 @@ export class Unit {
     }
 
     async loadMessages(): Promise<void> {
-        await mainApi.readMessages(this.id);
+        mainApi.readMessages(this.id);
         this.messages.unread = 0;
         if (this.messages.items !== undefined) return;
         await this.messages.first(undefined);
@@ -255,13 +245,13 @@ export class Store {
     follow = new Fellow(this);
 
     async onWs(msg: any) {
-        let {$unit} = msg;
+        let {$unit, $io} = msg;
         this.units.forEach(async (unit, k) => {
             if ($unit !== unit.id) return;
+            if (unit !== this.unit) unit.unread += $io;
             let {chat} = unit;
             if (chat !== undefined) await chat.onWsMsg(msg);
         });
-        //let um = this.convertMessage(msg);
         if (msg.id === undefined) {
             // msgId=0，则是发送给界面的操作指令
             this.processCommand(msg);
@@ -370,10 +360,11 @@ export class Store {
                 this.unitArray.unshift(unit);
             }
         }
-        if (unit.apps === undefined) {
-            await unit.loadApps();
-        }
         this.unit = unit;
+        if (unit.unread > 0) {
+            unit.unread = 0;
+            await messageApi.messageRead(unit.id);
+        }
     }
 
     async unitCreate(name:string, msgId:number):Promise<number> {

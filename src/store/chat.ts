@@ -16,11 +16,21 @@ interface MessageState {
 export class Chat {
     private unit: Unit;
     private entities: Entities;
-    private newMessageAction: Action;
+
+    private action_newMessage: Action;
+    private action_readMessage: Action;
+    private action_actMessage: Action;
+    private query_getDesk: Query;
+    private query_getFolder: Query;
+    private query_getFolderUndone: Query;
+    private query_getMessage: Query;
+    private query_getTemplets: Query;
+
     private templets: Templet[];
     private userMeUploaded:boolean = false;
-    tuidMessage: Tuid;
-    tuidUser: Tuid;
+    private pushId = 0;
+    tuid_message: Tuid;
+    tuid_user: Tuid;
     desk: Desk;
     sendFolder: SendFolder;
     passFolder: PassFolder;
@@ -38,22 +48,29 @@ export class Chat {
         let access = '*';
         this.entities = new Entities(chatApi, access);
         await this.entities.loadEntities();
-        this.tuidMessage = this.entities.tuid('message');
-        this.tuidMessage.setItemObservable();
-        this.tuidUser = this.entities.tuid('user');
-        let query = this.entities.query('getDesk');
-        if (query === undefined) return false;
-        //await query.loadSchema();
-        //this.messages = new UnitMessages(this.unit, query);
-        //await this.messages.first(undefined);
-        this.desk = new Desk(this.unit, query);
+
+        await this.entities.loadSchemas(
+            this.tuid_message = this.entities.tuid('message'),
+            this.tuid_user = this.entities.tuid('user'),
+            this.action_readMessage = this.entities.action('readMessage'),
+            this.action_newMessage = this.entities.action('newMessage'),
+            this.action_actMessage = this.entities.action('actMessage'),
+            this.query_getDesk = this.entities.query('getDesk'),
+            this.query_getFolder = this.entities.query('getFolder'),
+            this.query_getFolderUndone = this.entities.query('getFolderUndone'),
+            this.query_getMessage = this.entities.query('getMessage'),
+            this.query_getTemplets = this.entities.query('getTemplets'),
+        );
+
+        this.tuid_message.setItemObservable();
+
+        this.desk = new Desk(this.unit, this.query_getDesk);
         await this.desk.first(undefined);
 
-        let getFolder = this.entities.query('getFolder');
-        this.sendFolder = new SendFolder(this.unit, getFolder);
-        this.passFolder = new PassFolder(this.unit, getFolder);
-        this.ccFolder = new CcFolder(this.unit, getFolder);
-        this.allFolder = new AllFolder(this.unit, getFolder);
+        this.sendFolder = new SendFolder(this.unit, this.query_getFolder);
+        this.passFolder = new PassFolder(this.unit, this.query_getFolder);
+        this.ccFolder = new CcFolder(this.unit, this.query_getFolder);
+        this.allFolder = new AllFolder(this.unit, this.query_getFolder);
 
         this.loadFoldsUndone();
         return true;
@@ -64,14 +81,12 @@ export class Chat {
     }
 
     async readMessage(id: number):Promise<void> {
-        let action = this.entities.action('readMessage');
-        await action.submit({msg: id});
+        await this.action_readMessage.submit({msg: id});
     }
 
     async actMessage(msg:Message, act:string, toState:string, to: {user:number}[]): Promise<void> {
-        let action = this.entities.action('actMessage');
         let {id} = msg;
-        await action.submit({
+        await this.action_actMessage.submit({
             msg: id,
             curState: toState,
             toState: '#',
@@ -81,7 +96,8 @@ export class Chat {
     }
 
     async onWsMsg(message: any):Promise<void> {
-        let {$type, msg, to, action, data} = message;
+        let {$type, $push, msg, to, action, data} = message;
+        this.pushId = $push;
         if ($type !== 'msg') return;
         if (!action) return;
         console.log('ws message: %s', JSON.stringify(message));
@@ -135,7 +151,7 @@ export class Chat {
         switch (action) {
             default: return;
             case '$desk':
-                this.changeUread(1);
+                //this.changeUread(1);
                 folder = this.desk;
                 break;
             case '$me': 
@@ -152,8 +168,8 @@ export class Chat {
         if (folder === undefined) return;
         if (message !== undefined) {
             let {fromUser} = message;
-            this.tuidMessage.cacheItem(id, message);
-            this.tuidUser.useId(fromUser);
+            this.tuid_message.cacheItem(id, message);
+            this.tuid_user.useId(fromUser);
         }
         let item = {id:id, read: 0, branch:branch, done:done};
         this.allFolder.updateItem(item);
@@ -170,7 +186,7 @@ export class Chat {
         }
     }
     private removeFromDesk(id:number) {
-        this.changeUread(-1);
+        //this.changeUread(-1);
         if (this.desk !== undefined) this.desk.remove(id);
     }
     private messageBeReaden(id:number) {
@@ -182,15 +198,11 @@ export class Chat {
         let {message, branch, done} = ms;
         let {id} = message;
         let item = {id:id, branch:branch, done:done};
-        this.tuidMessage.cacheItem(id, message);
+        this.tuid_message.cacheItem(id, message);
         this.ccFolder.updateItem(item);
         this.allFolder.updateItem(item);
     }
     async newMessage(msg:any):Promise<number> {
-        if (this.newMessageAction === undefined) {
-            this.newMessageAction = this.entities.action('newMessage');
-            await this.newMessageAction.loadSchema();
-        }
         if (this.userMeUploaded === false) {
             let {name, nick, icon} = nav.user;
             msg.meName = name;
@@ -198,22 +210,23 @@ export class Chat {
             msg.meIcon = icon;
             this.userMeUploaded = true;
         }
-        return await this.newMessageAction.submit(msg);
+        return await this.action_newMessage.submit(msg);
     }
 
     async loadFoldsUndone():Promise<void> {
-        let query = this.entities.query('getFolderUndone');
-        let ret = await query.query({});
-        let {unDesk, unMe, unPass, unCc} = ret.ret[0];
-        this.unit.unread = unDesk;
+        let ret = await this.query_getFolderUndone.query({});
+        let {unDesk, unMe, onMe, unPass, onPass, unCc, onCc} = ret.ret[0];
+        // this.unit.unread = unDesk;
         this.sendFolder.undone = unMe;
+        this.sendFolder.doing = onMe;
         this.passFolder.undone = unPass;
+        this.passFolder.doing = onPass;
         this.ccFolder.undone = unCc;
+        this.ccFolder.doing = onCc;
     }
 
     async getMessage(id:number):Promise<any> {
-        let query = this.entities.query('getMessage');
-        let result = await query.query({msg:id});
+        let result = await this.query_getMessage.query({msg:id});
         let {ret, flow} = result;
         if (ret.length === 0) return;
         let r = ret[0];
@@ -226,10 +239,8 @@ export class Chat {
 
     async getTemplets():Promise<Templet[]> {
         if (this.templets === undefined) {
-            let query = this.entities.query('getTemplets');
-            let ret = await query.query({});
+            let ret = await this.query_getTemplets.query({});
             this.templets = ret.ret;
-            //this.templets.unshift(...sysTemplets);
         }
         return this.templets;
     }

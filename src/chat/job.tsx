@@ -113,8 +113,8 @@ export class JobPage extends React.Component<JobPageProps, JobPageState> {
     render() {
         let {msg} = this.props;
         let {fromUser} = msg;
-        let {tuidMessage, tuidUser} = store.unit.chat;
-        let user = tuidUser.getId(fromUser);
+        let {tuid_message, tuid_user} = store.unit.chat;
+        let user = tuid_user.getId(fromUser);
         let rows:Prop[] = [
             {
                 label: '来自',

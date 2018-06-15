@@ -109,6 +109,9 @@ class TosInput extends React.Component<{}, TosInputState> {
     list: User[] = [];
     render() {
         let {tos, error} = this.state;
+        let holder = tos.length === 0?
+            '' : '';
+        
         let tosDiv;
         if (tos !== undefined && tos.length > 0) {
             tosDiv = <div className="form-control-plaintext"
@@ -135,8 +138,10 @@ class TosInput extends React.Component<{}, TosInputState> {
                 ref={input=>this.input=input} 
                 type="text" onKeyPress={this.keyPress} onKeyDown={this.keyDown}
                 onFocus={this.onFocus}
-                placeholder="用户名或者别名" />
-            <div style={{color:'red', fontSize:'smaller', marginTop:'0.2em'}}>{error}</div>
+                placeholder={holder} />
+            <div style={{color:'red', fontSize:'smaller', marginTop:'0.2em'}}>
+                {error}
+            </div>
         </>;
     }
 }

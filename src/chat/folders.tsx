@@ -1,7 +1,5 @@
 import * as React from 'react';
-import * as className from 'classnames';
 import {observer} from 'mobx-react';
-import {Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';
 import {store, Folder, Templet, sysTemplets, templetDict, UnitMessages, Item} from '../store';
@@ -9,24 +7,77 @@ import {Message} from '../model';
 import {UserSpan} from './userSpan';
 import {JobPage} from './job';
 
-export class Folders extends React.Component {
+export class MyFolders extends React.Component {
+    private async sendBox() {
+        let folder = store.unit.chat.sendFolder;
+        folder.scrollToBottom();
+        await folder.first({tag:'$me', undone: 1});
+        nav.push(<SendBox />);
+    }
+
+    private async passBox() {
+        let folder = store.unit.chat.passFolder;
+        folder.scrollToBottom();
+        await folder.first({tag:'$pass', undone: 1});
+        nav.push(<PassBox />);
+    }
+    
+    private async ccBox() {
+        let folder = store.unit.chat.ccFolder;
+        folder.scrollToBottom();
+        await folder.first({tag:'$cc', undone: 1});
+        nav.push(<CcBox />);
+    }
+    
+    render() {
+        let {desk, sendFolder, passFolder, ccFolder} = store.unit.chat;
+        let rows:Prop[] = [
+            '=',
+            {
+                type: 'component', 
+                component: <FolderRow icon="share-square-o" text="我发出任务" folder={sendFolder} />,
+                onClick: this.sendBox
+            },
+            {
+                type: 'component', 
+                component: <FolderRow icon="clipboard" text="我经手任务" folder={passFolder} />,
+                onClick: this.passBox
+            },
+            {
+                type: 'component', 
+                component: <FolderRow icon="cc" text="抄送我的" folder={ccFolder} />,
+                onClick: this.ccBox
+            },
+        ]
+        return <PropGrid rows={rows} values={{}} />;
+    }
+}
+
+interface FolderRowProps {
+    icon: string;
+    text: string;
+    folder: Folder<Item>;
+}
+@observer
+class FolderRow extends React.Component<FolderRowProps> {
+    render() {
+        let {icon, text, folder} = this.props;
+        let {doing, undone} = folder;
+        let right;
+        if (undone > 0) {
+            right = <>
+                <span className="badge badge-info">{doing}</span> 
+                <span className="badge badge-light">{undone}</span>
+            </>;
+        }
+        return <LMR className="w-100 align-items-center"
+            left={<IconText iconClass="text-primary" icon={icon} text={text} />}
+            right={right} />;
+    }
+}
+
+export class WholeFolders extends React.Component {
     private rows:Prop[] = [
-        '',
-        {
-            type: 'component', 
-            component: <IconText iconClass="text-primary" icon="share-square-o" text="我发出任务" />,
-            onClick: this.sendBox
-        },
-        {
-            type: 'component', 
-            component: <IconText iconClass="text-primary" icon="clipboard" text="我经手任务" />,
-            onClick: this.passBox
-        },
-        {
-            type: 'component', 
-            component: <IconText iconClass="text-primary" icon="cc" text="抄送我的" />,
-            onClick: this.ccBox
-        },
         '',
         {
             type: 'component', 
@@ -39,28 +90,6 @@ export class Folders extends React.Component {
             onClick: this.archiveBox
         },
     ];
-
-    private async sendBox() {
-        let folder = store.unit.chat.sendFolder;
-        folder.scrollToBottom();
-        await folder.first({tag:'$me'});
-        nav.push(<SendBox />);
-    }
-
-    private async passBox() {
-        let folder = store.unit.chat.passFolder;
-        folder.scrollToBottom();
-        await folder.first({tag:'$pass'});
-        nav.push(<PassBox />);
-    }
-    
-    private async ccBox() {
-        let folder = store.unit.chat.ccFolder;
-        folder.scrollToBottom();
-        await folder.first({tag:'$cc'});
-        nav.push(<CcBox />);
-    }
-    
     private async allBox() {
         let folder = store.unit.chat.allFolder;
         folder.scrollToBottom();
@@ -69,14 +98,11 @@ export class Folders extends React.Component {
     }
 
     private async archiveBox() {
-        //await store.unit.chat.archiveFolder.first({type:0});
         nav.push(<ArchiveBox />);
     }
 
     render() {
-        return <div>
-            <PropGrid rows={this.rows} values={{}} />
-        </div>;
+        return <PropGrid rows={this.rows} values={{}} />;
     }
 }
 
@@ -89,25 +115,18 @@ const light = {fontSize:'x-small', color:'lightgray'};
 class MsgRow extends React.Component<MsgRowProps> {
     render() {
         let userId = nav.user.id;
-        let {tuidMessage} = store.unit.chat;
+        let {tuid_message} = store.unit.chat;
         let {item} = this.props;
         let {id, branch, done} = item;
-        let msg:Message = tuidMessage.getId(id);
+        let msg:Message = tuid_message.getId(id);
         let rowCn = 'px-3 bg-white my-1';
         if (typeof msg === 'number') {
             return <LMR className={rowCn + ' py-2'}><small style={{color:'lightgray'}}>... {id} ...</small></LMR>;
         }
         let {date, type, fromUser, subject, discription, content} = msg;
-        let rc, rtext;
-        if (done<branch) {
-            rc = 'text-danger';
-            rtext = '待办';
-        }
-        else {
-            rc = 'text-success';
-            rtext = '完成';
-        }
-        let right = <small className={rc}>[{rtext}]</small>;
+        let right = done<branch?
+            <FA className="text-info" name="file-text-o" /> :
+            <FA className="text-success" name="check-circle" />;
         let dateDiv = <div style={light}><EasyDate date={date} /></div>;
         let header;
         if (fromUser != userId) {
@@ -136,43 +155,6 @@ class MsgRow extends React.Component<MsgRowProps> {
                 <div>{discription}</div>
             </div>
         </div>;
-/*
-        let tuid = store.unit.chat.tuidMessage;
-        let {id, branch, done} = this.props.item;
-        let msg = tuid.getId(id);
-        let rowCn = 'px-2 bg-white';
-        if (typeof msg === 'number') {
-            return <LMR className={rowCn + ' py-2'}><small style={{color:'lightgray'}}>... {id} ...</small></LMR>;
-        }
-        let {date, type, fromUser, subject, discription, content} = msg;
-        let disc, lines:string[];
-        if (discription !== undefined) {
-            lines = discription.split(lnRegx, 3);
-            if (lines.length === 3) {
-                lines.pop();
-                lines.push('...');
-            }
-            disc = <div className="chat-row-discription">{
-                lines.map((v,index) => <React.Fragment key={index}>{v}<br/></React.Fragment>)}
-            </div>
-        }
-        let right = <Muted className="text-right">
-            <UserSpan userIds={[fromUser]} /> <br/>
-            <small style={{fontSize:'smaller'}}><EasyDate date={date} /></small>
-        </Muted>;
-        let td = templetDict[type];
-        return <LMR className={rowCn + ' py-1'}
-            left={<FA className="text-info mt-1" name={(td && td.icon) || 'envelope'} fixWidth={true} />} 
-            right={right}>
-            {
-                done<branch? 
-                    <small className="text-danger">[待办] &nbsp;</small>:
-                    <small className="text-success">[完成] &nbsp;</small>
-            }
-            {subject || content}
-            {disc}
-        </LMR>;
-*/        
     }
 }
 
@@ -219,7 +201,7 @@ class FolderPage extends React.Component<FolderPageProps> {
     }
     clickMessage(item:Item) {
         let {id} = item;
-        let tuid = store.unit.chat.tuidMessage;
+        let tuid = store.unit.chat.tuid_message;
         let msg = tuid.getId(id);
         if (typeof msg === 'number') return;
         nav.push(<JobPage msg={msg} />);

@@ -7,7 +7,7 @@ import {store, templetDict} from '../store';
 import {DeskPage} from './desk';
 import {AppsPage} from './apps';
 import {JobsPage} from './jobs';
-import {Folders} from './folders';
+import {Queries} from './queries';
 
 const tabs:Tab[] = [
     {
@@ -18,13 +18,13 @@ const tabs:Tab[] = [
         })
     },
     {
-        title: '查看',
-        content: <Folders />,
-    },
-    {
-        title: '新任务',
+        title: '新建',
         content: <JobsPage />,
         //redDot: computed(()=>store.follow.newInvitesCount),
+    },
+    {
+        title: '查看',
+        content: <Queries />,
     },
     {
         title: '应用',
@@ -61,10 +61,7 @@ export class MainPage extends React.Component {
         let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = store.unit;
         if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
         let right;
-        if (isOwner === 1 || isAdmin === 1) {
-            right = <Button color="success" size="sm" onClick={()=>this.clickToAdmin()}>进入管理</Button>;
-        }
-        else if (id > 0) {
+        if (id > 0) {
             right = <DropdownActions actions={this.rightMenu} />;
         }
         return <Page tabs={tabs} header={store.unit.name} keepHeader={true} right={right} />;

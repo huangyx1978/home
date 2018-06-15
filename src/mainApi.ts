@@ -100,6 +100,9 @@ class MessageApi extends CenterApi {
     async messageUnread():Promise<any[]> {
         return await this.get('tie/message-unread', {});
     }
+    async messageRead(unit:number):Promise<any[]> {
+        return await this.get('tie/message-read', {unit: unit});
+    }
     async typeMessageCount():Promise<any[]> {
         return await this.get('tie/message-type-count', {});
     }

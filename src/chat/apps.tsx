@@ -24,6 +24,12 @@ export class AppsPage extends React.Component {
         this.renderRow = this.renderRow.bind(this);
         this.unleash = this.unleash.bind(this);
     }
+    async componentWillMount() {
+        let {unit} = store;
+        if (unit.apps === undefined) {
+            await unit.loadApps();
+        }
+    }
     async unleash() {
         if (confirm("真的要取消关注吗？") === false) return;
         await store.unfollowUnit();
@@ -78,32 +84,39 @@ export class AppsPage extends React.Component {
     render() {
         let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = store.unit;
         if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
-        let right;
+        let enterAdmins;
         if (isOwner === 1 || isAdmin === 1) {
-            right = <Button color="success" size="sm" onClick={()=>this.clickToAdmin()}>进入管理</Button>;
+            enterAdmins = <Button color="success align-self-start" size="sm" onClick={()=>this.clickToAdmin()}>进入管理</Button>
         }
-        else if (id > 0) {
-            right = <DropdownActions actions={this.rightMenu} />;
+        let appsView;
+        if (apps !== undefined) {
+            appsView = <List items={apps} item={{render:this.renderRow, onClick:this.appClick}} />;
         }
-        //<Page header={name} right={right}>
         return <div>
-            <div className='apps-list-top'>
-                <img src={icon || consts.appItemIcon} />
-                <div>
-                    <header>{name}</header>
-                    <div>
-                        <label>简介：</label>
-                        <span>{discription}</span>
+            <div className="my-3 container-fluid">
+                <div className="row no-gutters">
+                    <div className="col-sm-2">
+                        <img src={icon || consts.appItemIcon} />
                     </div>
-                    <div>
-                        <label>发布者：</label>
-                        <span>{ownerName} {ownerNick}</span>
+                    <div className="col-sm-8">
+                        <div className="row">
+                            <h5 className="col-sm-12">{name}</h5>
+                        </div>
+                        <div className="row">
+                            <label className="col-sm-3">简介：</label>
+                            <div className="col-sm-9">{discription || '无'}</div>
+                        </div>
+                        <div className="row">
+                            <label className="col-sm-3">发布者：</label>
+                            <div className="col-sm-9">{ownerName} {ownerNick}</div>
+                        </div>
+                    </div>
+                    <div className="col-sm-2 d-flex justify-content-end">
+                        {enterAdmins}
                     </div>
                 </div>
             </div>
-            <List items={apps} item={{render:this.renderRow, onClick:this.appClick}} />
+            {appsView}
         </div>;
-        //</Page>;
-        // <ListView items={apps} converter={this.appConverter} itemClick={this.appClick} />
     }
 }

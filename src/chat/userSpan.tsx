@@ -10,10 +10,10 @@ export interface UserSpanProps {
 @observer
 export class UserSpan extends React.Component<UserSpanProps> {
     render() {
-        let {tuidUser} = store.unit.chat;
+        let {tuid_user} = store.unit.chat;
         return <>{
         this.props.userIds.map(id=> {
-            let user:User = tuidUser.getId(id);
+            let user:User = tuid_user.getId(id);
             return <small key={id}>
                 {user === undefined? id : user.nick || user.name}
             </small>;
