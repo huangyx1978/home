@@ -9,8 +9,10 @@ import {Message} from '../model';
 interface MessageState {
     id: number;
     message: Message;
-    branch:number;
-    done:number;
+    branch: number;
+    done: number;
+    prevState: string;
+    state: string;
 }
 
 export class Chat {
@@ -65,6 +67,7 @@ export class Chat {
         this.tuid_message.setItemObservable();
 
         this.desk = new Desk(this.unit, this.query_getDesk);
+        this.desk.scrollToBottom();
         await this.desk.first(undefined);
 
         this.sendFolder = new SendFolder(this.unit, this.query_getFolder);
@@ -94,7 +97,15 @@ export class Chat {
             to: to
         });
     }
-
+/*
+    done(msgId: number) {
+        this.desk.done(msgId);
+        this.sendFolder.done(msgId);
+        this.passFolder.done(msgId);
+        this.ccFolder.done(msgId);
+        this.allFolder.done(msgId);
+    }
+*/
     async onWsMsg(message: any):Promise<void> {
         let {$type, $push, msg, to, action, data} = message;
         this.pushId = $push;
@@ -124,6 +135,8 @@ export class Chat {
         let date = toDate(parts[4]);
         let branch = toNum(parts[8]);
         let done = toNum(parts[9]);
+        let prevState = parts[10];
+        let state = parts[11];
         
         let m:Message;
         if (date !== undefined) m = {
@@ -142,11 +155,13 @@ export class Chat {
             id: id,
             message: m,
             branch: branch,
-            done: done
+            done: done,
+            prevState: prevState,
+            state: state,
         };
     };
     private to(action:string, ms:MessageState) {
-        let {id, message, branch, done} = ms;
+        let {id, message, branch, done, prevState, state} = ms;
         let folder: Folder<Item>;
         switch (action) {
             default: return;
@@ -171,9 +186,17 @@ export class Chat {
             this.tuid_message.cacheItem(id, message);
             this.tuid_user.useId(fromUser);
         }
-        let item = {id:id, read: 0, branch:branch, done:done};
-        this.allFolder.updateItem(item);
+        let item = {
+            id:id, 
+            read: 0, 
+            branch:branch, 
+            done:done, 
+            prevState: prevState, 
+            state: state
+        };
+        this.allFolder.updateItem(item, false);
         folder.updateItem(item);
+        //folder.done()
         folder.scrollToBottom();
     }
     private changeUread(delta:number) {
@@ -193,14 +216,6 @@ export class Chat {
         if (this.desk === undefined) return;
         let msg = this.desk.items.find(v => v.id === id);
         if (msg !== undefined) msg.read = 1;
-    }
-    private cc(ms:MessageState) {
-        let {message, branch, done} = ms;
-        let {id} = message;
-        let item = {id:id, branch:branch, done:done};
-        this.tuid_message.cacheItem(id, message);
-        this.ccFolder.updateItem(item);
-        this.allFolder.updateItem(item);
     }
     async newMessage(msg:any):Promise<number> {
         if (this.userMeUploaded === false) {

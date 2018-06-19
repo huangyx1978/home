@@ -66,7 +66,7 @@ class FolderRow extends React.Component<FolderRowProps> {
         let right;
         if (undone > 0) {
             right = <>
-                <span className="badge badge-info">{doing}</span> 
+                {doing>0? <span className="badge badge-info">{doing}</span>:undefined}
                 <span className="badge badge-light">{undone}</span>
             </>;
         }
@@ -117,7 +117,7 @@ class MsgRow extends React.Component<MsgRowProps> {
         let userId = nav.user.id;
         let {tuid_message} = store.unit.chat;
         let {item} = this.props;
-        let {id, branch, done} = item;
+        let {id, branch, done, flow} = item;
         let msg:Message = tuid_message.getId(id);
         let rowCn = 'px-3 bg-white my-1';
         if (typeof msg === 'number') {
@@ -125,7 +125,7 @@ class MsgRow extends React.Component<MsgRowProps> {
         }
         let {date, type, fromUser, subject, discription, content} = msg;
         let right = done<branch?
-            <FA className="text-info" name="file-text-o" /> :
+            flow && <FA className="text-info" name="file-text-o" /> :
             <FA className="text-success" name="check-circle" />;
         let dateDiv = <div style={light}><EasyDate date={date} /></div>;
         let header;

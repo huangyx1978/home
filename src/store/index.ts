@@ -18,12 +18,16 @@ const sysUnit:StickyUnit = {
     nick: undefined,
     discription: '同花平台',
     icon: undefined,
+    date: undefined,
 }
 
 export interface Item {
     id: number;
     branch: number;
     done: number;
+    prevState: string;
+    state: string;
+    flow?: number;  // 如果undefined，则不是我当下需要处理的
 }
 export class Folder<T extends Item> extends PagedItems<T> {
     private unit:Unit;
@@ -53,23 +57,53 @@ export class Folder<T extends Item> extends PagedItems<T> {
         let item = this._items.find(v => v.id === id);
         if (item !== undefined) this.items.remove(item);
     }
-    updateItem(item:T) {
-        let {id, branch, done} = item;
+    updateItem(item:T, doneDelete: boolean = true) {
+        let {id, branch, done, flow, prevState, state} = item;
         if (this.loaded === true) {
-            let _item = this._items.find(v => v.id === id);
-            if (_item !== undefined) {
-                _item.branch = branch;
-                _item.done = done;
+            let index = this._items.findIndex(v => v.id === id);
+            if (index < 0) {
+                if (done < branch) {
+                    this.append(item);
+                    this.undone++;
+                }
             }
             else {
-                this.append(item);
+                let _item = this._items[index];
+                if (doneDelete === true) {
+                    if (done >= branch) {
+                        item.done = done;
+                        this.undone--;
+                        this._items.splice(index, 1);
+                    }
+                }
+                _item.branch = branch;
+                _item.done = done;
+                _item.flow = flow;
             }
         }
         else {
             if (done<branch) this.undone++;
             else this.undone--;
         }
+        if (state.startsWith('#')) this.doing--;
+        if (!prevState) this.doing++;
+}
+/*
+    done(id:number) {
+        let index = this._items.findIndex(v => v.id === id);
+        if (index < 0) return;
+        let item = this._items[index];
+        if (item === undefined) return;
+        let {done, branch} = item;
+        ++done;
+        this.doing--;
+        if (done >= branch) {
+            item.done = done;
+            this.undone--;
+            this._items.splice(index, 1);
+        }
     }
+*/
     /*
     changeState(id:number, branch:number, done:number) {
         let item = this._items.find(v => v.id === id);
@@ -170,6 +204,7 @@ export class Unit {
     ownerIcon: string;
     @observable apps: App[];
     @observable unread: number;
+    @observable date: Date;
     messages: UnitMessages;
     chat: Chat;
 
@@ -246,9 +281,13 @@ export class Store {
 
     async onWs(msg: any) {
         let {$unit, $io} = msg;
+        let now = new Date;
         this.units.forEach(async (unit, k) => {
             if ($unit !== unit.id) return;
-            if (unit !== this.unit) unit.unread += $io;
+            if (unit !== this.unit) {
+                unit.unread += $io;
+                unit.date = now;
+            }
             let {chat} = unit;
             if (chat !== undefined) await chat.onWsMsg(msg);
         });
@@ -323,17 +362,25 @@ export class Store {
             switch (s.type) {
                 case 3: 
                     let u = s.obj = t4.find(v => v.id === s.objId);
-                    let id = u.id;
+                    let {id, name, discription, icon, unread, date} = u;
                     let unit = new Unit(id);
-                    unit.name = u.name;
-                    unit.discription = u.discription;
-                    unit.icon = u.icon;
+                    unit.name = name;
+                    unit.discription = discription;
+                    unit.icon = icon;
+                    unit.unread = unread;
+                    unit.date = date;
                     this.units.set(id, unit);
                     break;
             }
         }
         this.stickies.push(...t0);
-        this.addSysUnitStick();
+        let sys = ret[5][0];
+        let sysUnread, sysDate;
+        if (sys !== undefined) {
+            sysUnread = sys.unread;
+            sysDate = sys.date;
+        }
+        this.addSysUnitStick(sysUnread, sysDate);
     }
 
     async newUnit(unitId:number):Promise<Unit> {
@@ -361,9 +408,13 @@ export class Store {
             }
         }
         this.unit = unit;
-        if (unit.unread > 0) {
-            unit.unread = 0;
-            await messageApi.messageRead(unit.id);
+    }
+
+    async setUnitRead() {
+        let {unread, id} = this.unit;
+        if (unread > 0) {
+            await messageApi.messageRead(id);
+            this.unit.unread = 0;
         }
     }
 
@@ -383,6 +434,7 @@ export class Store {
                 nick: undefined,
                 discription: undefined,
                 icon: undefined,
+                date: undefined,
             };
             this.stickies.push({
                 id: sticky,
@@ -404,8 +456,22 @@ export class Store {
         if (sticky !== undefined) this.stickies.unshift(sticky);
     }
 
-    private addSysUnitStick() {
-        //if (this.stickies === undefined) this.stickies = []; // return;
+    private addSysUnitStick(unread:number, date:Date) {
+        if (unread === undefined || unread <= 0) return;
+        let unit0 = this.units.get(0);
+        if (unit0 === undefined) {
+            unit0 = _.clone(sysUnit) as any;
+        }
+        unit0.unread = unread;
+        unit0.date = date;
+        this.stickies.unshift({
+            id: 0,
+            date: date,
+            type: 0,
+            objId: 0,
+            obj: unit0,
+        });
+        return;
 
         let index = this.stickies.findIndex(v => (v.type === 0 || v.type === 3) && v.objId === 0);
         if (index < 0) {
@@ -439,7 +505,9 @@ export class Store {
             if (unit === undefined) unit = await this.newUnit(unitId);
             unit.unread = unread;
             //unit.messages.unread = unread;
-            if (unitId === 0 && count > 0) this.addSysUnitStick();
+            if (unitId === 0 && (unread>0 || count > 0)) {
+                this.addSysUnitStick(0, undefined);
+            } 
         }
     }
 

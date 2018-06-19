@@ -31,6 +31,10 @@ class Home extends React.Component {
             return;
         }
         nav.push(<MainPage />);
+        nav.regConfirmClose(async () => {
+            store.setUnitRead();
+            return true;
+        });
     }
     private stickyRender(s:Sticky, index:number):JSX.Element {
         let {type, date, objId, obj} = s;
@@ -38,6 +42,7 @@ class Home extends React.Component {
         let unit = store.units.get(objId);
         if (unit !== undefined) {
             unread = unit.unread;
+            date = unit.date;
             //unread = messages === undefined? 0 : messages.unread;
         }
         switch (type) {
@@ -62,7 +67,7 @@ class Home extends React.Component {
         */
     }
     private stickyUnit(date:Date, unit:StickyUnit, unread:number):JSX.Element {
-        let {name, nick, discription, icon} = unit;
+        let {name, nick, discription, icon, date:uDate} = unit;
         return <LMR className="p-2"
             left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}
             right={<small className="text-muted"><EasyDate date={date} /></small>}

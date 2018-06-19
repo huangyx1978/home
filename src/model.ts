@@ -4,6 +4,7 @@ export interface StickyUnit {
     nick: string;
     discription: string;
     icon: string;
+    date: Date;
 }
 
 export interface StickyGroup {

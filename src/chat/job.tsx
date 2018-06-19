@@ -41,6 +41,7 @@ export class JobPage extends React.Component<JobPageProps, JobPageState> {
     private async finish() {
         let {msg} = this.props;
         await store.unit.chat.actMessage(msg, 'done', '#', [{user:0}]);
+        //store.unit.chat.done(msg.id);
         nav.pop();
     }
     private async decline() {

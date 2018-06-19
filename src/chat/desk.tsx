@@ -31,10 +31,10 @@ export class DeskPage extends React.Component {
         this.clickMessage = this.clickMessage.bind(this);
     }
 
-    componentDidUpdate() {
+    componentDidMount() {
         let bd = store.unit.chat.desk.bottomDiv;
         let el = document.getElementById(bd);
-        if (el) el.scrollIntoView();
+        //if (el) el.scrollIntoView();
     }
     private async clickMessage(deskItem:DeskItem) {
         let {id, read} = deskItem;
