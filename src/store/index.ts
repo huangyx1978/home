@@ -45,7 +45,8 @@ export class Folder<T extends Item> extends PagedItems<T> {
     protected  async load():Promise<T[]> {
         await this.query.loadSchema();
         let ret = await this.query.page(this.param, this.pageStart, this.pageSize);
-        return ret['$page'];
+        //let arr = ret['$page'];
+        return ret;
     }
     protected setPageStart(item:T) {
         if (item === undefined)
