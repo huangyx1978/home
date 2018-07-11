@@ -13,8 +13,6 @@ import Find from './find';
 import Me from './me';
 import HaoSearch from './haoSearch';
 
-const ws = new WSChannel(process.env.REACT_APP_WSHOST, undefined);
-
 const tabs:Tab[] = [
     {
         title: '同花',
@@ -47,8 +45,9 @@ const tabs:Tab[] = [
     }
 ];
 
-export default class View extends React.Component<{}, null> {
-    private wsId:number;  
+export default class AppView extends React.Component<{}, null> {
+    private rcvHandler: number;
+    private addXiaoHao = () => nav.push(<HaoSearch />);
     private rightMenu:Action[] = [
         {
             caption: '添加小号',
@@ -58,24 +57,17 @@ export default class View extends React.Component<{}, null> {
     ];
     constructor(props) {
         super(props);
-        this.addXiaoHao = this.addXiaoHao.bind(this);
-        this.onWs = this.onWs.bind(this);
     }
     async componentDidMount() {
-        await ws.connect();
-        this.wsId = ws.onWsReceiveAny(this.onWs);
+        this.rcvHandler = nav.registerReceiveHandler(this.onWs);
         // await store.loadMessageUnread();
     }
-    private async onWs(msg:any):Promise<void> {
+    private onWs = async (msg:any):Promise<void> => {
         console.log('ws received: %s' + msg);
         store.onWs(msg);
     }
     componentWillUnmount() {
-        ws.endWsReceive(this.wsId);
-        ws.close();
-    }
-    addXiaoHao() {
-        nav.push(<HaoSearch />);
+        nav.unregisterReceiveHandler(this.rcvHandler);
     }
     render() {
         let loc = parent===null? 'null':parent.location.href;
