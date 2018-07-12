@@ -63,6 +63,7 @@ export class AppsPage extends React.Component {
                             },
                         });
                         url = urlDebug;
+                        console.log('urlDebug %s is ok', urlDebug);
                     }
                     catch (err) {
                         console.log('urlDebug %s not run, use %s', urlDebug, url);
