@@ -11,6 +11,11 @@ import mainApi from '../mainApi';
 
 @observer
 export class AppsPage extends React.Component {
+    unleash = async () => {
+        if (confirm("真的要取消关注吗？") === false) return;
+        await store.unfollowUnit();
+        nav.pop();
+    }
     private rightMenu:Action[] = [
         {
             caption: '取消关注',
@@ -18,24 +23,13 @@ export class AppsPage extends React.Component {
             action: this.unleash,
         }
     ];
-    constructor(props) {
-        super(props);
-        this.appClick = this.appClick.bind(this);
-        this.renderRow = this.renderRow.bind(this);
-        this.unleash = this.unleash.bind(this);
-    }
     async componentWillMount() {
         let {unit} = store;
         if (unit.apps === undefined) {
             await unit.loadApps();
         }
     }
-    async unleash() {
-        if (confirm("真的要取消关注吗？") === false) return;
-        await store.unfollowUnit();
-        nav.pop();
-    }
-    async appClick(app:App) {
+    appClick = async (app:App) => {
         let unitId = store.unit.id;
         let appId = app.id;
         if (appId === 0) {
@@ -50,16 +44,35 @@ export class AppsPage extends React.Component {
             //nav.navToApp('http://localhost:3016/', unitId);
         }
         else {
-            let url = app.url;
+            let {url, urlDebug} = app;
             if (url === undefined) {
                 alert('APP: ' + app.name + '\n' + app.discription + '\n尚未绑定服务');
+                return;
             }
             else {
+                if (urlDebug !== undefined
+                    && document.location.hostname === 'localhost')
+                {
+                    try {
+                        let urlTry = urlDebug + 'manifest.json';
+                        let ret = await fetch(urlTry, {
+                            method: "GET",
+                            mode: "no-cors", // no-cors, cors, *same-origin
+                            headers: {
+                                "Content-Type": "text/plain"
+                            },
+                        });
+                        url = urlDebug;
+                    }
+                    catch (err) {
+                        console.log('urlDebug %s not run, use %s', urlDebug, url);
+                    }
+                }
                 nav.navToApp(url, unitId);
             }
         }
     }
-    private renderRow(app:App, index:number):JSX.Element {
+    private renderRow = (app:App, index:number):JSX.Element => {
         let {id:appId, name, icon, discription} = app;
         let unread:number = undefined;
         if (appId === 0) {
@@ -74,7 +87,7 @@ export class AppsPage extends React.Component {
             <small className="text-muted">{discription}</small>
         </LMR>;
     }
-    async clickToAdmin() {
+    clickToAdmin = async () => {
         let adminApp = await store.getAdminApp();
         //nav.push(<UnitMan {...this.props} />);
         let unitId = store.unit.id;

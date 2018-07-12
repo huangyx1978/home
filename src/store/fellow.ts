@@ -1,5 +1,5 @@
 import {observable, computed} from 'mobx';
-import mainApi, { messageApi } from '../mainApi';
+import mainApi from '../mainApi';
 import {Message} from '../model';
 import { Store } from './index';
 

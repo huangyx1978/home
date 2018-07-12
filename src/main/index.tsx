@@ -45,9 +45,9 @@ const tabs:Tab[] = [
     }
 ];
 
-export default class AppView extends React.Component<{}, null> {
+export default class AppView extends React.Component {
     private rcvHandler: number;
-    private addXiaoHao = () => nav.push(<HaoSearch />);
+    private addXiaoHao = async () => nav.push(<HaoSearch />);
     private rightMenu:Action[] = [
         {
             caption: '添加小号',
@@ -55,9 +55,6 @@ export default class AppView extends React.Component<{}, null> {
             action: this.addXiaoHao,
         }
     ];
-    constructor(props) {
-        super(props);
-    }
     async componentDidMount() {
         this.rcvHandler = nav.registerReceiveHandler(this.onWs);
         // await store.loadMessageUnread();

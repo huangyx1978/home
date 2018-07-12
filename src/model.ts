@@ -42,6 +42,7 @@ export interface App {
     ownerName: string;
     ownerDiscription: string;
     url: string;
+    urlDebug: string;
     apis?: {[name:string]: Api};
 }
 

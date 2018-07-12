@@ -112,4 +112,4 @@ class MessageApi extends CenterApi {
     }
 }
 
-export const messageApi = new MessageApi('tv/', undefined, false);
+export const messageApi = new MessageApi('tv/', false);
