@@ -33,7 +33,6 @@ export class TieApps extends React.Component {
         let unitId = store.unit.id;
         let appId = app.id;
         if (appId === 0) {
-            nav.debug();
             let api = new Api(undefined, undefined, undefined, undefined, undefined);
             let chat = await store.unit.chat;
             if (await chat.load() === false) {

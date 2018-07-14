@@ -19,7 +19,6 @@ class Home extends React.Component {
     }
     async componentDidMount() {
         await store.loadStickies();
-        nav.debug();
     }
     async stickyClick(item:Sticky) {
         let objId = item.objId;
