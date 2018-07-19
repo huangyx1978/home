@@ -88,6 +88,10 @@ class MainApi extends CenterApi {
     async membersFromName(param: {unit:number; name:string}):Promise<any[]> {
         return await this.get('unit/members-from-name', param);
     }
+
+    async resetPassword(param: {orgPassword:string, newPassword:string}) {
+        return await this.post('tie/reset-password', param);
+    }
 }
 
 const mainApi = new MainApi('tv/', undefined);

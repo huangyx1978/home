@@ -30,7 +30,7 @@ class Me extends React.Component {
         }
     }
     private about() {
-        let right = <button className='btn btn-success' onClick={this.showLogs}>log</button>;
+        let right = <button className='btn btn-success btn-sm' onClick={this.showLogs}>log</button>;
         nav.push(<Page header="关于同花" right={right}>
             <About />
         </Page>);
@@ -105,6 +105,9 @@ class Me extends React.Component {
         </Page>);
         return;
     }
+    private changePassword = () => {
+        nav.push(<ChangePasswordPage />);
+    }
     render() {
         const {user} = nav;
         let rows:Prop[] = [
@@ -118,6 +121,12 @@ class Me extends React.Component {
                 type: 'component', 
                 component: <IconText iconClass="text-info" icon="envelope" text="申请" />,
                 onClick: this.apply
+            },
+            '',
+            {
+                type: 'component', 
+                component: <IconText iconClass="text-info" icon="envelope" text="修改密码" />,
+                onClick: this.changePassword
             },
             '',
             {
@@ -136,6 +145,55 @@ class Me extends React.Component {
             },
         ];
         return <PropGrid rows={rows} values={{}} />;
+    }
+}
+
+class ChangePasswordPage extends React.Component {
+    private form: TonvaForm;
+    private onSubmit = async (values:any):Promise<SubmitResult> => {
+        let {formView} = this.form;
+        let {orgPassword, newPassword, newPassword1} = values;
+        if (newPassword !== newPassword1) {
+            formView.setError('newPassword1', '新密码错误，请重新输入');
+            return;
+        }
+        let ret = await mainApi.resetPassword({orgPassword: orgPassword, newPassword:newPassword});
+        if (ret === false) {
+            formView.setError('orgPassword', '原密码错误');
+            return;
+        }
+        nav.replace(<Page header="修改密码" back="close">
+            <div className="m-3  text-success">
+                密码修改成功！
+            </div>
+        </Page>);
+        return;
+    }
+    render() {
+        let rows = [
+            {
+                label: '原密码', 
+                field: {name:'orgPassword', type: 'string', maxLength: 60, required: true},
+                face: {type: 'password', placeholder: '输入原来的密码'}
+            },
+            {
+                label: '新密码', 
+                field: {name:'newPassword', type: 'string', maxLength: 60, required: true},
+                face: {type: 'password', placeholder: '输入新设的密码'}
+            },
+            {
+                label: '确认密码', 
+                field: {name:'newPassword1', type: 'string', maxLength: 60, required: true},
+                face: {type: 'password', placeholder: '再次输入新设密码'}
+            },
+        ];
+        return <Page header="修改密码">
+            <TonvaForm 
+                ref={tf => this.form = tf}
+                className="m-3" 
+                formRows={rows} 
+                onSubmit={this.onSubmit} />
+        </Page>;
     }
 }
 

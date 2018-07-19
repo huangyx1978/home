@@ -40,36 +40,9 @@ export class AppsPage extends React.Component {
                 return;
             }
             nav.push(<MainPage />);
-            //nav.navToApp('http://localhost:3016/', unitId);
         }
         else {
-            let {url, urlDebug} = app;
-            if (url === undefined) {
-                alert('APP: ' + app.name + '\n' + app.discription + '\n尚未绑定服务');
-                return;
-            }
-            else {
-                if (urlDebug !== undefined
-                    && document.location.hostname === 'localhost')
-                {
-                    try {
-                        let urlTry = urlDebug + 'manifest.json';
-                        let ret = await fetch(urlTry, {
-                            method: "GET",
-                            mode: "no-cors", // no-cors, cors, *same-origin
-                            headers: {
-                                "Content-Type": "text/plain"
-                            },
-                        });
-                        url = urlDebug;
-                        console.log('urlDebug %s is ok', urlDebug);
-                    }
-                    catch (err) {
-                        console.log('urlDebug %s not run, use %s', urlDebug, url);
-                    }
-                }
-                nav.navToApp(url, unitId);
-            }
+            this.navToApp(app, unitId);
         }
     }
     private renderRow = (app:App, index:number):JSX.Element => {
@@ -89,10 +62,40 @@ export class AppsPage extends React.Component {
     }
     clickToAdmin = async () => {
         let adminApp = await store.getAdminApp();
-        //nav.push(<UnitMan {...this.props} />);
         let unitId = store.unit.id;
-        isBridged();
-        nav.navToApp(adminApp.url, unitId);
+        //nav.push(<UnitMan {...this.props} />);
+        //isBridged();
+        //nav.navToApp(adminApp.url, unitId);
+        this.navToApp(adminApp, unitId);
+    }
+    private async navToApp(app, unitId) {
+        let {url, urlDebug} = app;
+        if (url === undefined) {
+            alert('APP: ' + app.name + '\n' + app.discription + '\n尚未绑定服务');
+            return;
+        }
+        else {
+            if (urlDebug !== undefined
+                && document.location.hostname === 'localhost')
+            {
+                try {
+                    let urlTry = urlDebug + 'manifest.json';
+                    let ret = await fetch(urlTry, {
+                        method: "GET",
+                        mode: "no-cors", // no-cors, cors, *same-origin
+                        headers: {
+                            "Content-Type": "text/plain"
+                        },
+                    });
+                    url = urlDebug;
+                    console.log('urlDebug %s is ok', urlDebug);
+                }
+                catch (err) {
+                    console.log('urlDebug %s not run, use %s', urlDebug, url);
+                }
+            }
+            nav.navToApp(url, unitId);
+        }
     }
     render() {
         let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = store.unit;
