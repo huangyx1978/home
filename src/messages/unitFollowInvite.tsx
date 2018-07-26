@@ -5,9 +5,9 @@ import {observer} from 'mobx-react';
 import {Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';
-import {Message} from '../model';
-import {UnitSpan, UserSpan} from '../tools';
-import {store} from '../store';
+import {Message} from 'model';
+import {UnitSpan, UserSpan} from 'tools';
+import {store} from 'store';
 import {tagStyle, tagEndStyle} from './message';
 
 export class UnitFollowInvite extends React.Component<{msg: Message}> {

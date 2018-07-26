@@ -6,7 +6,7 @@ import {Action, DropdownActions} from 'tonva-react-form';
 import {ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
     Row, Col, Button, Form, FormGroup, Label, Input, 
     FormText, FormFeedback} from 'reactstrap';
-import {store} from '../store';
+import {store} from 'store';
 import Home from './home';
 import Follow from './follow';
 import Find from './find';

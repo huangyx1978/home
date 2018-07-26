@@ -1,14 +1,13 @@
 import {observable, computed} from 'mobx';
 import * as _ from 'lodash';
-import {PagedItems, Page, ChatApi, AppApi, CacheIds} from 'tonva-tools';
-import consts from '../consts';
-import mainApi, { messageApi } from '../mainApi';
-import {Sticky, Tie, App, Message, StickyUnit} from '../model';
+import {PagedItems, Page, UnitxApi, AppApi, CacheIds} from 'tonva-tools';
+import { Entities, Query, Tuid } from 'tonva-react-usql-entities';
+import consts from 'consts';
+import mainApi, { messageApi } from 'mainApi';
+import {Sticky, Tie, App, Message, StickyUnit} from 'model';
 import {Fellow} from './fellow';
 import {CacheUsers, CacheUnits} from './cacheIds';
-import me from '../main/me';
-import { Entities, Query, Tuid } from 'tonva-react-usql-entities';
-import {Chat} from './chat';
+import {Unitx} from './unitx';
 export * from './templet';
 export * from './sysTemplets';
 
@@ -197,8 +196,16 @@ export class Unit {
     discription: string;
     nick: string;
     icon: string;
-    isOwner: number;
-    isAdmin: number;
+    private _isOwner:number;
+    get isOwner(): number {return this._isOwner;}
+    set isOwner(value:number) {
+        this._isOwner=value;
+    }
+    private _isAdmin:number;
+    get isAdmin(): number {return this._isAdmin;}
+    set isAdmin(value:number) {
+        this._isAdmin = value;
+    }
     owner: number;
     ownerName: string;
     ownerNick: string;
@@ -207,12 +214,12 @@ export class Unit {
     @observable unread: number;
     @observable date: Date;
     messages: UnitMessages;
-    chat: Chat;
+    unitx: Unitx;
 
     constructor(id:number) {
         this.id = id;
         this.messages = new UnitMessages(this, undefined);
-        this.chat = new Chat(this);
+        this.unitx = new Unitx(this);
     }
 
     async loadProps(): Promise<void> {
@@ -240,12 +247,14 @@ export class Unit {
         else {
             apps = ret.apps;
         }
-        if (ret === undefined || ret.id === 0) {
+        if (ret === undefined) {
+            ret = {};
             _.assign(ret, sysUnit);
         }
-        else {
-            _.assign(this, ret);
+        else if (ret.id === 0) {
+            _.assign(ret, sysUnit);
         }
+        _.assign(this, ret);
         this.apps = apps;
     }
 
@@ -289,8 +298,8 @@ export class Store {
                 unit.unread += $io;
                 unit.date = now;
             }
-            let {chat} = unit;
-            if (chat !== undefined) await chat.onWsMsg(msg);
+            let {unitx} = unit;
+            if (unitx !== undefined) await unitx.onWsMsg(msg);
         });
         if (msg.id === undefined) {
             // msgId=0，则是发送给界面的操作指令

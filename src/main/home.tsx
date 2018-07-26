@@ -1,14 +1,12 @@
 import * as React from 'react';
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
-import * as classNames from 'classnames';
 import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA} from 'tonva-react-form';
 import {nav, Page} from 'tonva-tools';
 import consts from '../consts';
 import {store} from '../store';
-import {MainPage} from '../chat';
+import {MainPage} from '../unitx';
 import {Sticky, StickyUnit} from '../model';
-import { Fragment } from 'react';
 
 @observer
 class Home extends React.Component {
@@ -23,10 +21,8 @@ class Home extends React.Component {
     async stickyClick(item:Sticky) {
         let objId = item.objId;
         await store.setUnit(objId);
-        //nav.push(<TieApps />);
-        let chat = await store.unit.chat;
-        if (await chat.load() === false) {
-            alert('chat api 创建出错');
+        let unitx = await store.unit.unitx;
+        if (await unitx.load() === false) {
             return;
         }
         nav.push(<MainPage />);
@@ -52,18 +48,6 @@ class Home extends React.Component {
                 if (obj === undefined) return;
                 return this.stickyUnit(date, obj as StickyUnit, unread);
         }
-        /*
-        let unread:number;
-        if (type === 0 || type === 3) { // unit
-        }
-        return <LMR className="p-2"
-            left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}
-            right={<small className="text-muted"><EasyDate date={date} /></small>}
-        >
-            <b>{main}</b>
-            <small className="text-muted">{ex}</small>
-        </LMR>;
-        */
     }
     private stickyUnit(date:Date, unit:StickyUnit, unread:number):JSX.Element {
         let {name, nick, discription, icon, date:uDate} = unit;

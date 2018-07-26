@@ -3,9 +3,9 @@ import {Card, CardHeader, CardBody, CardText, CardTitle, Button,
     Container, Row, Col} from 'reactstrap';
 import {Media, PropGrid, Prop, FA, IconText, TonvaForm, FormRow, SubmitResult, Fields} from 'tonva-react-form';
 import {nav, User, Page} from 'tonva-tools';
-import {store} from '../store';
-import consts from '../consts';
-import mainApi from '../mainApi';
+import {store} from 'store';
+import consts from 'consts';
+import mainApi from 'mainApi';
 import {About} from './about';
 
 const applyUnit = "申请创建小号";

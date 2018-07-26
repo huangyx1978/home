@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import {observer} from 'mobx-react';
 import {Button} from 'reactstrap';
@@ -105,3 +106,4 @@ export class TieApps extends React.Component {
         // <ListView items={apps} converter={this.appConverter} itemClick={this.appClick} />
     }
 }
+*/

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as className from 'classnames';
 import * as _ from 'lodash';
-import {observer} from 'mobx-react';
 import {Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {observer} from 'mobx-react';
 import * as className from 'classnames';
-import {store} from '../store';
+import {store} from 'store';
 
 export interface UserSpanProps {
     className?: string;

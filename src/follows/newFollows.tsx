@@ -4,10 +4,10 @@ import {observer} from 'mobx-react';
 import {Card, CardHeader, CardBody, CardText, CardTitle, Button,
     Container, Row, Col} from 'reactstrap';
 import {nav, Page, ListView, ListItem} from 'tonva-tools';
-import mainApi from '../mainApi';
-import {store} from '../store';
-import {Message} from '../model';
-import consts from '../consts';
+import mainApi from 'mainApi';
+import {store} from 'store';
+import {Message} from 'model';
+import consts from 'consts';
 
 @observer
 export default class NewFollows extends React.Component<{}, null> {

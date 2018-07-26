@@ -5,9 +5,9 @@ import {observer} from 'mobx-react';
 import {Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA, TonvaForm, FormRow, Fields, SubmitResult} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';
-import {Message} from '../model';
-import {store} from '../store';
-import mainApi from '../mainApi';
+import {Message} from 'model';
+import {store} from 'store';
+import mainApi from 'mainApi';
 import {tagStyle, tagEndStyle} from './message';
 
 abstract class Approved extends React.Component<{msg:Message;pointer?:boolean}> {

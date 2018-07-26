@@ -9,7 +9,7 @@ import {nav, Page, LabelRow} from 'tonva-tools';
 import {store} from '../store';
 import consts from '../consts';
 import mainApi from '../mainApi';
-import {MainPage} from '../chat';
+import {MainPage} from '../unitx';
 
 interface Hao {
     unit: number;

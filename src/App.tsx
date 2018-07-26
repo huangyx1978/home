@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {NavView, nav} from 'tonva-tools';
-import AppView from './main';
+import AppView from 'main';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 

@@ -1,7 +1,7 @@
 import {observable, computed} from 'mobx';
-import mainApi from '../mainApi';
-import {Message} from '../model';
-import { Store } from './index';
+import mainApi from 'mainApi';
+import {Message} from 'model';
+import { Store } from '.';
 
 export class Fellow {
     private store:Store;

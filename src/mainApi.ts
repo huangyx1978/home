@@ -1,5 +1,5 @@
 import {CenterApi, User} from 'tonva-tools';
-import {App} from './model';
+import {App} from 'model';
 
 class MainApi extends CenterApi {
     async stickies():Promise<any[][]> {
@@ -26,7 +26,7 @@ class MainApi extends CenterApi {
         return await this.get('tie/apps', {unit:unit});
     }
 
-    async chatApi(unit:number):Promise<any> {
+    async unitxApi(unit:number):Promise<any> {
         return await this.get('tie/apps', {unit:unit});
     }
 

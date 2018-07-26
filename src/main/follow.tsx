@@ -3,10 +3,10 @@ import {observable, computed} from 'mobx';
 import {observer} from 'mobx-react';
 import * as classNames from 'classnames';
 import {nav, ListView, ListItem} from 'tonva-tools';
-import {store} from '../store';
-import {Sticky} from '../model';
-import {NewFollows} from '../follows';
-import consts from '../consts';
+import {store} from 'store';
+import {Sticky} from 'model';
+import {NewFollows} from 'follows';
+import consts from 'consts';
 
 const bkStyle={backgroundColor: '#cfcfff', margin:'0', padding:'6px'};
 const iconStyle={color:'green'};
