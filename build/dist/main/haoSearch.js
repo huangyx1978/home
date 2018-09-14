@@ -10,10 +10,9 @@ import * as React from 'react';
 import { Container, Row, Col, Button } from 'reactstrap';
 import { SearchBox, List, LMR, Muted, Badge, Media } from 'tonva-react-form';
 import { nav, Page } from 'tonva-tools';
-import { store } from 'store';
-import consts from 'consts';
-import mainApi from 'mainApi';
-import { MainPage } from 'chat';
+import { store } from '../store';
+import consts from '../consts';
+import mainApi from '../mainApi';
 const pageSize = 30;
 class HaoSearch extends React.Component {
     constructor(props) {
@@ -169,7 +168,7 @@ class HaoFollow extends React.Component {
             yield store.followUnit(hao); //, name, nick, discription, icon);
             nav.pop(2);
             yield store.setUnit(hao);
-            nav.push(React.createElement(MainPage, null));
+            nav.push(React.createElement(React.Fragment, null, "\u663E\u793Aunitx MainPage")); //<MainPage />);
         });
     }
     componentDidMount() {

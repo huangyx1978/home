@@ -1,21 +1,21 @@
 import * as React from 'react';
-import * as className from 'classnames';
-import {observer} from 'mobx-react';
-import {Button} from 'reactstrap';
 import {TonvaForm, FormRow, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText, 
     SubmitResult, ControlBase, FormView} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';
-import consts from 'consts';
-import {store, Templet} from 'store';
-import {default as mainApi} from 'mainApi';
+import {Templet} from 'store';
 import {TosControl} from './tosControl';
+import { VmPage } from 'tonva-react-usql';
+import { CrUnitxUsq } from './crUnitxUsq';
 
 export interface JobEditProps {
     templet: Templet;
 }
 
-export class JobEdit extends React.Component<JobEditProps> {
-    private tosControl:TosControl;    
+export class JobEdit extends VmPage {
+    private templet: Templet;
+    protected coordinator: CrUnitxUsq;
+//React.Component<JobEditProps> {
+    private tosControl:TosControl;
     private rowTo = {
         label: '接收人', 
         //field: {name:'to', type: 'string', required: true},
@@ -35,6 +35,19 @@ export class JobEdit extends React.Component<JobEditProps> {
         face: {type: 'textarea', placeholder: '简要说明任务', rows: 6}
     };
     private rows:FormRow[];
+
+    async showEntry(templet: Templet) {
+        this.templet = templet;
+        let {content} = templet;
+        let {needTo} = content;
+        this.rows = [];
+        if (needTo === true) this.rows.push(this.rowTo);
+        //this.rows.push(this.rowSubject);
+        this.rows.push(this.rowContent);
+
+        this.openPage(this.view);
+    }
+    /*
     constructor(props) {
         super(props);
         this.onSubmit = this.onSubmit.bind(this);
@@ -45,15 +58,15 @@ export class JobEdit extends React.Component<JobEditProps> {
         if (needTo === true) this.rows.push(this.rowTo);
         //this.rows.push(this.rowSubject);
         this.rows.push(this.rowContent);
-    }
+    }*/
 
-    private async onSubmit(values:any):Promise<SubmitResult> {
+    private onSubmit = async (values:any):Promise<SubmitResult> => {
         if (this.tosControl !== undefined) {
             if (await this.tosControl.confirmInput()===false) return;
         }
-        let {templet} = this.props;
-        let chat = store.unit.unitx;
-        let type:string = templet.name;
+        //let {templet} = this.props;
+        //let chat = store.unit.unitx;
+        let type:string = this.templet.name;
         let to:{toUser:number}[];
         let subject = values.subject;
         let discription = values.discription;
@@ -72,8 +85,8 @@ export class JobEdit extends React.Component<JobEditProps> {
             discription: discription,
             to: to,
         };
-        let id = await chat.newMessage(msg);
-        nav.pop();
+        let id = await this.coordinator.newMessage(msg);
+        this.closePage();
         return;
     }
     private validTos():{toUser:number}[] {
@@ -84,8 +97,8 @@ export class JobEdit extends React.Component<JobEditProps> {
         }
         return toList.map(v => {return {toUser: v.id}});
     }
-    render() {
-        return <Page header={this.props.templet.caption}>
+    private view = () => {
+        return <Page header={this.templet.caption}>
             <TonvaForm className="px-3 py-2"
                 formRows={this.rows} 
                 onSubmit={this.onSubmit} />

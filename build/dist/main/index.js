@@ -60,14 +60,13 @@ export default class AppView extends React.Component {
             }
         ];
         this.onWs = (msg) => __awaiter(this, void 0, void 0, function* () {
-            console.log('ws received: %s' + msg);
-            store.onWs(msg);
+            console.log('ws received: %s', msg);
+            yield store.onWs(msg);
         });
     }
     componentDidMount() {
         return __awaiter(this, void 0, void 0, function* () {
             this.rcvHandler = nav.registerReceiveHandler(this.onWs);
-            // await store.loadMessageUnread();
         });
     }
     componentWillUnmount() {
@@ -79,15 +78,4 @@ export default class AppView extends React.Component {
         return React.createElement(Page, { tabs: tabs, right: right });
     }
 }
-/*
-<ButtonDropdown tag='div'
-isOpen={this.state.dropdownOpen}
-toggle={this.toggle}>
-<DropdownToggle caret={true} size='sm'>+</DropdownToggle>
-<DropdownMenu right={true}>
-    <DropdownItem onClick={this.newApp}>新建App</DropdownItem>
-    <DropdownItem>{loc}</DropdownItem>
-</DropdownMenu>
-</ButtonDropdown>;
-*/ 
 //# sourceMappingURL=index.js.map

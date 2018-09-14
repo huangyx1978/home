@@ -2,36 +2,40 @@ import * as React from 'react';
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
 import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA} from 'tonva-react-form';
-import {nav, Page} from 'tonva-tools';
+import {nav, Page, meInFrame} from 'tonva-tools';
 import consts from '../consts';
 import {store} from '../store';
-import {MainPage} from '../unitx';
+//import {MainPage} from '../unitx';
 import {Sticky, StickyUnit} from '../model';
+import { CrUnitxUsq } from 'unitx/crUnitxUsq';
 
 @observer
 class Home extends React.Component {
-    constructor(props) {
-        super(props);
-        this.stickyClick = this.stickyClick.bind(this);
-        this.stickyRender = this.stickyRender.bind(this);
-    }
     async componentDidMount() {
         await store.loadStickies();
     }
-    async stickyClick(item:Sticky) {
+    private stickyClick = async (item:Sticky) => {
         let objId = item.objId;
+        meInFrame.unit = objId;
+        
         await store.setUnit(objId);
+        /*
         let unitx = await store.unit.unitx;
         if (await unitx.load() === false) {
             return;
         }
+        */
+        let crUnitxUsq = new CrUnitxUsq(store.unit);
+        await crUnitxUsq.start();
+        /*
         nav.push(<MainPage />);
         nav.regConfirmClose(async () => {
             store.setUnitRead();
             return true;
         });
+        */
     }
-    private stickyRender(s:Sticky, index:number):JSX.Element {
+    private stickyRender = (s:Sticky, index:number):JSX.Element => {
         let {type, date, objId, obj} = s;
         let unread:number;
         let unit = store.units.get(objId);
@@ -55,8 +59,10 @@ class Home extends React.Component {
             left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}
             right={<small className="text-muted"><EasyDate date={date} /></small>}
         >
-            <b>{nick || name}</b>
-            <small className="text-muted">{discription}</small>
+            <div className="px-2">
+                <b>{nick || name}</b>
+                <small className="text-muted">{discription}</small>
+            </div>
         </LMR>;
     }
     render() {

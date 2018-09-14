@@ -35,6 +35,11 @@ class MainApi extends CenterApi {
         return ret;
     }
 
+    async appFromId(appId:number):Promise<App> {
+        let ret = await this.get('tie/app-id', {appId:appId});
+        return ret;
+    }
+
     async appApi(unit:number, app:number, apiName:string) {
         return await this.get('tie/app-api', {unit:unit, app:app, apiName:apiName});
     }

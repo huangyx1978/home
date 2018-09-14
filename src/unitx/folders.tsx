@@ -2,66 +2,68 @@ import * as React from 'react';
 import {observer} from 'mobx-react';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';
-import {store, Folder, Templet, sysTemplets, templetDict, UnitMessages, Item} from 'store';
+import {Folder, Templet, sysTemplets, templetDict, UnitMessages, Item} from 'store';
 import {Message} from 'model';
 import {UserSpan} from './userSpan';
-import {JobPage} from './job';
+import { VmView, VmPage } from 'tonva-react-usql';
+import { CrUnitxUsq } from './crUnitxUsq';
 
-export class MyFolders extends React.Component {
-    private async sendBox() {
-        let folder = store.unit.unitx.sendFolder;
+export abstract class VmFoldersView extends VmView {
+    protected coordinator: CrUnitxUsq;
+    
+    private renderMessage = (item:Item, index:number) => {
+        return <MsgRow item={item} />;
+    }
+
+    private clickMessage = (item:Item) => {
+        let {message} = item;
+        //let tuid = store.unit.unitx.tuid_message;
+        let msg:Message = {} as any; //tuid.valueFromId(id);
+        if (typeof message === 'number') return;
+        //nav.push(<JobPage msg={msg} />);
+        this.coordinator.jobPage(msg);
+    }
+    
+    protected folders = ({header, folder}:FolderPageProps) => {
+        //let {header, folder} = this.props;
+        let {items, bottomDiv} = folder;
+        return <Page header={header}>
+            <BottomDiv bottomId={bottomDiv}>
+                <List className="my-1"
+                    before={<Muted>[无内容]</Muted>}
+                    items={items} 
+                    item={{className: 'bg-transparent', render:this.renderMessage, onClick:this.clickMessage}} />
+            </BottomDiv>
+        </Page>;
+    }
+}
+
+export class MyFolders extends VmFoldersView {
+    private sendBox = async () => {
+        let folder = this.coordinator.sendFolder;
         folder.scrollToBottom();
         await folder.first({tag:'$me', undone: 1});
-        nav.push(<SendBox />);
+        //nav.push(<SendBox />);
+        this.openPage(this.folders, {header:"我发出任务", folder:this.coordinator.sendFolder});
     }
 
-    private async passBox() {
-        let folder = store.unit.unitx.passFolder;
+    private passBox = async () => {
+        let folder = this.coordinator.passFolder;
         folder.scrollToBottom();
         await folder.first({tag:'$pass', undone: 1});
-        nav.push(<PassBox />);
+        //nav.push(<PassBox />);
+        this.openPage(this.folders, {header:"我经手任务", folder:this.coordinator.passFolder});
     }
     
-    private async ccBox() {
-        let folder = store.unit.unitx.ccFolder;
+    private ccBox = async () => {
+        let folder = this.coordinator.ccFolder;
         folder.scrollToBottom();
         await folder.first({tag:'$cc', undone: 1});
-        nav.push(<CcBox />);
+        //nav.push(<CcBox />);
+        this.openPage(this.folders, {header:"抄送我的", folder:this.coordinator.ccFolder});
     }
-    
-    render() {
-        let {desk, sendFolder, passFolder, ccFolder} = store.unit.unitx;
-        let rows:Prop[] = [
-            '=',
-            {
-                type: 'component', 
-                component: <FolderRow icon="share-square-o" text="我发出任务" folder={sendFolder} />,
-                onClick: this.sendBox
-            },
-            {
-                type: 'component', 
-                component: <FolderRow icon="clipboard" text="我经手任务" folder={passFolder} />,
-                onClick: this.passBox
-            },
-            {
-                type: 'component', 
-                component: <FolderRow icon="cc" text="抄送我的" folder={ccFolder} />,
-                onClick: this.ccBox
-            },
-        ]
-        return <PropGrid rows={rows} values={{}} />;
-    }
-}
 
-interface FolderRowProps {
-    icon: string;
-    text: string;
-    folder: Folder<Item>;
-}
-@observer
-class FolderRow extends React.Component<FolderRowProps> {
-    render() {
-        let {icon, text, folder} = this.props;
+    private folderRow = observer(({icon, text, folder}:{icon:string, text:string, folder:any}) => {
         let {doing, undone} = folder;
         let right;
         if (undone > 0) {
@@ -70,13 +72,50 @@ class FolderRow extends React.Component<FolderRowProps> {
                 <span className="badge badge-light">{undone}</span>
             </>;
         }
-        return <LMR className="w-100 align-items-center"
-            left={<IconText iconClass="text-primary" icon={icon} text={text} />}
-            right={right} />;
+        return <LMR className="w-100 align-items-center my-2 text-dark"
+            left={<FA className="text-info mr-3" name={icon} />}
+            right={right}>
+            {text}
+        </LMR>;
+    })
+    
+    render() {
+        let {desk, sendFolder, passFolder, ccFolder} = this.coordinator;
+        let rows:Prop[] = [
+            '=',
+            {
+                type: 'component', 
+                component: <this.folderRow icon="share-square-o" text="我发出任务" folder={sendFolder} />,
+                onClick: this.sendBox
+            },
+            {
+                type: 'component', 
+                component: <this.folderRow icon="clipboard" text="我经手任务" folder={passFolder} />,
+                onClick: this.passBox
+            },
+            {
+                type: 'component', 
+                component: <this.folderRow icon="cc" text="抄送我的" folder={ccFolder} />,
+                onClick: this.ccBox
+            },
+        ]
+        return <PropGrid rows={rows} values={{}} />;
     }
 }
 
-export class WholeFolders extends React.Component {
+export class WholeFolders extends VmFoldersView {
+    private allBox = async () => {
+        let folder = this.coordinator.allFolder;
+        folder.scrollToBottom();
+        await folder.first({tag:'$'});
+        //nav.push(<AllBox />);
+        this.openPage(this.folders, {header:"全部任务", folder:this.coordinator.allFolder});
+    }
+
+    private archiveBox = async () => {
+        nav.push(<ArchiveBox />);
+    }
+
     private rows:Prop[] = [
         '',
         {
@@ -90,17 +129,6 @@ export class WholeFolders extends React.Component {
             onClick: this.archiveBox
         },
     ];
-    private async allBox() {
-        let folder = store.unit.unitx.allFolder;
-        folder.scrollToBottom();
-        await folder.first({tag:'$'});
-        nav.push(<AllBox />);
-    }
-
-    private async archiveBox() {
-        nav.push(<ArchiveBox />);
-    }
-
     render() {
         return <PropGrid rows={this.rows} values={{}} />;
     }
@@ -115,13 +143,13 @@ const light = {fontSize:'x-small', color:'lightgray'};
 class MsgRow extends React.Component<MsgRowProps> {
     render() {
         let userId = nav.user.id;
-        let {tuid_message} = store.unit.unitx;
+        //let {tuid_message} = store.unit.unitx;
         let {item} = this.props;
-        let {id, branch, done, flow} = item;
-        let msg:Message = tuid_message.getId(id);
+        let {message, branch, done, flow} = item;
+        let msg:Message = {} as any; //tuid_message.valueFromId(id);
         let rowCn = 'px-3 bg-white my-1';
-        if (typeof msg === 'number') {
-            return <LMR className={rowCn + ' py-2'}><small style={{color:'lightgray'}}>... {id} ...</small></LMR>;
+        if (typeof message === 'number') {
+            return <LMR className={rowCn + ' py-2'}><small style={{color:'lightgray'}}>... {message} ...</small></LMR>;
         }
         let {date, type, fromUser, subject, discription, content} = msg;
         let right = done<branch?
@@ -195,31 +223,33 @@ interface FolderPageProps {
     header: any;
     folder: Folder<Item>;
 }
-class FolderPage extends React.Component<FolderPageProps> {
+/*
+class FolderPage extends VmPage { // React.Component<FolderPageProps> {
     renderMessage(item:Item, index:number) {
         return <MsgRow item={item} />;
     }
     clickMessage(item:Item) {
         let {id} = item;
-        let tuid = store.unit.unitx.tuid_message;
-        let msg = tuid.getId(id);
+        //let tuid = store.unit.unitx.tuid_message;
+        let msg:Message = {} as any; //tuid.valueFromId(id);
         if (typeof msg === 'number') return;
         nav.push(<JobPage msg={msg} />);
     }
-    render() {
-        let {header, folder} = this.props;
+    async showEntry({header, folder}:FolderPageProps) {
+        //let {header, folder} = this.props;
         let {items, bottomDiv} = folder;
-        return <Page header={header}>
+        this.openPageElement(<Page header={header}>
             <BottomDiv bottomId={bottomDiv}>
                 <List className="my-1"
                     before={<Muted>[无内容]</Muted>}
                     items={items} 
                     item={{className: 'bg-transparent', render:this.renderMessage, onClick:this.clickMessage}} />
             </BottomDiv>
-        </Page>;
+        </Page>);
     }
 }
-
+*/
+/*
 export class SendBox extends React.Component {
     render() {
         return <FolderPage header="我发出任务" folder={store.unit.unitx.sendFolder} />;
@@ -243,7 +273,7 @@ class AllBox extends React.Component {
         return <FolderPage header="全部任务" folder={store.unit.unitx.allFolder} />;
     }
 }
-
+*/
 class ArchiveBox extends React.Component {
     renderMessage(item:Item, index:number) {
         return <MsgRow item={item} />;

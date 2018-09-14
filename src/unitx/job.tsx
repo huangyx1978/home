@@ -5,8 +5,9 @@ import {Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
 import {Page, nav, User} from 'tonva-tools';
 import {Message} from 'model';
-import {store} from 'store';
 import {UserSpan} from './userSpan';
+import { VmPage } from 'tonva-react-usql';
+import { CrUnitxUsq } from './crUnitxUsq';
 
 const states = {
     '#': <span className="text-succeed">完成</span>,
@@ -26,35 +27,44 @@ interface JobPageState {
     flows: any[];
 }
 
-export class JobPage extends React.Component<JobPageProps, JobPageState> {
+export class JobPage extends VmPage {
+    private msg: Message;
+    private state: JobPageState;
+    protected coordinator: CrUnitxUsq;
+//React.Component<JobPageProps, JobPageState> {
+/*
     constructor(props) {
         super(props);
         this.finish = this.finish.bind(this);
         this.decline = this.decline.bind(this);
         this.edit = this.edit.bind(this);
     }
-
-    async componentDidMount() {
-        let ret = await store.unit.unitx.getMessage(this.props.msg.id);
-        this.setState(ret);
+*/
+    async showEntry(msg: Message) {
+        this.msg = msg;
+        this.state = await this.coordinator.getMessage(msg.id);
+        //this.setState(ret);
+        this.openPage(this.view);
     }
-    private async finish() {
-        let {msg} = this.props;
-        await store.unit.unitx.actMessage(msg, 'done', '#', [{user:0}]);
+    private finish = async () => {
+        //let {msg} = this.props;
+        await this.coordinator.actMessage(this.msg, 'done', '#', [{user:0}]);
         //store.unit.chat.done(msg.id);
-        nav.pop();
+        //nav.pop();
+        this.closePage();
     }
-    private async decline() {
-        let {msg} = this.props;
-        await store.unit.unitx.actMessage(msg, 'decline', '#-', [{user:0}]);
+    private decline = async () => {
+        //let {msg} = this.props;
+        await this.coordinator.actMessage(this.msg, 'decline', '#-', [{user:0}]);
         alert('显示做不了的理由, 然后选择。暂未完成设计！');
-        nav.pop();
+        //nav.pop();
+        this.closePage();
     }
-    private async edit() {
-        let {msg} = this.props;
-        msg.subject += '.1';
+    private edit = async () => {
+        //let {msg} = this.props;
+        this.msg.subject += '.1';
     }
-    private flowRender(flow:any, index:number):JSX.Element {
+    private flowRender = (flow:any, index:number):JSX.Element => {
         let {id, prev, date, state, user, action} = flow;
         let left = state==='$'?
             <div className="col-sm-6">开始</div> :
@@ -111,11 +121,11 @@ export class JobPage extends React.Component<JobPageProps, JobPageState> {
             //<Button color="secondary" onClick={this.edit}>编辑</Button>
         });
     }
-    render() {
-        let {msg} = this.props;
-        let {fromUser} = msg;
-        let {tuid_message, tuid_user} = store.unit.unitx;
-        let user = tuid_user.getId(fromUser);
+    private view = () => {
+        //let {msg} = this.props;
+        let {fromUser} = this.msg;
+        let {tuid_message, tuid_user} = this.coordinator;
+        let user = tuid_user.valueFromId(fromUser);
         let rows:Prop[] = [
             {
                 label: '来自',
@@ -136,7 +146,7 @@ export class JobPage extends React.Component<JobPageProps, JobPageState> {
         ];
         this.buildFlow(rows);
         return <Page header="处理任务">
-            <PropGrid className="px-3 py-2" rows={rows} values={msg} />
+            <PropGrid className="px-3 py-2" rows={rows} values={this.msg} />
         </Page>;
     }
 }

@@ -57,11 +57,10 @@ export default class AppView extends React.Component {
     ];
     async componentDidMount() {
         this.rcvHandler = nav.registerReceiveHandler(this.onWs);
-        // await store.loadMessageUnread();
     }
     private onWs = async (msg:any):Promise<void> => {
-        console.log('ws received: %s' + msg);
-        store.onWs(msg);
+        console.log('ws received: %s', msg);
+        await store.onWs(msg);
     }
     componentWillUnmount() {
         nav.unregisterReceiveHandler(this.rcvHandler);
@@ -72,14 +71,3 @@ export default class AppView extends React.Component {
         return <Page tabs={tabs} right={right} />
     }
 }
-/*        
-<ButtonDropdown tag='div' 
-isOpen={this.state.dropdownOpen}
-toggle={this.toggle}>
-<DropdownToggle caret={true} size='sm'>+</DropdownToggle>
-<DropdownMenu right={true}>
-    <DropdownItem onClick={this.newApp}>新建App</DropdownItem>
-    <DropdownItem>{loc}</DropdownItem>
-</DropdownMenu>
-</ButtonDropdown>;
-*/

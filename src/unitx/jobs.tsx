@@ -1,17 +1,33 @@
 import * as React from 'react';
-import * as className from 'classnames';
-import {observer} from 'mobx-react';
-import {Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
-import {Page, nav} from 'tonva-tools';
-import consts from 'consts';
-import {store, Templet, sysTemplets} from 'store';
-import {JobEdit} from './jobEdit';
+import {Templet, sysTemplets} from 'store';
+import { VmView } from 'tonva-react-usql';
+import { CrUnitxUsq } from './crUnitxUsq';
 
+/*
 export interface JobsPageState {
     templets: Templet[];
 }
-export class JobsPage extends React.Component<{}, JobsPageState> {
+*/
+
+export class JobsPage extends VmView { //} React.Component<{}, JobsPageState> {
+    protected coordinator: CrUnitxUsq;
+
+    private onClick = () => {
+
+    }
+    private newJob = async () => {
+        //let chat = store.unit.unitx;
+        let msg = {
+            type: 'a',
+            content: 'bbbb',
+            to: [{user:0}]
+        };
+        let id = await this.coordinator.newMessage(msg);
+        //nav.pop();
+        this.closePage();
+    }
+
     private rows:Prop[] = [
         '',
         {
@@ -36,25 +52,15 @@ export class JobsPage extends React.Component<{}, JobsPageState> {
             </button>
         },*/
     ];
+    /*
     constructor(props) {
         super(props);
         this.state = {
             templets: undefined,
         }
     }
-    private onClick() {
-
-    }
-    private async newJob() {
-        let chat = store.unit.unitx;
-        let msg = {
-            type: 'a',
-            content: 'bbbb',
-            to: [{user:0}]
-        };
-        let id = await chat.newMessage(msg);
-        nav.pop();
-    }
+    */
+    /*
     async componentWillMount() {
         let templets = await store.unit.unitx.getTemplets();
         if (templets.length > 0) {
@@ -63,21 +69,24 @@ export class JobsPage extends React.Component<{}, JobsPageState> {
             });
         }
     }
-    renderRow(templet:Templet, index:number):JSX.Element {
+    */
+    private renderRow = (templet:Templet, index:number):JSX.Element => {
         let {icon, name, caption, discription} = templet;
         let left = <>
-            <FA className="text-success" name={icon} size="lg" fixWidth={true} />
+            <FA className="text-success mr-3" name={icon} size="lg" fixWidth={true} />
         </>;
         let right = <Muted>{discription}</Muted>;
         return <LMR className='px-3 py-2 align-items-center' left={left} right={right}>
             {caption}
         </LMR>;
     }
-    private templetClick(templet:Templet) {
-        nav.push(<JobEdit templet={templet} />);
+    private templetClick = (templet:Templet) => {
+        //nav.push(<JobEdit templet={templet} />);
+        this.coordinator.jobEdit(templet);
     }
     render() {
-        let {templets} = this.state;
+        //let {templets} = this.state;
+        let {templets} = this.coordinator;
         return <div>
             <List className="py-2"
                 items={sysTemplets} 

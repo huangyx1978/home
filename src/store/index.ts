@@ -1,13 +1,13 @@
 import {observable, computed} from 'mobx';
 import * as _ from 'lodash';
-import {PagedItems, Page, UnitxApi, AppApi, CacheIds} from 'tonva-tools';
-import { Entities, Query, Tuid } from 'tonva-react-usql-entities';
+import {PagedItems, Page, UnitxApi, CacheIds} from 'tonva-tools';
+import { Entities, Query, Tuid, IdBox } from 'tonva-react-usql';
 import consts from 'consts';
 import mainApi, { messageApi } from 'mainApi';
 import {Sticky, Tie, App, Message, StickyUnit} from 'model';
 import {Fellow} from './fellow';
 import {CacheUsers, CacheUnits} from './cacheIds';
-import {Unitx} from './unitx';
+//import {Unitx} from './unitx';
 export * from './templet';
 export * from './sysTemplets';
 
@@ -21,7 +21,7 @@ const sysUnit:StickyUnit = {
 }
 
 export interface Item {
-    id: number;
+    message: IdBox; // number;
     branch: number;
     done: number;
     prevState: string;
@@ -51,18 +51,18 @@ export class Folder<T extends Item> extends PagedItems<T> {
         if (item === undefined)
             this.pageStart = undefined;
         else
-            this.pageStart = item.id;
+            this.pageStart = item.message;
     }
     remove(id:number) {
-        let item = this._items.find(v => v.id === id);
+        let item = this._items.find(v => v.message.id === id);
         if (item !== undefined) this.items.remove(item);
     }
     updateItem(item:T, doneDelete: boolean = true) {
-        let {id, branch, done, flow, prevState, state} = item;
+        let {message, branch, done, flow, prevState, state} = item;
         if (this.loaded === true) {
-            let index = this._items.findIndex(v => v.id === id);
+            let index = this._items.findIndex(v => v.message === message);
             if (index < 0) {
-                if (done < branch) {
+                if (done === undefined || done < branch) {
                     this.append(item);
                     this.undone++;
                 }
@@ -214,12 +214,12 @@ export class Unit {
     @observable unread: number;
     @observable date: Date;
     messages: UnitMessages;
-    unitx: Unitx;
+    //unitx: Unitx;
 
     constructor(id:number) {
         this.id = id;
         this.messages = new UnitMessages(this, undefined);
-        this.unitx = new Unitx(this);
+        //this.unitx = new Unitx(this);
     }
 
     async loadProps(): Promise<void> {
@@ -298,8 +298,8 @@ export class Store {
                 unit.unread += $io;
                 unit.date = now;
             }
-            let {unitx} = unit;
-            if (unitx !== undefined) await unitx.onWsMsg(msg);
+            //let {unitx} = unit;
+            //if (unitx !== undefined) await unitx.onWsMsg(msg);
         });
         if (msg.id === undefined) {
             // msgId=0，则是发送给界面的操作指令
@@ -361,6 +361,10 @@ export class Store {
     async getAdminApp():Promise<App> {
         if (this.adminApp !== undefined) return this.adminApp;
         return this.adminApp = await mainApi.adminUrl();
+    }
+
+    async getAppFromId(appId:number):Promise<App> {
+        return await mainApi.appFromId(appId);
     }
 
     async loadStickies() {

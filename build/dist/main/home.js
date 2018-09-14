@@ -15,77 +15,67 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { List, LMR, Badge, EasyDate } from 'tonva-react-form';
-import { nav } from 'tonva-tools';
-import consts from 'consts';
-import { store } from 'store';
-import { MainPage } from 'chat';
+import { meInFrame } from 'tonva-tools';
+import consts from '../consts';
+import { store } from '../store';
+import { CrUnitxUsq } from 'unitx/crUnitxUsq';
 let Home = class Home extends React.Component {
-    constructor(props) {
-        super(props);
-        this.stickyClick = this.stickyClick.bind(this);
-        this.stickyRender = this.stickyRender.bind(this);
+    constructor() {
+        super(...arguments);
+        this.stickyClick = (item) => __awaiter(this, void 0, void 0, function* () {
+            let objId = item.objId;
+            meInFrame.unit = objId;
+            yield store.setUnit(objId);
+            /*
+            let unitx = await store.unit.unitx;
+            if (await unitx.load() === false) {
+                return;
+            }
+            */
+            let crUnitxUsq = new CrUnitxUsq(objId);
+            yield crUnitxUsq.start();
+            /*
+            nav.push(<MainPage />);
+            nav.regConfirmClose(async () => {
+                store.setUnitRead();
+                return true;
+            });
+            */
+        });
+        this.stickyRender = (s, index) => {
+            let { type, date, objId, obj } = s;
+            let unread;
+            let unit = store.units.get(objId);
+            if (unit !== undefined) {
+                unread = unit.unread;
+                date = unit.date;
+                //unread = messages === undefined? 0 : messages.unread;
+            }
+            switch (type) {
+                case 3:
+                    if (obj === undefined)
+                        return;
+                    return this.stickyUnit(date, obj, unread);
+                case 0:
+                    if (obj === undefined)
+                        return;
+                    return this.stickyUnit(date, obj, unread);
+            }
+        };
     }
     componentDidMount() {
         return __awaiter(this, void 0, void 0, function* () {
             yield store.loadStickies();
         });
     }
-    stickyClick(item) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let objId = item.objId;
-            yield store.setUnit(objId);
-            //nav.push(<TieApps />);
-            let chat = yield store.unit.unitx;
-            if ((yield chat.load()) === false) {
-                alert('chat api 创建出错');
-                return;
-            }
-            nav.push(React.createElement(MainPage, null));
-            nav.regConfirmClose(() => __awaiter(this, void 0, void 0, function* () {
-                store.setUnitRead();
-                return true;
-            }));
-        });
-    }
-    stickyRender(s, index) {
-        let { type, date, objId, obj } = s;
-        let unread;
-        let unit = store.units.get(objId);
-        if (unit !== undefined) {
-            unread = unit.unread;
-            date = unit.date;
-            //unread = messages === undefined? 0 : messages.unread;
-        }
-        switch (type) {
-            case 3:
-                if (obj === undefined)
-                    return;
-                return this.stickyUnit(date, obj, unread);
-            case 0:
-                if (obj === undefined)
-                    return;
-                return this.stickyUnit(date, obj, unread);
-        }
-        /*
-        let unread:number;
-        if (type === 0 || type === 3) { // unit
-        }
-        return <LMR className="p-2"
-            left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}
-            right={<small className="text-muted"><EasyDate date={date} /></small>}
-        >
-            <b>{main}</b>
-            <small className="text-muted">{ex}</small>
-        </LMR>;
-        */
-    }
     stickyUnit(date, unit, unread) {
         let { name, nick, discription, icon, date: uDate } = unit;
         return React.createElement(LMR, { className: "p-2", left: React.createElement(Badge, { badge: unread },
                 React.createElement("img", { src: icon || consts.appItemIcon })), right: React.createElement("small", { className: "text-muted" },
                 React.createElement(EasyDate, { date: date })) },
-            React.createElement("b", null, nick || name),
-            React.createElement("small", { className: "text-muted" }, discription));
+            React.createElement("div", { className: "px-2" },
+                React.createElement("b", null, nick || name),
+                React.createElement("small", { className: "text-muted" }, discription)));
     }
     render() {
         let stickies = store.stickies;

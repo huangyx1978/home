@@ -49,6 +49,12 @@ class MainApi extends CenterApi {
             return ret;
         });
     }
+    appFromId(appId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ret = yield this.get('tie/app-id', { appId: appId });
+            return ret;
+        });
+    }
     appApi(unit, app, apiName) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.get('tie/app-api', { unit: unit, app: app, apiName: apiName });

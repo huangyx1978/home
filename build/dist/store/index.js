@@ -18,7 +18,6 @@ import { PagedItems } from 'tonva-tools';
 import mainApi, { messageApi } from 'mainApi';
 import { Fellow } from './fellow';
 import { CacheUsers, CacheUnits } from './cacheIds';
-import { Unitx } from './unitx';
 export * from './sysTemplets';
 const sysUnit = {
     id: 0,
@@ -48,19 +47,19 @@ export class Folder extends PagedItems {
         if (item === undefined)
             this.pageStart = undefined;
         else
-            this.pageStart = item.id;
+            this.pageStart = item.message;
     }
     remove(id) {
-        let item = this._items.find(v => v.id === id);
+        let item = this._items.find(v => v.message.id === id);
         if (item !== undefined)
             this.items.remove(item);
     }
     updateItem(item, doneDelete = true) {
-        let { id, branch, done, flow, prevState, state } = item;
+        let { message, branch, done, flow, prevState, state } = item;
         if (this.loaded === true) {
-            let index = this._items.findIndex(v => v.id === id);
+            let index = this._items.findIndex(v => v.message === message);
             if (index < 0) {
-                if (done < branch) {
+                if (done === undefined || done < branch) {
                     this.append(item);
                     this.undone++;
                 }
@@ -164,10 +163,11 @@ __decorate([
     observable
 ], UnitMessages.prototype, "unread", void 0);
 export class Unit {
+    //unitx: Unitx;
     constructor(id) {
         this.id = id;
         this.messages = new UnitMessages(this, undefined);
-        this.unitx = new Unitx(this);
+        //this.unitx = new Unitx(this);
     }
     get isOwner() { return this._isOwner; }
     set isOwner(value) {
@@ -261,9 +261,8 @@ export class Store {
                     unit.unread += $io;
                     unit.date = now;
                 }
-                let { unitx } = unit;
-                if (unitx !== undefined)
-                    yield unitx.onWsMsg(msg);
+                //let {unitx} = unit;
+                //if (unitx !== undefined) await unitx.onWsMsg(msg);
             }));
             if (msg.id === undefined) {
                 // msgId=0，则是发送给界面的操作指令
@@ -331,6 +330,11 @@ export class Store {
             if (this.adminApp !== undefined)
                 return this.adminApp;
             return this.adminApp = yield mainApi.adminUrl();
+        });
+    }
+    getAppFromId(appId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield mainApi.appFromId(appId);
         });
     }
     loadStickies() {

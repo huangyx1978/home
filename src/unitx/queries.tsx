@@ -1,33 +1,30 @@
 import * as React from 'react';
-import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
-import {Page, nav} from 'tonva-tools';
-import {MyFolders, WholeFolders} from './folders';
+import {PropGrid, Prop, IconText} from 'tonva-react-form';
+import {Page} from 'tonva-tools';
+import { VmView } from 'tonva-react-usql';
+import { CrUnitxUsq } from './crUnitxUsq';
 
-export class Queries extends React.Component {
+export class Queries extends VmView {
+    protected coordinator: CrUnitxUsq;
+
     private rows:Prop[] = [
         '',
         {
             type: 'component', 
             component: <IconText iconClass="text-primary" icon="building" text="项目" />,
-            onClick: this.projects
+            onClick: () => this.openPageElement(<Projects />),
         },
         {
             type: 'component', 
             component: <IconText iconClass="text-primary" icon="archive" text="办事人" />,
-            onClick: this.persons
+            onClick: () => this.openPageElement(<Persons />),
         },
     ];
-    private projects() {
-        nav.push(<Projects />);
-    }
-    private persons() {
-        nav.push(<Persons />);
-    }
     render() {
         return <>
             <PropGrid rows={this.rows} values={{}} />
-            <MyFolders />
-            <WholeFolders />
+            {this.coordinator.myFolders()}
+            {this.coordinator.wholeFolders()}
         </>;
     }
 }
