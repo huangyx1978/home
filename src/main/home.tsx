@@ -55,13 +55,13 @@ class Home extends React.Component {
     }
     private stickyUnit(date:Date, unit:StickyUnit, unread:number):JSX.Element {
         let {name, nick, discription, icon, date:uDate} = unit;
-        return <LMR className="p-2"
+        return <LMR className="px-3 py-2"
             left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}
             right={<small className="text-muted"><EasyDate date={date} /></small>}
         >
-            <div className="px-2">
-                <b>{nick || name}</b>
-                <small className="text-muted">{discription}</small>
+            <div className="px-3">
+                <div><b>{nick || name}</b></div>
+                <div className="small text-muted">{discription}</div>
             </div>
         </LMR>;
     }
