@@ -1,29 +1,20 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import {observer} from 'mobx-react';
-import {Container, Row, Col, Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA, Muted, IconText, Prop, PropGrid} from 'tonva-react-form';
-import {Page, nav, User} from 'tonva-tools';
+import {Page, nav, VmView} from 'tonva-tools';
 import {templetDict, DeskItem, Folder, Item} from 'store';
 import {Message} from 'model';
-import {ApplyDev, ApplyUnit, ApprovedDev, ApprovedUnit, UnitFollowInvite} from 'messages';
-import { navToAppId } from './navToApp';
-import { IdBox, VmView } from 'tonva-react-usql';
+//import {ApplyDev, ApplyUnit, ApprovedDev, ApprovedUnit, UnitFollowInvite} from 'messages';
+import { navToAppId } from 'navToApp';
+import { IdBox } from 'tonva-react-usql';
 import { CrUnitxUsq } from './crUnitxUsq';
 import { UserSpan } from './userSpan';
 
-const typeMessageMap:{[type:string]: new (props:{msg:Message}) => React.Component<{msg:Message}>} = {
-    "apply-unit": ApplyUnit,
-    "apply-dev": ApplyDev,
-    "approve-unit": ApprovedUnit,
-    "approve-dev": ApprovedDev,
-    "unit-follow-invite": UnitFollowInvite,
-};
-
 const light = {fontSize:'x-small', color:'lightgray'};
 
-export class DeskPage extends VmView {
-    protected coordinator: CrUnitxUsq;
+export class DeskPage extends VmView<CrUnitxUsq> {
+    //protected coordinator: CrUnitxUsq;
     /*
     componentDidMount() {
         let bd = store.unit.unitx.desk.bottomDiv;
@@ -73,11 +64,13 @@ export class DeskPage extends VmView {
     private view = () => {
         let {desk} = this.coordinator;
         let {items, bottomDiv} = desk;
+        /*
         let right = <Button onClick={this.clickApps} color="success" size="sm">功能应用</Button>;
         let footer = <div className="p-1">
             <Button color="primary" size="sm" onClick={this.clickPlus}><FA name="plus" /></Button>
             &nbsp; <div onClick={this.clickPlus}>发任务</div>
         </div>;
+        */
         return <>
             {this.coordinator.myFolders()}
             <List className="my-1"

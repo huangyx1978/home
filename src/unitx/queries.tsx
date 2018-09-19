@@ -1,22 +1,21 @@
 import * as React from 'react';
 import {PropGrid, Prop, IconText} from 'tonva-react-form';
-import {Page} from 'tonva-tools';
-import { VmView } from 'tonva-react-usql';
+import {Page, VmView} from 'tonva-tools';
 import { CrUnitxUsq } from './crUnitxUsq';
 
-export class Queries extends VmView {
-    protected coordinator: CrUnitxUsq;
+export class Queries extends VmView<CrUnitxUsq> {
+    //protected coordinator: CrUnitxUsq;
 
     private rows:Prop[] = [
         '',
         {
             type: 'component', 
-            component: <IconText iconClass="text-primary" icon="building" text="项目" />,
+            component: <IconText iconClass="text-primary" textClass="d-inline-block ml-3" icon="building" text="项目" />,
             onClick: () => this.openPageElement(<Projects />),
         },
         {
             type: 'component', 
-            component: <IconText iconClass="text-primary" icon="archive" text="办事人" />,
+            component: <IconText iconClass="text-primary" textClass="d-inline-block ml-3" icon="archive" text="办事人" />,
             onClick: () => this.openPageElement(<Persons />),
         },
     ];

@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { VmView } from 'tonva-tools';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
 import {Templet, sysTemplets} from 'store';
-import { VmView } from 'tonva-react-usql';
 import { CrUnitxUsq } from './crUnitxUsq';
 
 /*
@@ -10,8 +10,8 @@ export interface JobsPageState {
 }
 */
 
-export class JobsPage extends VmView { //} React.Component<{}, JobsPageState> {
-    protected coordinator: CrUnitxUsq;
+export class JobsPage extends VmView<CrUnitxUsq> { //} React.Component<{}, JobsPageState> {
+    //protected coordinator: CrUnitxUsq;
 
     private onClick = () => {
 

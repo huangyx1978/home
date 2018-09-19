@@ -1,19 +1,15 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
-import { Button } from 'reactstrap';
-import { nav } from 'tonva-tools';
-import { List, LMR, Badge, Action } from 'tonva-react-form';
+import { nav, VmView } from 'tonva-tools';
+import { List, LMR, Badge, Action, Muted } from 'tonva-react-form';
 import consts from '../consts';
 import { App } from '../model';
 import { store } from '../store';
-//import { MainPage } from './main';
-import { navToApp } from './navToApp';
-import { VmView } from 'tonva-react-usql';
+import { navToApp } from 'navToApp';
 import { CrUnitxUsq } from './crUnitxUsq';
 
 //@observer
-export class AppsPage extends VmView { //} React.Component {
-    protected coordinator: CrUnitxUsq;
+export class AppsPage extends VmView<CrUnitxUsq> { //} React.Component {
+    //protected coordinator: CrUnitxUsq;
 
     unleash = async () => {
         if (confirm("真的要取消关注吗？") === false) return;
@@ -27,12 +23,6 @@ export class AppsPage extends VmView { //} React.Component {
             action: this.unleash,
         }
     ];
-    async componentWillMount() {
-        let {unit} = this.coordinator;
-        if (unit.apps === undefined) {
-            await unit.loadApps();
-        }
-    }
     appClick = async (app:App) => {
         let unitId = this.coordinator.unit.id;
         let appId = app.id;
@@ -60,10 +50,12 @@ export class AppsPage extends VmView { //} React.Component {
             //let dict = store.messageUnreadDict;
             //unread = dict.get(unit);
         }
-        return <LMR className="p-2"
-            left={<Badge className="mr-2" badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}>
-            <b>{name}</b>
-            <small className="text-muted">{discription}</small>
+        return <LMR className="px-3 py-2"
+            left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}>
+            <div className="px-3">
+                <div><b>{name}</b></div>
+                <small className="text-muted">{discription}</small>
+            </div>
         </LMR>;
     }
     clickToAdmin = async () => {
@@ -73,10 +65,13 @@ export class AppsPage extends VmView { //} React.Component {
     }
     render() {
         let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = this.coordinator.unit;
-        if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
+        if (ownerNick) ownerNick = '- ' + ownerNick;
         let enterAdmins;
         if (isOwner === 1 || isAdmin === 1) {
-            enterAdmins = <Button color="success align-self-start" size="sm" onClick={()=>this.clickToAdmin()}>进入管理</Button>
+            enterAdmins = <button 
+                className="btn btn-success btn-sm align-self-start" onClick={()=>this.clickToAdmin()}>
+                进入管理
+            </button>
         }
         let appsView;
         if (apps !== undefined) {
@@ -84,13 +79,13 @@ export class AppsPage extends VmView { //} React.Component {
         }
         let divImg = <div className="mr-3"><img src={icon || consts.appItemIcon} /></div>;
         return <div>
-            <LMR className="my-3 container-fluid" left={divImg}>
+            <LMR className="my-3 container-fluid" left={divImg} right={enterAdmins}>
                 <div className="row">
                     <h6 className="col-12">{name}</h6>
                 </div>
                 <div className="row">
                     <label className="small text-dark col-3">简介：</label>
-                    <div className="col-9">{discription || '无'}</div>
+                    <div className="col-9">{discription || <Muted>无</Muted>}</div>
                 </div>
                 <div className="row">
                     <label className="small text-dark col-3">发布者：</label>

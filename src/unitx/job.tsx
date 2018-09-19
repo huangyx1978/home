@@ -1,12 +1,8 @@
 import * as React from 'react';
-import * as className from 'classnames';
-import {observer} from 'mobx-react';
-import {Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
-import {Page, nav, User} from 'tonva-tools';
+import {Page, nav, VmPage} from 'tonva-tools';
 import {Message} from 'model';
 import {UserSpan} from './userSpan';
-import { VmPage } from 'tonva-react-usql';
 import { CrUnitxUsq } from './crUnitxUsq';
 
 const states = {
@@ -27,10 +23,10 @@ interface JobPageState {
     flows: any[];
 }
 
-export class JobPage extends VmPage {
+export class JobPage extends VmPage<CrUnitxUsq> {
     private msg: Message;
     private state: JobPageState;
-    protected coordinator: CrUnitxUsq;
+    //protected coordinator: CrUnitxUsq;
 //React.Component<JobPageProps, JobPageState> {
 /*
     constructor(props) {
@@ -115,8 +111,8 @@ export class JobPage extends VmPage {
             bk: 'tansparent',
             component: <div className="w-100">
                 <LMR
-                    left={<Button color="success" onClick={this.finish}>完成</Button>} 
-                    right={<Button color="info" onClick={this.decline}>做不了</Button>} />
+                    left={<button className="btn btn-success" onClick={this.finish}>完成</button>} 
+                    right={<button className="btn btn-info" onClick={this.decline}>做不了</button>} />
             </div>
             //<Button color="secondary" onClick={this.edit}>编辑</Button>
         });

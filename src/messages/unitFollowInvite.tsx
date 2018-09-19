@@ -1,8 +1,6 @@
 import * as React from 'react';
 import * as className from 'classnames';
 import * as _ from 'lodash';
-import {observer} from 'mobx-react';
-import {Button} from 'reactstrap';
 import {List, EasyDate, LMR, FA} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';
 import {Message} from 'model';
@@ -77,18 +75,14 @@ class MessagePage extends React.Component<{title:string; msg:Message}> {
             <div className="m-4" />
             <UnitFollowInvite msg={msg} />
             <div className="mx-3 my-4">
-                <Button
-                    onClick={() => this.onProcessMessage('approve')}
-                    color="success">
+                <button className="btn btn-success"
+                    onClick={() => this.onProcessMessage('approve')}>
                     批准
-                </Button>
-                <Button
-                    onClick={() => this.onProcessMessage('refuse')}
-                    className="ml-3"
-                    color="primary"
-                    outline={true}>
+                </button>
+                <button className="btn btn-primary ml-3"
+                    onClick={() => this.onProcessMessage('refuse')}>
                     拒绝
-                </Button>
+                </button>
             </div>
         </Page>;
     }

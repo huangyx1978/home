@@ -1,6 +1,4 @@
 import * as React from 'react';
-import {Card, CardHeader, CardBody, CardText, CardTitle, Button,
-    Container, Row, Col} from 'reactstrap';
 import {Media, PropGrid, Prop, FA, IconText, TonvaForm, FormRow, SubmitResult, Fields} from 'tonva-react-form';
 import {nav, User, Page} from 'tonva-tools';
 import {store} from 'store';
@@ -95,13 +93,13 @@ class Me extends React.Component {
         });
         nav.pop(2);
         nav.push(<Page header="完成" back="close">
-            <Card>
-                <CardBody>
-                    <CardTitle>申请已发送</CardTitle>
-                    <CardText>请稍等，我们会尽快处理。</CardText>
-                    <Button color='primary' onClick={()=>nav.back()}>完成</Button>
-                </CardBody>
-            </Card>
+            <div className="card">
+                <div className="card-body">
+                    <div className="card-title">申请已发送</div>
+                    <div className="card-text">请稍等，我们会尽快处理。</div>
+                    <button className='btn btn-primary' onClick={()=>nav.back()}>完成</button>
+                </div>
+            </div>
         </Page>);
         return;
     }

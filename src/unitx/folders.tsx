@@ -1,15 +1,14 @@
 import * as React from 'react';
 import {observer} from 'mobx-react';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
-import {Page, nav} from 'tonva-tools';
+import {Page, nav, VmView, VmPage} from 'tonva-tools';
 import {Folder, Templet, sysTemplets, templetDict, UnitMessages, Item} from 'store';
 import {Message} from 'model';
 import {UserSpan} from './userSpan';
-import { VmView, VmPage } from 'tonva-react-usql';
 import { CrUnitxUsq } from './crUnitxUsq';
 
-export abstract class VmFoldersView extends VmView {
-    protected coordinator: CrUnitxUsq;
+export abstract class VmFoldersView extends VmView<CrUnitxUsq> {
+    //protected coordinator: CrUnitxUsq;
     
     private renderMessage = (item:Item, index:number) => {
         return <MsgRow item={item} />;
@@ -120,12 +119,12 @@ export class WholeFolders extends VmFoldersView {
         '',
         {
             type: 'component', 
-            component: <IconText iconClass="text-primary" icon="building" text="全部" />,
+            component: <IconText iconClass="text-primary" textClass="d-inline-block ml-3" icon="building" text="全部" />,
             onClick: this.allBox
         },
         {
             type: 'component', 
-            component: <IconText iconClass="text-primary" icon="archive" text="已归档" />,
+            component: <IconText iconClass="text-primary" textClass="d-inline-block ml-3" icon="archive" text="已归档" />,
             onClick: this.archiveBox
         },
     ];

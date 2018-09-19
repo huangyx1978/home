@@ -8,6 +8,8 @@ import {store} from '../store';
 //import {MainPage} from '../unitx';
 import {Sticky, StickyUnit} from '../model';
 import { CrUnitxUsq } from 'unitx/crUnitxUsq';
+import { CrMessages } from 'messages';
+import { navToApp } from 'navToApp';
 
 @observer
 class Home extends React.Component {
@@ -16,24 +18,24 @@ class Home extends React.Component {
     }
     private stickyClick = async (item:Sticky) => {
         let objId = item.objId;
-        meInFrame.unit = objId;
-        
-        await store.setUnit(objId);
-        /*
-        let unitx = await store.unit.unitx;
-        if (await unitx.load() === false) {
+        if (objId === 0) {
+            let crMessages = new CrMessages();
+            await crMessages.start();
             return;
         }
-        */
+        let unitId = objId;
+        meInFrame.unit = unitId;
+        
+        await store.setUnit(unitId);
+
+        if (store.unit.type === 1) {
+            // dev clicked
+            let adminApp = await store.getAdminApp();
+            navToApp(adminApp, unitId);
+            return;
+        }
         let crUnitxUsq = new CrUnitxUsq(store.unit);
         await crUnitxUsq.start();
-        /*
-        nav.push(<MainPage />);
-        nav.regConfirmClose(async () => {
-            store.setUnitRead();
-            return true;
-        });
-        */
     }
     private stickyRender = (s:Sticky, index:number):JSX.Element => {
         let {type, date, objId, obj} = s;
@@ -56,7 +58,7 @@ class Home extends React.Component {
     private stickyUnit(date:Date, unit:StickyUnit, unread:number):JSX.Element {
         let {name, nick, discription, icon, date:uDate} = unit;
         return <LMR className="px-3 py-2"
-            left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}
+            left={<Badge badge={unread || unit.unread}><img src={icon || consts.appItemIcon} /></Badge>}
             right={<small className="text-muted"><EasyDate date={date} /></small>}
         >
             <div className="px-3">
@@ -68,7 +70,9 @@ class Home extends React.Component {
     render() {
         let stickies = store.stickies;
         return <div>
-            <List items={stickies} item={{render: this.stickyRender, onClick: this.stickyClick}} />
+            <List items={stickies} 
+                item={{render: this.stickyRender, onClick: this.stickyClick}} 
+                loading="读取..." />
         </div>;
     }
 }

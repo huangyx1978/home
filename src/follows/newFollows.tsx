@@ -1,8 +1,5 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
 import {observer} from 'mobx-react';
-import {Card, CardHeader, CardBody, CardText, CardTitle, Button,
-    Container, Row, Col} from 'reactstrap';
 import {nav, Page, ListView, ListItem} from 'tonva-tools';
 import mainApi from 'mainApi';
 import {store} from 'store';
@@ -34,13 +31,13 @@ export default class NewFollows extends React.Component<{}, null> {
     private async accept(um:Message) {
         await store.acceptFellowInvite(um);
         nav.replace(<Page header='接受邀请' back="close">
-            <Card>
-                <CardBody>
-                    <CardTitle>小号成员</CardTitle>
-                    <CardText>你已成为{/*um.from.name*/}-{/*um.from.nick*/}的成员。</CardText>
-                    <Button color='primary' onClick={()=>nav.back()}>完成</Button>
-                </CardBody>
-            </Card>
+            <div className="card">
+                <div className="card-body">
+                    <div className="card-title">小号成员</div>
+                    <div className="card-text">你已成为{/*um.from.name*/}-{/*um.from.nick*/}的成员。</div>
+                    <button className="btn btn-primary" onClick={()=>nav.back()}>完成</button>
+                </div>
+            </div>
         </Page>);
 }
     private async refuse(um:Message) {
@@ -59,8 +56,8 @@ export default class NewFollows extends React.Component<{}, null> {
             middle: "邀请成为小号管理员",
             midSize: 3,
             right: <div>
-                <Button className='mr-2' color='success' size='sm' onClick={accept}>接受</Button>
-                <Button color='danger' outline={true} size='sm' onClick={refuse}>拒绝</Button>
+                <button className='mr-2 btn btn-success btn-sm' onClick={accept}>接受</button>
+                <button className='btn btn-sm btn-outline-danger' onClick={refuse}>拒绝</button>
             </div>,
         };
     }
@@ -68,8 +65,8 @@ export default class NewFollows extends React.Component<{}, null> {
         let fai = store.follow.invites;
         return <Page header="邀请">
             新收录
-            <Button onClick={this.test1}>WS1</Button>
-            <Button onClick={this.test0}>WS0</Button>
+            <button className="btn btn-primary" onClick={this.test1}>WS1</button>
+            <button className="btn btn-primary" onClick={this.test0}>WS0</button>
             <ListView items={fai} converter={this.converter} />
         </Page>
     }

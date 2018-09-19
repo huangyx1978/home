@@ -1,50 +1,45 @@
 import * as React from 'react';
-import * as className from 'classnames';
-import * as _ from 'lodash';
-import {Button} from 'reactstrap';
+import className from 'classnames';
+import _ from 'lodash';
 import {List, EasyDate, LMR, FA} from 'tonva-react-form';
 import {Page, nav} from 'tonva-tools';
-import {Message} from '../model';
+import {Message} from './model';
 import {UnitSpan, UserSpan} from '../tools';
-import {store} from '../store';
 import {tagStyle, tagEndStyle} from './message';
 
-abstract class ApplyItem extends React.Component<{msg: Message}> {
+const ApplyItem = (msg:Message, title:string, onClick:(msg:Message)=>Promise<void>) => { //} extends VmView { //} React.Component<{msg: Message, noClick?:boolean}> {
+    /*
     protected title:string;
-    constructor(props) {
-        super(props);
-        this.onClick = this.onClick.bind(this);
-    }
-    onClick() {
+    private onClick = () => {
         //if (this.props.pointer === false) return;
         let {msg} = this.props;
         let {state} = msg;
         if (state===1 || state===-1) return;
         nav.push(<MessagePage title={this.title} msg={msg} />);
-    }
-    render() {
-        let {fromUser, date, state} = this.props.msg;
-        let onClick;
+    }*/
+    //render() {
+        //let {msg, noClick} = this.props;
+        let {fromUser, date, state} = msg;
+        //let onClick;
         let bg, py, style;
         let right;
         if (state !== 0) {
-            bg = 'bg-transparent';
+            bg = 'bg-light';
             style = tagEndStyle;
             py = 'py-1';
             let name, color, text;
             if (state === 1) {
                 name = 'check';
                 color = 'text-success';
-                text = '已批准';
+                text = '已准';
             }
             else if (state === -1) {
                 name = 'times';
                 color = 'text-danger';
-                text = '已拒绝';
+                text = '已拒';
             }
-            right = <span className={color}>
-                <FA name={name} />
-                {text}
+            right = <span className={className(color, 'small')}>
+                <FA name={name} />&nbsp;{text}
             </span>;
         }
         else {
@@ -52,27 +47,31 @@ abstract class ApplyItem extends React.Component<{msg: Message}> {
             style = _.assign({}, tagStyle);
             _.assign(style, {cursor: 'pointer'});
             //if (this.props.pointer !== false) _.assign(style, {cursor: 'pointer'});
+            //if (noClick !== true) onClick = this.onClick;
             py = 'py-2';
         }
-        return <div>
-            <div onClick={()=>this.onClick()} className={className('px-3', py, 'my-1', 'mx-3', bg)} style={style}>
-                <LMR left={<span>{this.title}</span>} right={right} />
-                <div><small>申请人: <UserSpan id={fromUser} /></small></div>
-                <div><small>时间: <EasyDate date={date} /></small></div>
-            </div>
-        </div>;
-    }
+        //style={style}
+        return <LMR onClick={()=>onClick(msg)}
+            className={className('px-3', py, bg)}
+            right={right}>
+            <div>{title}  &nbsp; <small className="text-muted"><EasyDate date={date} /></small></div>
+            <div><small>申请人: <UserSpan id={fromUser} /></small></div>
+        </LMR>;
+    //}
 }
 
-export class ApplyDev extends ApplyItem {
-    protected title:string = '申请开发权限';
+export const ApplyDev = (msg:Message, onClick?:(msg:Message)=>Promise<void>) => {
+    return ApplyItem(msg, '申请开发权限', onClick); //protected title:string = '申请开发权限';
 }
 
-export class ApplyUnit extends ApplyItem {
-    protected title:string = '申请小号权限';
+export const ApplyUnit = (msg:Message, onClick?:(msg:Message)=>Promise<void>) => {
+    //protected title:string = '申请小号权限';
+    return ApplyItem(msg, '申请小号权限', onClick); //protected title:string = '申请开发权限';
 }
-
-class MessagePage extends React.Component<{title:string, msg:Message}> {
+/*
+export class VmApplyPage extends VmPage { //} React.Component<{title:string, msg:Message}> {
+    private approve = async () => this.onProcessMessage('approve');
+    private refuse = async () => this.onProcessMessage('refuse');
     private async onProcessMessage(action:'approve'|'refuse') {
         let {msg} = this.props;
         await store.unit.messageAct(msg.id, action);
@@ -80,23 +79,17 @@ class MessagePage extends React.Component<{title:string, msg:Message}> {
     }
     render() {
         let {msg} = this.props;
-        return <Page header="消息">
-            <div className="m-4" />
-            <ApplyDev msg={msg} />
-            <div className="mx-3 my-4">
-                <Button
-                    onClick={() => this.onProcessMessage('approve')}
-                    color="success">
-                    批准
-                </Button>
-                <Button
-                    onClick={() => this.onProcessMessage('refuse')}
-                    className="ml-3"
-                    color="primary"
-                    outline={true}>
-                    拒绝
-                </Button>
+        return <Page header="处理申请">
+            <div className="my-3 mx-2">
+                <div className="bg-white">
+                    {ApplyDev(msg, undefined)}
+                </div>
+                <div className="m-3">
+                    <button className="btn btn-success" onClick={this.approve}>批准</button>
+                    <button onClick={this.refuse} className="btn btn-outline-primary ml-3">拒绝</button>
+                </div>
             </div>
         </Page>
     }
 }
+*/

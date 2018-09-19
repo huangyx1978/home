@@ -1,5 +1,5 @@
 import { nav } from 'tonva-tools';
-import { App } from '../model';
+import { App } from 'model';
 import { store } from 'store';
 
 const cacheApps:{[id:number]: App} = {};
@@ -26,12 +26,12 @@ export async function navToAppId(appId: number, usqId:number, unitId:number, she
 
 export async function navToApp(app:App, unitId:number, usqId?:number, sheetType?:number, sheetId?:number) {
     let {url, urlDebug} = app;
-    if (url === undefined) {
+    if (!url) {
         alert('APP: ' + app.name + '\n' + app.discription + '\n尚未绑定服务');
         return;
     }
     else {
-        if (urlDebug !== undefined
+        if (urlDebug
             && document.location.hostname === 'localhost')
         {
             try {

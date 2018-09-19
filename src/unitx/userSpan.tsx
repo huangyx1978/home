@@ -1,7 +1,5 @@
 import * as React from 'react';
 import {observer} from 'mobx-react';
-import {Page, nav, User} from 'tonva-tools';
-import {store} from 'store';
 
 export interface UserSpanProps {
     userIds: number[];

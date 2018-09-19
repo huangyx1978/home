@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {computed} from 'mobx';
-import { CrUsq, VmPage, Query, Tuid, Action, IdBox } from 'tonva-react-usql';
-import {Page, Tab, nav, isBridged} from 'tonva-tools';
+import {Page, Tab, nav, isBridged, VmPage } from 'tonva-tools';
+import { CrUsq, Query, Tuid, Action, IdBox } from 'tonva-react-usql';
 import {Action as MenuAction, DropdownActions} from 'tonva-react-form';
 import { store, Unit, Templet, Desk, SendFolder, PassFolder, CcFolder, AllFolder, UnitMessages, Folder, Item } from 'store';
 import { DeskPage } from './desk';
@@ -311,8 +311,8 @@ export class CrUnitxUsq extends CrUsq {
     }
 }
 
-class VmUnitx extends VmPage {
-    protected coordinator: CrUnitxUsq;
+class VmUnitx extends VmPage<CrUnitxUsq> {
+    //protected coordinator: CrUnitxUsq;
 
     async showEntry() {
         this.openPage(this.view);

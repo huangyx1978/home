@@ -192,6 +192,7 @@ export class UnitMessages extends PagedItems<Message> {
 
 export class Unit {
     id: number;
+    type: number; // 1=dev, 2=unit, 3=dev & unit
     name: string;
     discription: string;
     nick: string;
@@ -280,7 +281,7 @@ export class Store {
     private static maxUnitCount = 2;
     private unitArray:Unit[] = [];
 
-    @observable stickies: Sticky[] = [];
+    @observable stickies: Sticky[];
     @observable units = new Map<number, Unit>();
     @observable unit:Unit = undefined;
 
@@ -368,6 +369,7 @@ export class Store {
     }
 
     async loadStickies() {
+        let stickies = [];
         let ret = await mainApi.stickies();
         //if (this.stickies === undefined) this.stickies = [];
         let t0:Sticky[] = ret[0];
@@ -376,8 +378,9 @@ export class Store {
             switch (s.type) {
                 case 3: 
                     let u = s.obj = t4.find(v => v.id === s.objId);
-                    let {id, name, discription, icon, unread, date} = u;
+                    let {id, type, name, discription, icon, unread, date} = u;
                     let unit = new Unit(id);
+                    unit.type = type;
                     unit.name = name;
                     unit.discription = discription;
                     unit.icon = icon;
@@ -387,14 +390,13 @@ export class Store {
                     break;
             }
         }
-        this.stickies.push(...t0);
+        stickies.push(...t0);
         let sys = ret[5][0];
-        let sysUnread, sysDate;
         if (sys !== undefined) {
-            sysUnread = sys.unread;
-            sysDate = sys.date;
+            let {unread, date} = sys;
+            this.addSysUnitStick(stickies, unread, date);
         }
-        this.addSysUnitStick(sysUnread, sysDate);
+        this.stickies = stickies;
     }
 
     async newUnit(unitId:number):Promise<Unit> {
@@ -470,8 +472,9 @@ export class Store {
         if (sticky !== undefined) this.stickies.unshift(sticky);
     }
 
-    private addSysUnitStick(unread:number, date:Date) {
+    private addSysUnitStick(stickies: Sticky[], unread:number, date:Date) {
         if (unread === undefined || unread <= 0) return;
+        /*
         let unit0 = this.units.get(0);
         if (unit0 === undefined) {
             unit0 = _.clone(sysUnit) as any;
@@ -486,42 +489,29 @@ export class Store {
             obj: unit0,
         });
         return;
-
-        let index = this.stickies.findIndex(v => (v.type === 0 || v.type === 3) && v.objId === 0);
+        */
+        let index = stickies.findIndex(v => (v.type === 0 || v.type === 3) && v.objId === 0);
         if (index < 0) {
-            let unit0 = this.units.get(0);
-            if (unit0 === undefined) return;
-            let {name, discription, icon} = sysUnit;
-            this.stickies.unshift({
+            //let unit0 = this.units.get(0);
+            //if (unit0 === undefined) return;
+            let sticky:StickyUnit = _.clone(sysUnit);
+            sticky.unread = unread;
+            //let {name, discription, icon} = sysUnit;
+            stickies.unshift({
                 id: 0,
                 date: new Date,
                 type: 0,
                 //main: name,
                 objId: 0,
-                obj: sysUnit,
+                obj: sticky,
                 //ex: discription,
                 //icon: icon,
             });
             return;
         }
         if (index > 0) {
-            let sticky = this.stickies.splice(index, 1)[0];
-            this.stickies.unshift(sticky);
-        }
-    }
-
-    async loadMessageUnread(): Promise<void> {
-        let ret = await messageApi.messageUnread();
-        let len = ret.length;
-        for (let i=0; i<len; i++) {
-            let {unit:unitId, unread, count} = ret[i];
-            let unit = this.units.get(unitId);
-            if (unit === undefined) unit = await this.newUnit(unitId);
-            unit.unread = unread;
-            //unit.messages.unread = unread;
-            if (unitId === 0 && (unread>0 || count > 0)) {
-                this.addSysUnitStick(0, undefined);
-            } 
+            let sticky = stickies.splice(index, 1)[0];
+            stickies.unshift(sticky);
         }
     }
 

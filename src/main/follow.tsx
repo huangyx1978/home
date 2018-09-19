@@ -41,8 +41,8 @@ class Follow extends React.Component {
     render() {
         //let nf = mainData.newFollow;
         //this.actions[0].unread = nf;
-        return <div className="p2">
-            关注的小号，正在开发中...
+        return <div className="px-3 py-2 small text-muted">
+            正在开发中...
         </div>;
     }
     // <ListView className='mb-2' items={this.actions} />

@@ -1,11 +1,8 @@
 import * as React from 'react';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import {computed} from 'mobx';
 import {nav, Page, Tab, WSChannel} from 'tonva-tools';
 import {Action, DropdownActions} from 'tonva-react-form';
-import {ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
-    Row, Col, Button, Form, FormGroup, Label, Input, 
-    FormText, FormFeedback} from 'reactstrap';
 import {store} from 'store';
 import Home from './home';
 import Follow from './follow';

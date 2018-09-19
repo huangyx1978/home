@@ -5,6 +5,7 @@ export interface StickyUnit {
     discription: string;
     icon: string;
     date: Date;
+    unread?: number;
 }
 
 export interface StickyGroup {

@@ -1,19 +1,18 @@
 import * as React from 'react';
 import {TonvaForm, FormRow, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText, 
     SubmitResult, ControlBase, FormView} from 'tonva-react-form';
-import {Page, nav} from 'tonva-tools';
+import {Page, VmPage} from 'tonva-tools';
 import {Templet} from 'store';
 import {TosControl} from './tosControl';
-import { VmPage } from 'tonva-react-usql';
 import { CrUnitxUsq } from './crUnitxUsq';
 
 export interface JobEditProps {
     templet: Templet;
 }
 
-export class JobEdit extends VmPage {
+export class JobEdit extends VmPage<CrUnitxUsq> {
     private templet: Templet;
-    protected coordinator: CrUnitxUsq;
+    //protected coordinator: CrUnitxUsq;
 //React.Component<JobEditProps> {
     private tosControl:TosControl;
     private rowTo = {

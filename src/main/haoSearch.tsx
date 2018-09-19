@@ -1,9 +1,5 @@
 import * as React from 'react';
-import * as _ from 'lodash';
-import {Container, ButtonGroup,
-    ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
-    Row, Col, Button, Form, FormGroup, Label, Input, 
-    FormText, FormFeedback} from 'reactstrap';
+import _ from 'lodash';
 import {SearchBox, List, LMR, Muted, Badge, Media} from 'tonva-react-form';
 import {nav, Page, LabelRow} from 'tonva-tools';
 import {store} from '../store';
@@ -116,9 +112,11 @@ class HaoSearch extends React.Component<HaoSearchProps, State> {
     renderUnit(item:any, index:number):JSX.Element {
         let {nick, discription, name, icon} = item;
         let left = <Badge><img src={icon || consts.appItemIcon} /></Badge>;
-        return <LMR className="p-2" left={left}>
-            <div>{name}</div>
-            <Muted>{discription}</Muted>
+        return <LMR className="px-3 py-1" left={left}>
+            <div className="px-3">
+                <div>{name}</div>
+                <Muted>{discription}</Muted>
+            </div>
         </LMR>;
     }
     render() {
@@ -138,7 +136,7 @@ class HaoSearch extends React.Component<HaoSearchProps, State> {
         let haos = this.state.haos;
         if (haos !== undefined) {
             if (haos.length === 0) {
-                content = <div>没有找到小号</div>;
+                content = <div className="p-3 small text-muted">没有找到小号</div>;
             }
             else {
                 content = <List items={haos} item={{
@@ -232,20 +230,20 @@ class HaoFollow extends React.Component<HaoFollowProps, HaoFollowState> {
         let unit = this.state.hao;
         let {nick, discription, name, icon, isFollowed} = unit;
         return <Page header='详细资料'>
-            <Container>
-                <div className='row-gap' />
+            <div>
+                <div className="row-gap" />
                 <Media icon={icon || consts.appIcon} main={name} discription={discription} />
-                <div className='row-gap' />
-                <Row>
-                    <Col xs={{offset:2, size: 8}}>
+                <div className="row-gap" />
+                <div className="row">
+                    <div className="col-8 offset-2">
                         {
                             isFollowed===1?
-                                <Button color='form-control' disabled={true}>已关注</Button>:
-                                <Button color='primary form-control' onClick={this.follow}>关注</Button>
+                                <button className='btn form-control' disabled={true}>已关注</button>:
+                                <button color='btn btn-primary form-control' onClick={this.follow}>关注</button>
                         }
-                    </Col>
-                </Row>
-            </Container>
+                    </div>
+                </div>
+            </div>
         </Page>;
     }
 }

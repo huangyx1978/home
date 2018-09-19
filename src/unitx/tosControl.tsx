@@ -1,7 +1,5 @@
 import * as React from 'react';
-import * as className from 'classnames';
-import {TonvaForm, FormRow, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText, 
-    SubmitResult, ControlBase, FormView} from 'tonva-react-form';
+import {ControlBase, FormView} from 'tonva-react-form';
 import {store, Templet} from 'store';
 import {default as mainApi} from 'mainApi';
 
