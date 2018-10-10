@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import React from 'react';
 import className from 'classnames';
 import { EasyDate, LMR, FA, TonvaForm } from 'tonva-react-form';
-import { Page, nav, VmPage } from 'tonva-tools';
+import { Page, nav, VPage } from 'tonva-tools';
 import { store } from 'store';
 import { tagEndStyle } from './message';
 const Approved = (msg, unitType, title, onClick) => {
@@ -69,7 +69,7 @@ export const ApprovedUnit = (msg, onClick) => {
     let unitType = 1;
     return Approved(msg, unitType, title, onClick);
 };
-export class UnitCreatePage extends VmPage {
+export class UnitCreatePage extends VPage {
     constructor() {
         super(...arguments);
         this.fields = {
@@ -77,7 +77,7 @@ export class UnitCreatePage extends VmPage {
         };
         this.onSubmit = (values) => __awaiter(this, void 0, void 0, function* () {
             let { id } = this.msg;
-            let unitId = yield this.coordinator.unitCreate(values.name, id);
+            let unitId = yield this.controller.unitCreate(values.name, id);
             let error;
             switch (unitId) {
                 default:

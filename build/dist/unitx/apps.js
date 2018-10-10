@@ -7,15 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { nav, VmView } from 'tonva-tools';
+import { nav, View } from 'tonva-tools';
 import { List, LMR, Badge, Muted } from 'tonva-react-form';
 import consts from '../consts';
 import { store } from '../store';
 import { navToApp } from 'navToApp';
 //@observer
-export class AppsPage extends VmView {
+export class AppsPage extends View {
     constructor() {
-        //protected coordinator: CrUnitxUsq;
+        //protected controller: CrUnitxUsq;
         super(...arguments);
         this.unleash = () => __awaiter(this, void 0, void 0, function* () {
             if (confirm("真的要取消关注吗？") === false)
@@ -31,7 +31,7 @@ export class AppsPage extends VmView {
             }
         ];
         this.appClick = (app) => __awaiter(this, void 0, void 0, function* () {
-            let unitId = this.coordinator.unit.id;
+            let unitId = this.controller.unit.id;
             let appId = app.id;
             if (appId === 0) {
                 //let api = new Api(undefined, undefined, undefined, undefined);
@@ -53,7 +53,7 @@ export class AppsPage extends VmView {
             let { id: appId, name, icon, discription } = app;
             let unread = undefined;
             if (appId === 0) {
-                unread = this.coordinator.unit.messages.unread;
+                unread = this.controller.unit.messages.unread;
                 //let dict = store.messageUnreadDict;
                 //unread = dict.get(unit);
             }
@@ -66,12 +66,12 @@ export class AppsPage extends VmView {
         };
         this.clickToAdmin = () => __awaiter(this, void 0, void 0, function* () {
             let adminApp = yield store.getAdminApp();
-            let unitId = this.coordinator.unit.id;
+            let unitId = this.controller.unit.id;
             navToApp(adminApp, unitId);
         });
     }
     render() {
-        let { id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin } = this.coordinator.unit;
+        let { id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin } = this.controller.unit;
         if (ownerNick)
             ownerNick = '- ' + ownerNick;
         let enterAdmins;

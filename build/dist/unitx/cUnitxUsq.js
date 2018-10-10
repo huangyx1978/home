@@ -34,18 +34,18 @@ export class CUnitxUsq extends CUsq {
             },
             {
                 title: '新建',
-                content: () => this.renderVPage(JobsPage),
+                content: () => this.renderView(JobsPage),
                 load: () => __awaiter(this, void 0, void 0, function* () {
                     this.templets = yield this.getTemplets();
                 }),
             },
             {
                 title: '查看',
-                content: () => this.renderVPage(Queries),
+                content: () => this.renderView(Queries),
             },
             {
                 title: '应用',
-                content: () => this.renderVPage(AppsPage),
+                content: () => this.renderView(AppsPage),
                 load: () => __awaiter(this, void 0, void 0, function* () {
                     if (this.unit.apps !== undefined)
                         return;
@@ -79,24 +79,24 @@ export class CUnitxUsq extends CUsq {
             this.ccFolder = new CcFolder(this.unit, this.query_getFolder);
             this.allFolder = new AllFolder(this.unit, this.query_getFolder);
             this.loadFoldsUndone();
-            yield this.showVm(VmUnitx);
+            yield this.showVPage(VmUnitx);
         });
     }
     showAppsPage() {
-        //this.showVm(AppsPage);
+        //this.showVPage(AppsPage);
         alert('AppsPage cannot show');
     }
     jobPage(msg) {
-        this.showVm(JobPage, msg);
+        this.showVPage(JobPage, msg);
     }
     jobEdit(templet) {
-        this.showVm(JobEdit, templet);
+        this.showVPage(JobEdit, templet);
     }
     myFolders() {
-        return this.renderVPage(MyFolders);
+        return this.renderView(MyFolders);
     }
     wholeFolders() {
-        return this.renderVPage(WholeFolders);
+        return this.renderView(WholeFolders);
     }
     getQuery(name) {
         return this.entities.query(name);
@@ -330,4 +330,4 @@ class VmUnitx extends VPage {
         });
     }
 }
-//# sourceMappingURL=crUnitxUsq.js.map
+//# sourceMappingURL=cUnitxUsq.js.map

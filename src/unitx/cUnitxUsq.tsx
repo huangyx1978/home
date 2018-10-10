@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {computed} from 'mobx';
-import {Page, Tab, nav, isBridged, VmPage } from 'tonva-tools';
-import { CrUsq, Query, Tuid, Action, IdBox } from 'tonva-react-usql';
+import {Page, Tab, nav, isBridged, VPage } from 'tonva-tools';
+import { CUsq, Query, Tuid, Action, IdBox } from 'tonva-react-usql';
 import {Action as MenuAction, DropdownActions} from 'tonva-react-form';
 import { store, Unit, Templet, Desk, SendFolder, PassFolder, CcFolder, AllFolder, UnitMessages, Folder, Item } from 'store';
 import { DeskPage } from './desk';
@@ -22,7 +22,7 @@ interface MessageState {
     state: string;
 }
 
-export class CrUnitxUsq extends CrUsq {
+export class CUnitxUsq extends CUsq {
     //private unitId: number;
     private action_newMessage: Action;
     private action_readMessage: Action;
@@ -49,14 +49,14 @@ export class CrUnitxUsq extends CrUsq {
     tabs:Tab[] = [
         {
             title: '待办',
-            content: () => this.renderVm(DeskPage),
+            content: () => this.renderView(DeskPage),
             redDot: computed(()=>{
                 return this.desk.items.length;
             })
         },
         {
             title: '新建',
-            content: () => this.renderVm(JobsPage), // <JobsPage />,
+            content: () => this.renderView(JobsPage), // <JobsPage />,
             load: async ():Promise<void> => {
                 this.templets = await this.getTemplets();
             },
@@ -64,11 +64,11 @@ export class CrUnitxUsq extends CrUsq {
         },
         {
             title: '查看',
-            content: () => this.renderVm(Queries), // <Queries />,
+            content: () => this.renderView(Queries), // <Queries />,
         },
         {
             title: '应用',
-            content: () => this.renderVm(AppsPage), //  <AppsPage />,
+            content: () => this.renderView(AppsPage), //  <AppsPage />,
             load: async ():Promise<void> => {
                 if (this.unit.apps !== undefined) return;
                 await this.unit.loadApps();
@@ -110,28 +110,28 @@ export class CrUnitxUsq extends CrUsq {
         this.allFolder = new AllFolder(this.unit, this.query_getFolder);
 
         this.loadFoldsUndone();
-        await this.showVm(VmUnitx);
+        await this.showVPage(VmUnitx);
     }
 
     showAppsPage() {
-        //this.showVm(AppsPage);
+        //this.showVPage(AppsPage);
         alert('AppsPage cannot show');
     }
 
     jobPage(msg: Message) {
-        this.showVm(JobPage, msg);
+        this.showVPage(JobPage, msg);
     }
 
     jobEdit(templet: Templet) {
-        this.showVm(JobEdit, templet);
+        this.showVPage(JobEdit, templet);
     }
 
     myFolders() {
-        return this.renderVm(MyFolders);
+        return this.renderView(MyFolders);
     }
 
     wholeFolders() {
-        return this.renderVm(WholeFolders);
+        return this.renderView(WholeFolders);
     }
 
     getQuery(name:string):Query {
@@ -311,8 +311,8 @@ export class CrUnitxUsq extends CrUsq {
     }
 }
 
-class VmUnitx extends VmPage<CrUnitxUsq> {
-    //protected coordinator: CrUnitxUsq;
+class VmUnitx extends VPage<CUnitxUsq> {
+    //protected controller: CrUnitxUsq;
 
     async showEntry() {
         this.openPage(this.view);
@@ -332,14 +332,14 @@ class VmUnitx extends VmPage<CrUnitxUsq> {
     ];
     private clickToAdmin = async () => {
         let adminApp = await store.getAdminApp();
-        let unitId = this.coordinator.unit.id;
+        let unitId = this.controller.unit.id;
         isBridged();
         nav.navToApp(adminApp.url, unitId);
     }
 
     private view = () => {
-        let {tabs} = this.coordinator;
-        let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = this.coordinator.unit;
+        let {tabs} = this.controller;
+        let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = this.controller.unit;
         if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
         let right;
         if (id > 0) {

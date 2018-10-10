@@ -10,16 +10,16 @@ import * as React from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { List, EasyDate, LMR, FA, Muted } from 'tonva-react-form';
-import { nav, VmView } from 'tonva-tools';
+import { nav, View } from 'tonva-tools';
 import { templetDict } from 'store';
 //import {ApplyDev, ApplyUnit, ApprovedDev, ApprovedUnit, UnitFollowInvite} from 'messages';
 import { navToAppId } from 'navToApp';
 import { UserSpan } from './userSpan';
 const light = { fontSize: 'x-small', color: 'lightgray' };
-export class DeskPage extends VmView {
+export class DeskPage extends View {
     constructor() {
         super(...arguments);
-        //protected coordinator: CrUnitxUsq;
+        //protected controller: CrUnitxUsq;
         /*
         componentDidMount() {
             let bd = store.unit.unitx.desk.bottomDiv;
@@ -31,9 +31,9 @@ export class DeskPage extends VmView {
             let { message, read } = deskItem;
             let idBox = message;
             if (read !== 1)
-                yield this.coordinator.readMessage(idBox.id);
-            let { unit } = this.coordinator;
-            //let tuid = this.coordinator.tuid_message;
+                yield this.controller.readMessage(idBox.id);
+            let { unit } = this.controller;
+            //let tuid = this.controller.tuid_message;
             //let msg = tuid.valueFromId(id);
             let msg = idBox.obj;
             if (typeof message === 'number')
@@ -42,7 +42,7 @@ export class DeskPage extends VmView {
             switch (type) {
                 default:
                     //nav.push(<JobPage msg={msg} />);
-                    this.coordinator.jobPage(msg);
+                    this.controller.jobPage(msg);
                     break;
                 case 'sheetMsg':
                     //alert(JSON.stringify(msg));
@@ -62,10 +62,10 @@ export class DeskPage extends VmView {
         this.clickApps = () => {
             //this.openPage(AppsPage);
             //nav.push(<AppsPage />);
-            this.coordinator.showAppsPage();
+            this.controller.showAppsPage();
         };
         this.view = () => {
-            let { desk } = this.coordinator;
+            let { desk } = this.controller;
             let { items, bottomDiv } = desk;
             /*
             let right = <Button onClick={this.clickApps} color="success" size="sm">功能应用</Button>;
@@ -75,7 +75,7 @@ export class DeskPage extends VmView {
             </div>;
             */
             return React.createElement(React.Fragment, null,
-                this.coordinator.myFolders(),
+                this.controller.myFolders(),
                 React.createElement(List, { className: "my-1", before: React.createElement(Muted, null, "\u8BFB\u53D6\u4E2D..."), none: React.createElement("div", { className: "p-2" },
                         React.createElement("small", { style: { color: 'lightgray' } }, "\u6682\u65E0\u5F85\u529E\u4E8B\u9879")), items: items, item: {
                         key: (item) => item.message.id,
@@ -88,7 +88,7 @@ export class DeskPage extends VmView {
         };
         this.msgRow = observer((deskItem) => {
             let userId = nav.user.id;
-            let { tuid_message, tuid_user } = this.coordinator;
+            let { tuid_message, tuid_user } = this.controller;
             let { message, read } = deskItem;
             //let msg:Message = tuid_message.valueFromId();
             //let msg:Message = {id: ((id as any) as IdBox).id} as any;

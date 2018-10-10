@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { VmView } from 'tonva-tools';
+import { View } from 'tonva-tools';
 import { List, LMR, FA, Muted, IconText } from 'tonva-react-form';
 import { sysTemplets } from 'store';
 /*
@@ -15,9 +15,9 @@ export interface JobsPageState {
     templets: Templet[];
 }
 */
-export class JobsPage extends VmView {
+export class JobsPage extends View {
     constructor() {
-        //protected coordinator: CrUnitxUsq;
+        //protected controller: CrUnitxUsq;
         super(...arguments);
         this.onClick = () => {
         };
@@ -28,7 +28,7 @@ export class JobsPage extends VmView {
                 content: 'bbbb',
                 to: [{ user: 0 }]
             };
-            let id = yield this.coordinator.newMessage(msg);
+            let id = yield this.controller.newMessage(msg);
             //nav.pop();
             this.closePage();
         });
@@ -73,12 +73,12 @@ export class JobsPage extends VmView {
         };
         this.templetClick = (templet) => {
             //nav.push(<JobEdit templet={templet} />);
-            this.coordinator.jobEdit(templet);
+            this.controller.jobEdit(templet);
         };
     }
     render() {
         //let {templets} = this.state;
-        let { templets } = this.coordinator;
+        let { templets } = this.controller;
         return React.createElement("div", null,
             React.createElement(List, { className: "py-2", items: sysTemplets, item: { render: this.renderRow, onClick: this.templetClick } }),
             templets && React.createElement(List, { items: templets, item: { render: this.renderRow, onClick: this.templetClick } }));

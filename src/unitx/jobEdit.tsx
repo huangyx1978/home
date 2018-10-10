@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {TonvaForm, FormRow, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText, 
     SubmitResult, ControlBase, FormView} from 'tonva-react-form';
-import {Page, VmPage} from 'tonva-tools';
+import {Page, VPage} from 'tonva-tools';
 import {Templet} from 'store';
 import {TosControl} from './tosControl';
-import { CrUnitxUsq } from './crUnitxUsq';
+import { CUnitxUsq } from './cUnitxUsq';
 
 export interface JobEditProps {
     templet: Templet;
 }
 
-export class JobEdit extends VmPage<CrUnitxUsq> {
+export class JobEdit extends VPage<CUnitxUsq> {
     private templet: Templet;
-    //protected coordinator: CrUnitxUsq;
+    //protected controller: CrUnitxUsq;
 //React.Component<JobEditProps> {
     private tosControl:TosControl;
     private rowTo = {
@@ -84,7 +84,7 @@ export class JobEdit extends VmPage<CrUnitxUsq> {
             discription: discription,
             to: to,
         };
-        let id = await this.coordinator.newMessage(msg);
+        let id = await this.controller.newMessage(msg);
         this.closePage();
         return;
     }

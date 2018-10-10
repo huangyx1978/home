@@ -8,9 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { TonvaForm } from 'tonva-react-form';
-import { Page, VmPage } from 'tonva-tools';
+import { Page, VPage } from 'tonva-tools';
 import { TosControl } from './tosControl';
-export class JobEdit extends VmPage {
+export class JobEdit extends VPage {
     constructor() {
         super(...arguments);
         this.rowTo = {
@@ -70,7 +70,7 @@ export class JobEdit extends VmPage {
                 discription: discription,
                 to: to,
             };
-            let id = yield this.coordinator.newMessage(msg);
+            let id = yield this.controller.newMessage(msg);
             this.closePage();
             return;
         });

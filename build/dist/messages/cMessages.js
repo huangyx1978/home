@@ -23,7 +23,7 @@ const typeMessageMap:{[type:string]: (msg:Message, onClick?:(msg:Message)=>Promi
     //"unit-follow-invite": UnitFollowInvite,
 };
 */
-export class CrMessages extends Controller {
+export class CMessages extends Controller {
     constructor() {
         super(...arguments);
         this.onApplyItemClick = (msg) => __awaiter(this, void 0, void 0, function* () {
@@ -64,7 +64,7 @@ export class CrMessages extends Controller {
         return __awaiter(this, void 0, void 0, function* () {
             this.messages = new PagedMessages;
             yield this.messages.first(undefined);
-            this.showVPage(VmMessages);
+            this.showVPage(VMessages);
         });
     }
     unitCreate(unitName, msgId) {
@@ -74,7 +74,7 @@ export class CrMessages extends Controller {
         });
     }
 }
-class VmMessages extends VPage {
+class VMessages extends VPage {
     constructor() {
         //protected controller: CrMessages;
         super(...arguments);
@@ -120,4 +120,4 @@ class VmMessages extends VPage {
         });
     }
 }
-//# sourceMappingURL=crMessages.js.map
+//# sourceMappingURL=cMessages.js.map

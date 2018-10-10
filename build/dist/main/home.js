@@ -18,8 +18,8 @@ import { List, LMR, Badge, EasyDate } from 'tonva-react-form';
 import { meInFrame } from 'tonva-tools';
 import consts from '../consts';
 import { store } from '../store';
-import { CrUnitxUsq } from 'unitx/crUnitxUsq';
-import { CrMessages } from 'messages';
+import { CUnitxUsq } from 'unitx/cUnitxUsq';
+import { CMessages } from 'messages';
 import { navToApp } from 'navToApp';
 let Home = class Home extends React.Component {
     constructor() {
@@ -27,7 +27,7 @@ let Home = class Home extends React.Component {
         this.stickyClick = (item) => __awaiter(this, void 0, void 0, function* () {
             let objId = item.objId;
             if (objId === 0) {
-                let crMessages = new CrMessages();
+                let crMessages = new CMessages();
                 yield crMessages.start();
                 return;
             }
@@ -40,7 +40,7 @@ let Home = class Home extends React.Component {
                 navToApp(adminApp, unitId);
                 return;
             }
-            let crUnitxUsq = new CrUnitxUsq(store.unit);
+            let crUnitxUsq = new CUnitxUsq(store.unit);
             yield crUnitxUsq.start();
         });
         this.stickyRender = (s, index) => {

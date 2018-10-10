@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { List, EasyDate, LMR, FA, Muted, PropGrid } from 'tonva-react-form';
-import { Page, VmPage } from 'tonva-tools';
+import { Page, VPage } from 'tonva-tools';
 import { UserSpan } from './userSpan';
 const states = {
     '#': React.createElement("span", { className: "text-succeed" }, "\u5B8C\u6210"),
@@ -18,19 +18,19 @@ function stateText(state) {
     let ret = states[state];
     return ret || state;
 }
-export class JobPage extends VmPage {
+export class JobPage extends VPage {
     constructor() {
         super(...arguments);
         this.finish = () => __awaiter(this, void 0, void 0, function* () {
             //let {msg} = this.props;
-            yield this.coordinator.actMessage(this.msg, 'done', '#', [{ user: 0 }]);
+            yield this.controller.actMessage(this.msg, 'done', '#', [{ user: 0 }]);
             //store.unit.chat.done(msg.id);
             //nav.pop();
             this.closePage();
         });
         this.decline = () => __awaiter(this, void 0, void 0, function* () {
             //let {msg} = this.props;
-            yield this.coordinator.actMessage(this.msg, 'decline', '#-', [{ user: 0 }]);
+            yield this.controller.actMessage(this.msg, 'decline', '#-', [{ user: 0 }]);
             alert('显示做不了的理由, 然后选择。暂未完成设计！');
             //nav.pop();
             this.closePage();
@@ -67,7 +67,7 @@ export class JobPage extends VmPage {
         this.view = () => {
             //let {msg} = this.props;
             let { fromUser } = this.msg;
-            let { tuid_message, tuid_user } = this.coordinator;
+            let { tuid_message, tuid_user } = this.controller;
             let user = tuid_user.valueFromId(fromUser);
             let rows = [
                 {
@@ -89,7 +89,7 @@ export class JobPage extends VmPage {
                 React.createElement(PropGrid, { className: "px-3 py-2", rows: rows, values: this.msg }));
         };
     }
-    //protected coordinator: CrUnitxUsq;
+    //protected controller: CrUnitxUsq;
     //React.Component<JobPageProps, JobPageState> {
     /*
         constructor(props) {
@@ -102,7 +102,7 @@ export class JobPage extends VmPage {
     showEntry(msg) {
         return __awaiter(this, void 0, void 0, function* () {
             this.msg = msg;
-            this.state = yield this.coordinator.getMessage(msg.id);
+            this.state = yield this.controller.getMessage(msg.id);
             //this.setState(ret);
             this.openPage(this.view);
         });

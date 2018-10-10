@@ -12,54 +12,12 @@ import { nav, Page } from 'tonva-tools';
 import { store } from '../store';
 import consts from '../consts';
 import mainApi from '../mainApi';
+import { CUnitxUsq } from 'unitx/cUnitxUsq';
 const pageSize = 30;
 class HaoSearch extends React.Component {
     constructor(props) {
         super(props);
-        this.isFirstPage = true;
-        this.isSearching = false;
-        this.hasMore = false;
-        this.minId = 0;
-        this.state = {
-            hasMore: this.hasMore,
-            loading: this.isSearching,
-            haos: this.haos,
-        };
-        this.onTextChange = this.onTextChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-        this.onSearch = this.onSearch.bind(this);
-        this.onScroll = this.onScroll.bind(this);
-        this.onScrollBottom = this.onScrollBottom.bind(this);
-    }
-    onTextChange(e) {
-        this.text = e.target.value;
-    }
-    onSubmit(e) {
-        e.preventDefault();
-        this.haos = undefined;
-        this.isFirstPage = true;
-        this.hasMore = false;
-        this.isSearching = false;
-        if (this.text === undefined)
-            return;
-        this.text = this.text.trim();
-        if (this.text.length === 0)
-            return;
-        this.setState({
-            hasMore: this.hasMore,
-            loading: true,
-            haos: this.haos
-        });
-        this.search();
-    }
-    search() {
-        this.isSearching = true;
-        this.input.blur();
-        /*
-        */
-    }
-    onSearch(key) {
-        return __awaiter(this, void 0, void 0, function* () {
+        this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () {
             this.setState({
                 loading: true,
             });
@@ -70,37 +28,37 @@ class HaoSearch extends React.Component {
                 haos: res
             });
         });
+        this.onScrollBottom = () => {
+            if (this.hasMore === false)
+                return;
+            //setTimeout(() => {
+            this.search();
+            //}, 3000);
+        };
+        this.haoClicked = (hao) => {
+            nav.push(React.createElement(HaoFollow, { unit: hao.unit, hao: hao.id, name: hao.name, nick: hao.nick, discription: hao.discription, icon: hao.icon, isFollowed: hao.isFollowed }));
+        };
+        this.renderUnit = (item, index) => {
+            let { nick, discription, name, icon } = item;
+            let left = React.createElement(Badge, null,
+                React.createElement("img", { src: icon || consts.appItemIcon }));
+            return React.createElement(LMR, { className: "px-3 py-2", left: left },
+                React.createElement("div", { className: "px-3" },
+                    React.createElement("div", null, name),
+                    React.createElement(Muted, null, discription)));
+        };
+        this.isSearching = false;
+        this.hasMore = false;
+        this.state = {
+            hasMore: this.hasMore,
+            loading: this.isSearching,
+            haos: this.haos,
+        };
     }
-    onScroll(e) {
-    }
-    onScrollBottom() {
-        if (this.hasMore === false)
-            return;
-        //setTimeout(() => {
-        this.search();
-        //}, 3000);
-    }
-    haoClicked(hao) {
-        nav.push(React.createElement(HaoFollow, { unit: hao.unit, hao: hao.id, name: hao.name, nick: hao.nick, discription: hao.discription, icon: hao.icon, isFollowed: hao.isFollowed }));
-    }
-    renderUnit(item, index) {
-        let { nick, discription, name, icon } = item;
-        let left = React.createElement(Badge, null,
-            React.createElement("img", { src: icon || consts.appItemIcon }));
-        return React.createElement(LMR, { className: "px-3 py-1", left: left },
-            React.createElement("div", { className: "px-3" },
-                React.createElement("div", null, name),
-                React.createElement(Muted, null, discription)));
+    search() {
+        this.isSearching = true;
     }
     render() {
-        /*
-        let center = (<form onSubmit={this.onSubmit} style={{display:'flex', flex:1, padding:'1px'}}>
-            <input ref={(input) => this.input = input}
-                onChange={this.onTextChange}
-                style={{display:'flex', flex:1}}
-                type="text" name="text" placeholder="搜索小号" />
-            <button>S</button>
-        </form>); */
         let center = React.createElement(SearchBox, { onSearch: this.onSearch, className: "w-100 mx-1", placeholder: "\u641C\u7D22\u5C0F\u53F7", maxLength: 100 });
         let content;
         let haos = this.state.haos;
@@ -123,26 +81,9 @@ class HaoSearch extends React.Component {
             textMore = '更多内容...';
         if (textMore)
             more = React.createElement("div", { style: { height: '50px', textAlign: 'center' } }, textMore);
-        return (React.createElement(Page, { header: center, 
-            //mainClass='search-apps'
-            //onScroll={this.onScroll}
-            onScrollBottom: this.onScrollBottom },
+        return (React.createElement(Page, { header: center, onScrollBottom: this.onScrollBottom },
             content,
             more));
-    }
-}
-class HaoRow extends React.Component {
-    render() {
-        let { index, hao, haoClicked } = this.props;
-        return (React.createElement("li", { onClick: () => haoClicked(hao) },
-            React.createElement("label", null,
-                React.createElement("img", { src: hao.icon || consts.appIcon })),
-            React.createElement("div", null,
-                React.createElement("div", null,
-                    index,
-                    " : ",
-                    hao.name),
-                React.createElement("span", null, hao.discription))));
     }
 }
 class HaoFollow extends React.Component {
@@ -166,25 +107,23 @@ class HaoFollow extends React.Component {
         return __awaiter(this, void 0, void 0, function* () {
             let { hao, name, nick, discription, icon } = this.props;
             yield store.followUnit(hao); //, name, nick, discription, icon);
-            nav.pop(2);
+            nav.ceaseTop(2);
             yield store.setUnit(hao);
-            nav.push(React.createElement(React.Fragment, null, "\u663E\u793Aunitx MainPage")); //<MainPage />);
+            //nav.push(<>显示unitx MainPage</>); //<MainPage />);
+            let crUnitxUsq = new CUnitxUsq(store.unit);
+            yield crUnitxUsq.start();
         });
-    }
-    componentDidMount() {
     }
     render() {
         let unit = this.state.hao;
         let { nick, discription, name, icon, isFollowed } = unit;
-        return React.createElement(Page, { header: '\u8BE6\u7EC6\u8D44\u6599' },
-            React.createElement("div", null,
-                React.createElement("div", { className: "row-gap" }),
-                React.createElement(Media, { icon: icon || consts.appIcon, main: name, discription: discription }),
-                React.createElement("div", { className: "row-gap" }),
-                React.createElement("div", { className: "row" },
-                    React.createElement("div", { className: "col-8 offset-2" }, isFollowed === 1 ?
-                        React.createElement("button", { className: 'btn form-control', disabled: true }, "\u5DF2\u5173\u6CE8") :
-                        React.createElement("button", { color: 'btn btn-primary form-control', onClick: this.follow }, "\u5173\u6CE8")))));
+        return React.createElement(Page, { header: "APP\u8BE6\u60C5" },
+            React.createElement("div", { className: "px-3 d-flex flex-column" },
+                React.createElement("div", { className: "my-3" },
+                    React.createElement(Media, { icon: icon || consts.appIcon, main: name, discription: discription })),
+                React.createElement("div", { className: "w-75 align-self-center" }, isFollowed === 1 ?
+                    React.createElement("button", { className: "btn btn-outline-primary form-control", disabled: true }, "\u5DF2\u5173\u6CE8") :
+                    React.createElement("button", { className: "btn btn-primary form-control", onClick: this.follow }, "\u5173\u6CE8"))));
     }
 }
 export default HaoSearch;

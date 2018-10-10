@@ -7,8 +7,8 @@ import consts from '../consts';
 import {store} from '../store';
 //import {MainPage} from '../unitx';
 import {Sticky, StickyUnit} from '../model';
-import { CrUnitxUsq } from 'unitx/crUnitxUsq';
-import { CrMessages } from 'messages';
+import { CUnitxUsq } from 'unitx/cUnitxUsq';
+import { CMessages } from 'messages';
 import { navToApp } from 'navToApp';
 
 @observer
@@ -19,7 +19,7 @@ class Home extends React.Component {
     private stickyClick = async (item:Sticky) => {
         let objId = item.objId;
         if (objId === 0) {
-            let crMessages = new CrMessages();
+            let crMessages = new CMessages();
             await crMessages.start();
             return;
         }
@@ -34,7 +34,7 @@ class Home extends React.Component {
             navToApp(adminApp, unitId);
             return;
         }
-        let crUnitxUsq = new CrUnitxUsq(store.unit);
+        let crUnitxUsq = new CUnitxUsq(store.unit);
         await crUnitxUsq.start();
     }
     private stickyRender = (s:Sticky, index:number):JSX.Element => {

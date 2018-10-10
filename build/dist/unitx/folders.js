@@ -15,12 +15,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { List, EasyDate, LMR, FA, Muted, PropGrid, IconText } from 'tonva-react-form';
-import { Page, nav, VmView } from 'tonva-tools';
+import { Page, nav, View } from 'tonva-tools';
 import { templetDict } from 'store';
 import { UserSpan } from './userSpan';
-export class VmFoldersView extends VmView {
+export class VFoldersView extends View {
     constructor() {
-        //protected coordinator: CrUnitxUsq;
+        //protected controller: CrUnitxUsq;
         super(...arguments);
         this.renderMessage = (item, index) => {
             return React.createElement(MsgRow, { item: item });
@@ -32,7 +32,7 @@ export class VmFoldersView extends VmView {
             if (typeof message === 'number')
                 return;
             //nav.push(<JobPage msg={msg} />);
-            this.coordinator.jobPage(msg);
+            this.controller.jobPage(msg);
         };
         this.folders = ({ header, folder }) => {
             //let {header, folder} = this.props;
@@ -43,29 +43,29 @@ export class VmFoldersView extends VmView {
         };
     }
 }
-export class MyFolders extends VmFoldersView {
+export class MyFolders extends VFoldersView {
     constructor() {
         super(...arguments);
         this.sendBox = () => __awaiter(this, void 0, void 0, function* () {
-            let folder = this.coordinator.sendFolder;
+            let folder = this.controller.sendFolder;
             folder.scrollToBottom();
             yield folder.first({ tag: '$me', undone: 1 });
             //nav.push(<SendBox />);
-            this.openPage(this.folders, { header: "我发出任务", folder: this.coordinator.sendFolder });
+            this.openPage(this.folders, { header: "我发出任务", folder: this.controller.sendFolder });
         });
         this.passBox = () => __awaiter(this, void 0, void 0, function* () {
-            let folder = this.coordinator.passFolder;
+            let folder = this.controller.passFolder;
             folder.scrollToBottom();
             yield folder.first({ tag: '$pass', undone: 1 });
             //nav.push(<PassBox />);
-            this.openPage(this.folders, { header: "我经手任务", folder: this.coordinator.passFolder });
+            this.openPage(this.folders, { header: "我经手任务", folder: this.controller.passFolder });
         });
         this.ccBox = () => __awaiter(this, void 0, void 0, function* () {
-            let folder = this.coordinator.ccFolder;
+            let folder = this.controller.ccFolder;
             folder.scrollToBottom();
             yield folder.first({ tag: '$cc', undone: 1 });
             //nav.push(<CcBox />);
-            this.openPage(this.folders, { header: "抄送我的", folder: this.coordinator.ccFolder });
+            this.openPage(this.folders, { header: "抄送我的", folder: this.controller.ccFolder });
         });
         this.folderRow = observer(({ icon, text, folder }) => {
             let { doing, undone } = folder;
@@ -79,7 +79,7 @@ export class MyFolders extends VmFoldersView {
         });
     }
     render() {
-        let { desk, sendFolder, passFolder, ccFolder } = this.coordinator;
+        let { desk, sendFolder, passFolder, ccFolder } = this.controller;
         let rows = [
             '=',
             {
@@ -101,15 +101,15 @@ export class MyFolders extends VmFoldersView {
         return React.createElement(PropGrid, { rows: rows, values: {} });
     }
 }
-export class WholeFolders extends VmFoldersView {
+export class WholeFolders extends VFoldersView {
     constructor() {
         super(...arguments);
         this.allBox = () => __awaiter(this, void 0, void 0, function* () {
-            let folder = this.coordinator.allFolder;
+            let folder = this.controller.allFolder;
             folder.scrollToBottom();
             yield folder.first({ tag: '$' });
             //nav.push(<AllBox />);
-            this.openPage(this.folders, { header: "全部任务", folder: this.coordinator.allFolder });
+            this.openPage(this.folders, { header: "全部任务", folder: this.controller.allFolder });
         });
         this.archiveBox = () => __awaiter(this, void 0, void 0, function* () {
             nav.push(React.createElement(ArchiveBox, null));
@@ -206,7 +206,7 @@ class BottomDiv extends React.Component {
     }
 }
 /*
-class FolderPage extends VmPage { // React.Component<FolderPageProps> {
+class FolderPage extends VPage { // React.Component<FolderPageProps> {
     renderMessage(item:Item, index:number) {
         return <MsgRow item={item} />;
     }

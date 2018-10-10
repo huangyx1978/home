@@ -7,7 +7,7 @@ import {Message} from './model';
 import {UnitSpan, UserSpan} from '../tools';
 import {tagStyle, tagEndStyle} from './message';
 
-const ApplyItem = (msg:Message, title:string, onClick:(msg:Message)=>Promise<void>) => { //} extends VmView { //} React.Component<{msg: Message, noClick?:boolean}> {
+const ApplyItem = (msg:Message, title:string, onClick:(msg:Message)=>Promise<void>) => { //} extends View { //} React.Component<{msg: Message, noClick?:boolean}> {
     /*
     protected title:string;
     private onClick = () => {
@@ -69,7 +69,7 @@ export const ApplyUnit = (msg:Message, onClick?:(msg:Message)=>Promise<void>) =>
     return ApplyItem(msg, '申请小号权限', onClick); //protected title:string = '申请开发权限';
 }
 /*
-export class VmApplyPage extends VmPage { //} React.Component<{title:string, msg:Message}> {
+export class VmApplyPage extends VPage { //} React.Component<{title:string, msg:Message}> {
     private approve = async () => this.onProcessMessage('approve');
     private refuse = async () => this.onProcessMessage('refuse');
     private async onProcessMessage(action:'approve'|'refuse') {

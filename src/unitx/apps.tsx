@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { nav, VmView } from 'tonva-tools';
+import { nav, View } from 'tonva-tools';
 import { List, LMR, Badge, Action, Muted } from 'tonva-react-form';
 import consts from '../consts';
 import { App } from '../model';
 import { store } from '../store';
 import { navToApp } from 'navToApp';
-import { CrUnitxUsq } from './crUnitxUsq';
+import { CUnitxUsq } from './cUnitxUsq';
 
 //@observer
-export class AppsPage extends VmView<CrUnitxUsq> { //} React.Component {
-    //protected coordinator: CrUnitxUsq;
+export class AppsPage extends View<CUnitxUsq> { //} React.Component {
+    //protected controller: CrUnitxUsq;
 
     unleash = async () => {
         if (confirm("真的要取消关注吗？") === false) return;
@@ -24,7 +24,7 @@ export class AppsPage extends VmView<CrUnitxUsq> { //} React.Component {
         }
     ];
     appClick = async (app:App) => {
-        let unitId = this.coordinator.unit.id;
+        let unitId = this.controller.unit.id;
         let appId = app.id;
         if (appId === 0) {
             //let api = new Api(undefined, undefined, undefined, undefined);
@@ -46,7 +46,7 @@ export class AppsPage extends VmView<CrUnitxUsq> { //} React.Component {
         let {id:appId, name, icon, discription} = app;
         let unread:number = undefined;
         if (appId === 0) {
-            unread = this.coordinator.unit.messages.unread;
+            unread = this.controller.unit.messages.unread;
             //let dict = store.messageUnreadDict;
             //unread = dict.get(unit);
         }
@@ -60,11 +60,11 @@ export class AppsPage extends VmView<CrUnitxUsq> { //} React.Component {
     }
     clickToAdmin = async () => {
         let adminApp = await store.getAdminApp();
-        let unitId = this.coordinator.unit.id;
+        let unitId = this.controller.unit.id;
         navToApp(adminApp, unitId);
     }
     render() {
-        let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = this.coordinator.unit;
+        let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = this.controller.unit;
         if (ownerNick) ownerNick = '- ' + ownerNick;
         let enterAdmins;
         if (isOwner === 1 || isAdmin === 1) {

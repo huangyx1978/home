@@ -1,14 +1,14 @@
 import * as React from 'react';
 import {observer} from 'mobx-react';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
-import {Page, nav, VmView, VmPage} from 'tonva-tools';
+import {Page, nav, View, VPage} from 'tonva-tools';
 import {Folder, Templet, sysTemplets, templetDict, UnitMessages, Item} from 'store';
 import {Message} from 'model';
 import {UserSpan} from './userSpan';
-import { CrUnitxUsq } from './crUnitxUsq';
+import { CUnitxUsq } from './cUnitxUsq';
 
-export abstract class VmFoldersView extends VmView<CrUnitxUsq> {
-    //protected coordinator: CrUnitxUsq;
+export abstract class VFoldersView extends View<CUnitxUsq> {
+    //protected controller: CrUnitxUsq;
     
     private renderMessage = (item:Item, index:number) => {
         return <MsgRow item={item} />;
@@ -20,7 +20,7 @@ export abstract class VmFoldersView extends VmView<CrUnitxUsq> {
         let msg:Message = {} as any; //tuid.valueFromId(id);
         if (typeof message === 'number') return;
         //nav.push(<JobPage msg={msg} />);
-        this.coordinator.jobPage(msg);
+        this.controller.jobPage(msg);
     }
     
     protected folders = ({header, folder}:FolderPageProps) => {
@@ -37,29 +37,29 @@ export abstract class VmFoldersView extends VmView<CrUnitxUsq> {
     }
 }
 
-export class MyFolders extends VmFoldersView {
+export class MyFolders extends VFoldersView {
     private sendBox = async () => {
-        let folder = this.coordinator.sendFolder;
+        let folder = this.controller.sendFolder;
         folder.scrollToBottom();
         await folder.first({tag:'$me', undone: 1});
         //nav.push(<SendBox />);
-        this.openPage(this.folders, {header:"我发出任务", folder:this.coordinator.sendFolder});
+        this.openPage(this.folders, {header:"我发出任务", folder:this.controller.sendFolder});
     }
 
     private passBox = async () => {
-        let folder = this.coordinator.passFolder;
+        let folder = this.controller.passFolder;
         folder.scrollToBottom();
         await folder.first({tag:'$pass', undone: 1});
         //nav.push(<PassBox />);
-        this.openPage(this.folders, {header:"我经手任务", folder:this.coordinator.passFolder});
+        this.openPage(this.folders, {header:"我经手任务", folder:this.controller.passFolder});
     }
     
     private ccBox = async () => {
-        let folder = this.coordinator.ccFolder;
+        let folder = this.controller.ccFolder;
         folder.scrollToBottom();
         await folder.first({tag:'$cc', undone: 1});
         //nav.push(<CcBox />);
-        this.openPage(this.folders, {header:"抄送我的", folder:this.coordinator.ccFolder});
+        this.openPage(this.folders, {header:"抄送我的", folder:this.controller.ccFolder});
     }
 
     private folderRow = observer(({icon, text, folder}:{icon:string, text:string, folder:any}) => {
@@ -79,7 +79,7 @@ export class MyFolders extends VmFoldersView {
     })
     
     render() {
-        let {desk, sendFolder, passFolder, ccFolder} = this.coordinator;
+        let {desk, sendFolder, passFolder, ccFolder} = this.controller;
         let rows:Prop[] = [
             '=',
             {
@@ -102,13 +102,13 @@ export class MyFolders extends VmFoldersView {
     }
 }
 
-export class WholeFolders extends VmFoldersView {
+export class WholeFolders extends VFoldersView {
     private allBox = async () => {
-        let folder = this.coordinator.allFolder;
+        let folder = this.controller.allFolder;
         folder.scrollToBottom();
         await folder.first({tag:'$'});
         //nav.push(<AllBox />);
-        this.openPage(this.folders, {header:"全部任务", folder:this.coordinator.allFolder});
+        this.openPage(this.folders, {header:"全部任务", folder:this.controller.allFolder});
     }
 
     private archiveBox = async () => {
@@ -223,7 +223,7 @@ interface FolderPageProps {
     folder: Folder<Item>;
 }
 /*
-class FolderPage extends VmPage { // React.Component<FolderPageProps> {
+class FolderPage extends VPage { // React.Component<FolderPageProps> {
     renderMessage(item:Item, index:number) {
         return <MsgRow item={item} />;
     }

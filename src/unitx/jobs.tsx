@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { VmView } from 'tonva-tools';
+import { View } from 'tonva-tools';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
 import {Templet, sysTemplets} from 'store';
-import { CrUnitxUsq } from './crUnitxUsq';
+import { CUnitxUsq } from './cUnitxUsq';
 
 /*
 export interface JobsPageState {
@@ -10,8 +10,8 @@ export interface JobsPageState {
 }
 */
 
-export class JobsPage extends VmView<CrUnitxUsq> { //} React.Component<{}, JobsPageState> {
-    //protected coordinator: CrUnitxUsq;
+export class JobsPage extends View<CUnitxUsq> { //} React.Component<{}, JobsPageState> {
+    //protected controller: CrUnitxUsq;
 
     private onClick = () => {
 
@@ -23,7 +23,7 @@ export class JobsPage extends VmView<CrUnitxUsq> { //} React.Component<{}, JobsP
             content: 'bbbb',
             to: [{user:0}]
         };
-        let id = await this.coordinator.newMessage(msg);
+        let id = await this.controller.newMessage(msg);
         //nav.pop();
         this.closePage();
     }
@@ -82,11 +82,11 @@ export class JobsPage extends VmView<CrUnitxUsq> { //} React.Component<{}, JobsP
     }
     private templetClick = (templet:Templet) => {
         //nav.push(<JobEdit templet={templet} />);
-        this.coordinator.jobEdit(templet);
+        this.controller.jobEdit(templet);
     }
     render() {
         //let {templets} = this.state;
-        let {templets} = this.coordinator;
+        let {templets} = this.controller;
         return <div>
             <List className="py-2"
                 items={sysTemplets} 

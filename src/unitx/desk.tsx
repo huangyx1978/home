@@ -2,19 +2,19 @@ import * as React from 'react';
 import classNames from 'classnames';
 import {observer} from 'mobx-react';
 import {List, EasyDate, LMR, FA, Muted, IconText, Prop, PropGrid} from 'tonva-react-form';
-import {Page, nav, VmView} from 'tonva-tools';
+import {Page, nav, View} from 'tonva-tools';
 import {templetDict, DeskItem, Folder, Item} from 'store';
 import {Message} from 'model';
 //import {ApplyDev, ApplyUnit, ApprovedDev, ApprovedUnit, UnitFollowInvite} from 'messages';
 import { navToAppId } from 'navToApp';
 import { IdBox } from 'tonva-react-usql';
-import { CrUnitxUsq } from './crUnitxUsq';
+import { CUnitxUsq } from './cUnitxUsq';
 import { UserSpan } from './userSpan';
 
 const light = {fontSize:'x-small', color:'lightgray'};
 
-export class DeskPage extends VmView<CrUnitxUsq> {
-    //protected coordinator: CrUnitxUsq;
+export class DeskPage extends View<CUnitxUsq> {
+    //protected controller: CrUnitxUsq;
     /*
     componentDidMount() {
         let bd = store.unit.unitx.desk.bottomDiv;
@@ -25,9 +25,9 @@ export class DeskPage extends VmView<CrUnitxUsq> {
     private clickMessage = async (deskItem:DeskItem) => {
         let {message, read} = deskItem;
         let idBox:IdBox = message as any;
-        if (read !== 1) await this.coordinator.readMessage(idBox.id);
-        let {unit} = this.coordinator;
-        //let tuid = this.coordinator.tuid_message;
+        if (read !== 1) await this.controller.readMessage(idBox.id);
+        let {unit} = this.controller;
+        //let tuid = this.controller.tuid_message;
         //let msg = tuid.valueFromId(id);
         let msg = idBox.obj;
         if (typeof message === 'number') return;
@@ -35,7 +35,7 @@ export class DeskPage extends VmView<CrUnitxUsq> {
         switch (type) {
             default:
                 //nav.push(<JobPage msg={msg} />);
-                this.coordinator.jobPage(msg);
+                this.controller.jobPage(msg);
                 break;
             case 'sheetMsg':
                 //alert(JSON.stringify(msg));
@@ -55,14 +55,14 @@ export class DeskPage extends VmView<CrUnitxUsq> {
     private clickApps = () => {
         //this.openPage(AppsPage);
         //nav.push(<AppsPage />);
-        this.coordinator.showAppsPage();
+        this.controller.showAppsPage();
     }
 
     render() {
         return <this.view />;
     }
     private view = () => {
-        let {desk} = this.coordinator;
+        let {desk} = this.controller;
         let {items, bottomDiv} = desk;
         /*
         let right = <Button onClick={this.clickApps} color="success" size="sm">功能应用</Button>;
@@ -72,7 +72,7 @@ export class DeskPage extends VmView<CrUnitxUsq> {
         </div>;
         */
         return <>
-            {this.coordinator.myFolders()}
+            {this.controller.myFolders()}
             <List className="my-1"
                 before={<Muted>读取中...</Muted>}
                 none={<div className="p-2"><small style={{color:'lightgray'}}>暂无待办事项</small></div>}
@@ -89,7 +89,7 @@ export class DeskPage extends VmView<CrUnitxUsq> {
 
     private msgRow = observer((deskItem: DeskItem) => {
         let userId = nav.user.id;
-        let {tuid_message, tuid_user} = this.coordinator;
+        let {tuid_message, tuid_user} = this.controller;
         let {message, read} = deskItem;
         //let msg:Message = tuid_message.valueFromId();
         //let msg:Message = {id: ((id as any) as IdBox).id} as any;

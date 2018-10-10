@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
-import {Page, nav, VmPage} from 'tonva-tools';
+import {Page, nav, VPage} from 'tonva-tools';
 import {Message} from 'model';
 import {UserSpan} from './userSpan';
-import { CrUnitxUsq } from './crUnitxUsq';
+import { CUnitxUsq } from './cUnitxUsq';
 
 const states = {
     '#': <span className="text-succeed">完成</span>,
@@ -23,10 +23,10 @@ interface JobPageState {
     flows: any[];
 }
 
-export class JobPage extends VmPage<CrUnitxUsq> {
+export class JobPage extends VPage<CUnitxUsq> {
     private msg: Message;
     private state: JobPageState;
-    //protected coordinator: CrUnitxUsq;
+    //protected controller: CrUnitxUsq;
 //React.Component<JobPageProps, JobPageState> {
 /*
     constructor(props) {
@@ -38,20 +38,20 @@ export class JobPage extends VmPage<CrUnitxUsq> {
 */
     async showEntry(msg: Message) {
         this.msg = msg;
-        this.state = await this.coordinator.getMessage(msg.id);
+        this.state = await this.controller.getMessage(msg.id);
         //this.setState(ret);
         this.openPage(this.view);
     }
     private finish = async () => {
         //let {msg} = this.props;
-        await this.coordinator.actMessage(this.msg, 'done', '#', [{user:0}]);
+        await this.controller.actMessage(this.msg, 'done', '#', [{user:0}]);
         //store.unit.chat.done(msg.id);
         //nav.pop();
         this.closePage();
     }
     private decline = async () => {
         //let {msg} = this.props;
-        await this.coordinator.actMessage(this.msg, 'decline', '#-', [{user:0}]);
+        await this.controller.actMessage(this.msg, 'decline', '#-', [{user:0}]);
         alert('显示做不了的理由, 然后选择。暂未完成设计！');
         //nav.pop();
         this.closePage();
@@ -120,7 +120,7 @@ export class JobPage extends VmPage<CrUnitxUsq> {
     private view = () => {
         //let {msg} = this.props;
         let {fromUser} = this.msg;
-        let {tuid_message, tuid_user} = this.coordinator;
+        let {tuid_message, tuid_user} = this.controller;
         let user = tuid_user.valueFromId(fromUser);
         let rows:Prop[] = [
             {

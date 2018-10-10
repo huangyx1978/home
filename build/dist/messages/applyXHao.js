@@ -69,7 +69,7 @@ export const ApplyUnit = (msg, onClick) => {
     return ApplyItem(msg, '申请小号权限', onClick); //protected title:string = '申请开发权限';
 };
 /*
-export class VmApplyPage extends VmPage { //} React.Component<{title:string, msg:Message}> {
+export class VmApplyPage extends VPage { //} React.Component<{title:string, msg:Message}> {
     private approve = async () => this.onProcessMessage('approve');
     private refuse = async () => this.onProcessMessage('refuse');
     private async onProcessMessage(action:'approve'|'refuse') {

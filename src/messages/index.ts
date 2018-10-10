@@ -4,4 +4,4 @@ export {ApprovedDev, ApprovedUnit} from './approvedXHao';
 export {UnitFollowInvite} from './unitFollowInvite';
 */
 
-export { CrMessages } from './crMessages';
+export { CMessages } from './cMessages';

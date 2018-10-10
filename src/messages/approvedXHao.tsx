@@ -2,11 +2,11 @@ import React from 'react';
 import className from 'classnames';
 import _ from 'lodash';
 import {List, EasyDate, LMR, FA, TonvaForm, FormRow, Fields, SubmitResult} from 'tonva-react-form';
-import {Page, nav, VmPage} from 'tonva-tools';
+import {Page, nav, VPage} from 'tonva-tools';
 import {Message} from './model';
 import {store} from 'store';
 import {tagStyle, tagEndStyle} from './message';
-import { CrMessages } from './crMessages';
+import { CMessages } from './cMessages';
 
 const Approved = (
     msg:Message, unitType:number, title:string,
@@ -73,8 +73,8 @@ export const ApprovedUnit = (msg:Message, onClick:(msg:Message, unitType:number,
     return Approved(msg, unitType, title, onClick);
 }
 
-export class UnitCreatePage extends VmPage<CrMessages> { // React.Component<{title:string, unitType:number, msg:Message}> {
-    //protected coordinator: CrMessages;
+export class UnitCreatePage extends VPage<CMessages> { // React.Component<{title:string, unitType:number, msg:Message}> {
+    //protected controller: CrMessages;
     private title:string;
     private unitType:number;
     private msg:Message;
@@ -97,7 +97,7 @@ export class UnitCreatePage extends VmPage<CrMessages> { // React.Component<{tit
     }
     private onSubmit = async (values:any):Promise<SubmitResult> => {
         let {id} = this.msg;
-        let unitId = await this.coordinator.unitCreate(values.name, id);
+        let unitId = await this.controller.unitCreate(values.name, id);
         let error:string;
         switch (unitId) {
             default:

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { PropGrid, IconText } from 'tonva-react-form';
-import { Page, VmView } from 'tonva-tools';
-export class Queries extends VmView {
+import { Page, View } from 'tonva-tools';
+export class Queries extends View {
     constructor() {
-        //protected coordinator: CrUnitxUsq;
+        //protected controller: CrUnitxUsq;
         super(...arguments);
         this.rows = [
             '',
@@ -22,8 +22,8 @@ export class Queries extends VmView {
     render() {
         return React.createElement(React.Fragment, null,
             React.createElement(PropGrid, { rows: this.rows, values: {} }),
-            this.coordinator.myFolders(),
-            this.coordinator.wholeFolders());
+            this.controller.myFolders(),
+            this.controller.wholeFolders());
     }
 }
 class Projects extends React.Component {

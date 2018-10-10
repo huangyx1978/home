@@ -1,5 +1,5 @@
 import React, { StatelessComponent } from 'react';
-import { Coordinator, VmPage, VmView } from 'tonva-tools';
+import { Controller, VPage, View } from 'tonva-tools';
 import { Page } from 'tonva-tools';
 import { ApplyUnit, ApplyDev } from './applyXHao';
 import { ApprovedUnit, ApprovedDev, UnitCreatePage } from './approvedXHao';
@@ -18,13 +18,13 @@ const typeMessageMap:{[type:string]: (msg:Message, onClick?:(msg:Message)=>Promi
 };
 */
 
-export class CrMessages extends Coordinator {
+export class CMessages extends Controller {
     messages: PagedMessages;
 
     protected async internalStart(param?:any) {
         this.messages = new PagedMessages;
         await this.messages.first(undefined);
-        this.showVm(VmMessages);
+        this.showVPage(VMessages);
     }
 
     onApplyItemClick = async (msg:Message) => {
@@ -32,7 +32,7 @@ export class CrMessages extends Coordinator {
     }
 
     onApproveItemClick = async (msg:Message, unitType:number, title:string) => {
-        await this.showVm(UnitCreatePage, {msg:msg, unitType:unitType, title:title});
+        await this.showVPage(UnitCreatePage, {msg:msg, unitType:unitType, title:title});
     }
     
     async unitCreate(unitName:string, msgId:number):Promise<number> {
@@ -76,8 +76,8 @@ export class CrMessages extends Coordinator {
     }
 }
 
-class VmMessages extends VmPage<CrMessages> {
-    //protected coordinator: CrMessages;
+class VMessages extends VPage<CMessages> {
+    //protected controller: CrMessages;
 
     async showEntry(param?:any) {
         this.openPage(this.messagesPage);
@@ -89,19 +89,19 @@ class VmMessages extends VmPage<CrMessages> {
         switch (msg.type) {
             case 'apply-unit':
                 messageRow = ApplyUnit;
-                onClick = this.coordinator.onApplyItemClick;
+                onClick = this.controller.onApplyItemClick;
                 break;
             case 'apply-dev':
                 messageRow = ApplyDev;
-                onClick = this.coordinator.onApplyItemClick;
+                onClick = this.controller.onApplyItemClick;
                 break;
             case 'approve-unit':
                 messageRow = ApprovedUnit;
-                onClick = this.coordinator.onApproveItemClick;
+                onClick = this.controller.onApproveItemClick;
                 break;
             case 'approve-dev':
                 messageRow = ApprovedDev;
-                onClick = this.coordinator.onApproveItemClick;
+                onClick = this.controller.onApproveItemClick;
                 break;
             //"unit-follow-invite": UnitFollowInvite,
         }
@@ -116,7 +116,7 @@ class VmMessages extends VmPage<CrMessages> {
     }*/
 
     private messagesPage = () => {
-        let {items} = this.coordinator.messages;
+        let {items} = this.controller.messages;
         return <Page header="消息">
             <List items={items} item={{render:this.renderMessage, onClick: undefined }} />
         </Page>;
