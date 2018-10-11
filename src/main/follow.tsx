@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {observable, computed} from 'mobx';
 import {observer} from 'mobx-react';
-import * as classNames from 'classnames';
-import {nav, ListView, ListItem} from 'tonva-tools';
+import {nav} from 'tonva-tools';
+import {ListView, ListItem} from 'tonva-react-form';
 import {store} from 'store';
 import {Sticky} from 'model';
 import {NewFollows} from 'follows';
