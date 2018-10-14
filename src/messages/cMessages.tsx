@@ -20,6 +20,9 @@ const typeMessageMap:{[type:string]: (msg:Message, onClick?:(msg:Message)=>Promi
 
 export class CMessages extends Controller {
     messages: PagedMessages;
+    constructor() {
+        super({});
+    }
 
     protected async internalStart(param?:any) {
         this.messages = new PagedMessages;
