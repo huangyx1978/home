@@ -8,21 +8,7 @@ import { navToApp } from 'navToApp';
 import { CUnitxUsq } from './cUnitxUsq';
 
 //@observer
-export class AppsPage extends View<CUnitxUsq> { //} React.Component {
-    //protected controller: CrUnitxUsq;
-
-    unleash = async () => {
-        if (confirm("真的要取消关注吗？") === false) return;
-        await store.unfollowUnit();
-        nav.pop();
-    }
-    private rightMenu:Action[] = [
-        {
-            caption: '取消关注',
-            icon: 'trash',
-            action: this.unleash,
-        }
-    ];
+export class VAppsPage extends View<CUnitxUsq> { //} React.Component {
     appClick = async (app:App) => {
         let unitId = this.controller.unit.id;
         let appId = app.id;

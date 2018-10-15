@@ -378,7 +378,7 @@ export class Store {
             switch (s.type) {
                 case 3: 
                     let u = s.obj = t4.find(v => v.id === s.objId);
-                    let {id, type, name, discription, icon, unread, date} = u;
+                    let {id, type, name, discription, icon, unread, date, owner} = u;
                     let unit = new Unit(id);
                     unit.type = type;
                     unit.name = name;
@@ -386,6 +386,7 @@ export class Store {
                     unit.icon = icon;
                     unit.unread = unread;
                     unit.date = date;
+                    unit.owner = owner;
                     this.units.set(id, unit);
                     break;
             }

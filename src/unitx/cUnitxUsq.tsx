@@ -7,7 +7,7 @@ import { store, Unit, Templet, Desk, SendFolder, PassFolder, CcFolder, AllFolder
 import { DeskPage } from './desk';
 import { JobsPage } from './jobs';
 import { Queries } from './queries';
-import { AppsPage } from './apps';
+import { VAppsPage } from './apps';
 import { Message } from 'model';
 import { MyFolders, WholeFolders } from './folders';
 import { JobPage } from './job';
@@ -23,7 +23,6 @@ interface MessageState {
 }
 
 export class CUnitxUsq extends CUsq {
-    //private unitId: number;
     private action_newMessage: Action;
     private action_readMessage: Action;
     private action_actMessage: Action;
@@ -68,7 +67,7 @@ export class CUnitxUsq extends CUsq {
         },
         {
             title: '应用',
-            content: () => this.renderView(AppsPage), //  <AppsPage />,
+            content: () => this.renderView(VAppsPage), //  <AppsPage />,
             load: async ():Promise<void> => {
                 if (this.unit.apps !== undefined) return;
                 await this.unit.loadApps();
@@ -81,7 +80,6 @@ export class CUnitxUsq extends CUsq {
     constructor(unit: Unit) {
         super('$$$/$unitx', 0, 0, undefined, {});
         this.unit = unit;
-        //this.unitId = unitId;
     }
 
     protected async internalStart() {
@@ -110,7 +108,7 @@ export class CUnitxUsq extends CUsq {
         this.allFolder = new AllFolder(this.unit, this.query_getFolder);
 
         this.loadFoldsUndone();
-        await this.showVPage(VmUnitx);
+        await this.showVPage(VUnitx);
     }
 
     showAppsPage() {
@@ -309,27 +307,27 @@ export class CUnitxUsq extends CUsq {
         }
         return this.templets;
     }
-}
-
-class VmUnitx extends VPage<CUnitxUsq> {
-    //protected controller: CrUnitxUsq;
-
-    async showEntry() {
-        this.openPage(this.view);
-    }
 
     private unleash = async () => {
         if (confirm("真的要取消关注吗？") === false) return;
         await store.unfollowUnit();
         this.closePage();
     }
-    private rightMenu:MenuAction[] = [
+
+    rightMenu:MenuAction[] = [
         {
             caption: '取消关注',
             icon: 'trash',
             action: this.unleash,
         }
     ];
+}
+
+class VUnitx extends VPage<CUnitxUsq> {
+    async showEntry() {
+        this.openPage(this.view);
+    }
+
     private clickToAdmin = async () => {
         let adminApp = await store.getAdminApp();
         let unitId = this.controller.unit.id;
@@ -338,12 +336,12 @@ class VmUnitx extends VPage<CUnitxUsq> {
     }
 
     private view = () => {
-        let {tabs} = this.controller;
-        let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = this.controller.unit;
+        let {tabs, rightMenu, user} = this.controller;
+        let {id, name, discription, apps, icon, owner, ownerName, ownerNick, isOwner, isAdmin} = this.controller.unit;
         if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
         let right;
-        if (id > 0) {
-            right = <DropdownActions actions={this.rightMenu} />;
+        if (id > 0 && owner!==user.id) {
+            right = <DropdownActions actions={rightMenu} />;
         }
         return <Page tabs={tabs} header={name} keepHeader={true} right={right} />;
     }
