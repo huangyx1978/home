@@ -3,20 +3,9 @@ import { Controller, VPage, View } from 'tonva-tools';
 import { Page } from 'tonva-tools';
 import { ApplyUnit, ApplyDev } from './applyXHao';
 import { ApprovedUnit, ApprovedDev, UnitCreatePage } from './approvedXHao';
-import { UnitFollowInvite } from './unitFollowInvite';
 import { Message, PagedMessages } from './model';
 import { List } from 'tonva-react-form';
 import mainApi from 'mainApi';
-
-/*
-const typeMessageMap:{[type:string]: (msg:Message, onClick?:(msg:Message)=>Promise<void>)=>JSX.Element} = {
-    "apply-unit": ApplyUnit,
-    "apply-dev": ApplyDev,
-    "approve-unit": ApprovedUnit,
-    "approve-dev": ApprovedDev,
-    //"unit-follow-invite": UnitFollowInvite,
-};
-*/
 
 export class CMessages extends Controller {
     messages: PagedMessages;
@@ -90,6 +79,7 @@ class VMessages extends VPage<CMessages> {
         let messageRow: (msg:Message, onClick?:(msg:Message, unitType?:number, title?:string)=>Promise<void>)=>JSX.Element;
         let onClick: (msg:Message, unitType?:number, title?:string) => Promise<void>;
         switch (msg.type) {
+            default: throw msg.type;
             case 'apply-unit':
                 messageRow = ApplyUnit;
                 onClick = this.controller.onApplyItemClick;
@@ -106,17 +96,9 @@ class VMessages extends VPage<CMessages> {
                 messageRow = ApprovedDev;
                 onClick = this.controller.onApproveItemClick;
                 break;
-            //"unit-follow-invite": UnitFollowInvite,
         }
-        //let MessageRow = typeMessageMap[msg.type];
-        //return MessageRow(msg);
         return messageRow(msg, onClick);
     }
-
-    /*
-    private clickMessage = (msg: Message) => {
-        alert(msg);
-    }*/
 
     private messagesPage = () => {
         let {items} = this.controller.messages;
