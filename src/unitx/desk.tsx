@@ -7,7 +7,7 @@ import {templetDict, DeskItem, Folder, Item} from 'store';
 import {Message} from 'model';
 //import {ApplyDev, ApplyUnit, ApprovedDev, ApprovedUnit, UnitFollowInvite} from 'messages';
 import { navToAppId } from 'navToApp';
-import { IdBox } from 'tonva-react-usql';
+import { BoxId } from 'tonva-react-usql';
 import { CUnitxUsq } from './cUnitxUsq';
 import { UserSpan } from './userSpan';
 
@@ -24,12 +24,12 @@ export class DeskPage extends View<CUnitxUsq> {
     */
     private clickMessage = async (deskItem:DeskItem) => {
         let {message, read} = deskItem;
-        let idBox:IdBox = message as any;
-        if (read !== 1) await this.controller.readMessage(idBox.id);
+        let boxId:BoxId = message as any;
+        if (read !== 1) await this.controller.readMessage(boxId.id);
         let {unit} = this.controller;
         //let tuid = this.controller.tuid_message;
         //let msg = tuid.valueFromId(id);
-        let msg = idBox.obj;
+        let msg = boxId.obj;
         if (typeof message === 'number') return;
         let {type} = msg;
         switch (type) {
@@ -134,7 +134,7 @@ export class DeskPage extends View<CUnitxUsq> {
             return <LMR className="bg-white" left={left} right={right}>{mid}</LMR>;
         };
     
-        return ((message as any) as IdBox).content(messageTemplet);
+        return ((message as any) as BoxId).content(messageTemplet);
     });
 }
 

@@ -1,7 +1,7 @@
 import {observable, computed} from 'mobx';
 import * as _ from 'lodash';
 import {PagedItems, Page, UnitxApi, CacheIds} from 'tonva-tools';
-import { Entities, Query, Tuid, IdBox } from 'tonva-react-usql';
+import { Entities, Query, Tuid, BoxId } from 'tonva-react-usql';
 import consts from 'consts';
 import mainApi, { messageApi } from 'mainApi';
 import {Sticky, Tie, App, Message, StickyUnit} from 'model';
@@ -21,7 +21,7 @@ const sysUnit:StickyUnit = {
 }
 
 export interface Item {
-    message: IdBox; // number;
+    message: BoxId; // number;
     branch: number;
     done: number;
     prevState: string;

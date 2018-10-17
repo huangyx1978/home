@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {computed} from 'mobx';
 import {Page, Tab, nav, isBridged, VPage } from 'tonva-tools';
-import { CUsq, Query, Tuid, Action, IdBox } from 'tonva-react-usql';
+import { CUsq, Query, Tuid, Action, BoxId } from 'tonva-react-usql';
 import {Action as MenuAction, DropdownActions} from 'tonva-react-form';
 import { store, Unit, Templet, Desk, SendFolder, PassFolder, CcFolder, AllFolder, UnitMessages, Folder, Item } from 'store';
 import { DeskPage } from './desk';
@@ -14,7 +14,7 @@ import { JobPage } from './job';
 import { JobEdit } from './jobEdit';
 
 interface MessageState {
-    id: IdBox;
+    id: BoxId;
     message: Message;
     branch: number;
     done: number;
@@ -197,7 +197,7 @@ export class CUnitxUsq extends CUsq {
             //state: parts[8],
         };
         return {
-            id: this.tuid_message.createID(id),
+            id: this.tuid_message.boxId(id),
             message: m,
             branch: branch,
             done: done,
