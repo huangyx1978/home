@@ -1,4 +1,4 @@
-import { nav } from 'tonva-tools';
+import { nav, getUrlOrDebug } from 'tonva-tools';
 import { App } from 'model';
 import { store } from 'store';
 
@@ -30,6 +30,11 @@ export async function navToApp(app:App, unitId:number, usqId?:number, sheetType?
         alert('APP: ' + app.name + '\n' + app.discription + '\n尚未绑定服务');
         return;
     }
+    let adminUrl = await getUrlOrDebug(url, urlDebug, '');
+    app.url = adminUrl;
+    app.urlDebug = undefined;
+    nav.navToApp(adminUrl, unitId, usqId, sheetType, sheetId);
+    /*
     else {
         if (urlDebug
             && document.location.hostname === 'localhost')
@@ -54,4 +59,5 @@ export async function navToApp(app:App, unitId:number, usqId?:number, sheetType?
         }
         nav.navToApp(url, unitId, usqId, sheetType, sheetId);
     }
+    */
 }
