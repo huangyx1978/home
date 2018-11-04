@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { PagedItems } from "tonva-tools";
+import { PageItems } from "tonva-tools";
 import mainApi from '../mainApi';
 
 export interface Message {
@@ -15,7 +15,7 @@ export interface Message {
     state?: string|number;
 }
 
-export class PagedMessages extends PagedItems<Message> {
+export class PageMessages extends PageItems<Message> {
     /*
     private unit:Unit;
     private query:Query;

@@ -81,6 +81,10 @@ export class CUnitxUsq extends CUsq {
         super('$$$/$unitx', 0, 0, undefined, {});
         this.unit = unit;
     }
+    
+    protected async loadEntites() {
+        await this.entities.loadEntities();
+    }
 
     protected async internalStart() {
         await this.loadSchema();

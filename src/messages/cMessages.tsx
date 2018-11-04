@@ -3,18 +3,18 @@ import { Controller, VPage, View } from 'tonva-tools';
 import { Page } from 'tonva-tools';
 import { ApplyUnit, ApplyDev } from './applyXHao';
 import { ApprovedUnit, ApprovedDev, UnitCreatePage } from './approvedXHao';
-import { Message, PagedMessages } from './model';
+import { Message, PageMessages } from './model';
 import { List } from 'tonva-react-form';
 import mainApi from 'mainApi';
 
 export class CMessages extends Controller {
-    messages: PagedMessages;
+    messages: PageMessages;
     constructor() {
         super({});
     }
 
     protected async internalStart(param?:any) {
-        this.messages = new PagedMessages;
+        this.messages = new PageMessages;
         await this.messages.first(undefined);
         this.showVPage(VMessages);
     }

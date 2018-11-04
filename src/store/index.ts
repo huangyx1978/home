@@ -1,8 +1,8 @@
 import {observable, computed} from 'mobx';
-import * as _ from 'lodash';
-import {PagedItems, Page, UnitxApi, CacheIds} from 'tonva-tools';
+import _ from 'lodash';
 import { Entities, Query, Tuid, BoxId } from 'tonva-react-usql';
-import consts from 'consts';
+import { PageItems } from 'tonva-tools';
+
 import mainApi, { messageApi } from 'mainApi';
 import {Sticky, Tie, App, Message, StickyUnit} from 'model';
 import {Fellow} from './fellow';
@@ -28,7 +28,7 @@ export interface Item {
     state: string;
     flow?: number;  // 如果undefined，则不是我当下需要处理的
 }
-export class Folder<T extends Item> extends PagedItems<T> {
+export class Folder<T extends Item> extends PageItems<T> {
     private unit:Unit;
     private query:Query;
     @observable undone:number;
@@ -148,7 +148,7 @@ export interface AllFolderItem extends Item {
 export class AllFolder extends Folder<AllFolderItem> {
 }
 
-export class UnitMessages extends PagedItems<Message> {
+export class UnitMessages extends PageItems<Message> {
     private unit:Unit;
     private query:Query;
     @observable unread: number;
