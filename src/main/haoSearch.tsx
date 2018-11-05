@@ -1,7 +1,7 @@
 import * as React from 'react';
 import _ from 'lodash';
 import {SearchBox, List, LMR, Muted, Badge, Media} from 'tonva-react-form';
-import {nav, Page, LabelRow} from 'tonva-tools';
+import {nav, Page, LabelRow, meInFrame} from 'tonva-tools';
 import {store} from '../store';
 import consts from '../consts';
 import mainApi from '../mainApi';
