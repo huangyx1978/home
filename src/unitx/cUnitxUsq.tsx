@@ -3,7 +3,7 @@ import {computed} from 'mobx';
 import {Page, Tab, nav, isBridged, VPage } from 'tonva-tools';
 import { CUsq, Query, Tuid, Action, BoxId } from 'tonva-react-usql';
 import {Action as MenuAction, DropdownActions} from 'tonva-react-form';
-import { store, Unit, Templet, Desk, SendFolder, PassFolder, CcFolder, AllFolder, UnitMessages, Folder, Item } from 'store';
+import { store, Unit, Templet, UnitMessages } from 'store';
 import { DeskPage } from './desk';
 import { JobsPage } from './jobs';
 import { Queries } from './queries';
@@ -12,6 +12,7 @@ import { Message } from 'model';
 import { MyFolders, WholeFolders } from './folders';
 import { JobPage } from './job';
 import { JobEdit } from './jobEdit';
+import { DeskPageItems, SendFolder, PassFolder, CcFolder, AllFolder, Item, FolderPageItems } from './models';
 
 interface MessageState {
     id: BoxId;
@@ -38,7 +39,7 @@ export class CUnitxUsq extends CUsq {
     templets: Templet[];
     tuid_message: Tuid;
     tuid_user: Tuid;
-    desk: Desk;
+    desk: DeskPageItems;
     sendFolder: SendFolder;
     passFolder: PassFolder;
     ccFolder: CcFolder;
@@ -50,12 +51,13 @@ export class CUnitxUsq extends CUsq {
             title: '待办',
             content: () => this.renderView(DeskPage),
             redDot: computed(()=>{
-                return this.desk.items.length;
+                return 0;
+                //return this.desk.items.length;
             })
         },
         {
             title: '新建',
-            content: () => this.renderView(JobsPage), // <JobsPage />,
+            content: () => this.renderView(JobsPage), 
             load: async ():Promise<void> => {
                 this.templets = await this.getTemplets();
             },
@@ -63,11 +65,11 @@ export class CUnitxUsq extends CUsq {
         },
         {
             title: '查看',
-            content: () => this.renderView(Queries), // <Queries />,
+            content: () => this.renderView(Queries), 
         },
         {
             title: '应用',
-            content: () => this.renderView(VAppsPage), //  <AppsPage />,
+            content: () => this.renderView(VAppsPage),
             load: async ():Promise<void> => {
                 if (this.unit.apps !== undefined) return;
                 await this.unit.loadApps();
@@ -102,7 +104,7 @@ export class CUnitxUsq extends CUsq {
 
         //this.tuid_message.setItemObservable();
 
-        this.desk = new Desk(this.unit, this.query_getDesk);
+        this.desk = new DeskPageItems(this.unit, this.query_getDesk);
         this.desk.scrollToBottom();
         await this.desk.first(undefined);
 
@@ -111,8 +113,12 @@ export class CUnitxUsq extends CUsq {
         this.ccFolder = new CcFolder(this.unit, this.query_getFolder);
         this.allFolder = new AllFolder(this.unit, this.query_getFolder);
 
-        this.loadFoldsUndone();
+        await this.loadFoldsUndone();
         await this.showVPage(VUnitx);
+    }
+
+    protected async onDispose() {
+        await this.unit.messageReadClear();
     }
 
     showAppsPage() {
@@ -156,16 +162,21 @@ export class CUnitxUsq extends CUsq {
     }
 
     async onMessage(message: any):Promise<void> {
-        let {$type, $push, msg, to, action, data} = message;
-        this.pushId = $push;
-        if ($type !== 'msg') return;
-        if (!action) return;
         console.log('ws message: ', message);
+        //let {type, push, msg, to, action, data} = message;
+        let {unit, from , to, body, push, subject} = message;
+        this.pushId = push;
+        if (body === undefined) return;
+        //if (type !== 'msg') return;
+        //if (!action) return;
+        let {$type, $user, $unit, $io, action, data, msg} = body;
+        if ($type !== 'msg') return;
+
         let parts = action.split(',');
         for (let p of parts) {
             switch (p) {
                 default:
-                    this.to(p, this.dataToMsg(data));
+                    this.toFolder(p, this.dataToMsg(data));
                     break;
                 case '$away':
                     this.removeFromDesk(msg);
@@ -186,7 +197,6 @@ export class CUnitxUsq extends CUsq {
         let done = toNum(parts[9]);
         let prevState = parts[10];
         let state = parts[11];
-        
         let m:Message;
         if (date !== undefined) m = {
             id: id,
@@ -210,9 +220,9 @@ export class CUnitxUsq extends CUsq {
         };
     };
 
-    private to(action:string, ms:MessageState) {
+    private toFolder(action:string, ms:MessageState) {
         let {id, message, branch, done, prevState, state} = ms;
-        let folder: Folder<Item>;
+        let folder: FolderPageItems<Item>;
         let parts = action.split(',');
         for (let p of parts) {
             switch (p) {

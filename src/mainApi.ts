@@ -48,7 +48,7 @@ class MainApi extends CenterApi {
         return await this.get('tie/message-inbox', {unit:unit, pageStart:pageStart, pageSize:pageSize});
     }
 
-    async readMessages(unit:number):Promise<any[]> {
+    async messagesRead(unit:number):Promise<any[]> {
         return await this.get('tie/message-read', {unit:unit});
     }
 

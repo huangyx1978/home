@@ -3,42 +3,30 @@ import classNames from 'classnames';
 import {observer} from 'mobx-react';
 import {List, EasyDate, LMR, FA, Muted, IconText, Prop, PropGrid} from 'tonva-react-form';
 import {Page, nav, View} from 'tonva-tools';
-import {templetDict, DeskItem, Folder, Item} from 'store';
+import {templetDict} from 'store';
 import {Message} from 'model';
-//import {ApplyDev, ApplyUnit, ApprovedDev, ApprovedUnit, UnitFollowInvite} from 'messages';
 import { navToAppId } from 'navToApp';
 import { BoxId } from 'tonva-react-usql';
 import { CUnitxUsq } from './cUnitxUsq';
 import { UserSpan } from './userSpan';
+import { DeskItem } from './models';
 
 const light = {fontSize:'x-small', color:'lightgray'};
 
 export class DeskPage extends View<CUnitxUsq> {
-    //protected controller: CrUnitxUsq;
-    /*
-    componentDidMount() {
-        let bd = store.unit.unitx.desk.bottomDiv;
-        let el = document.getElementById(bd);
-        if (el) el.scrollIntoView();
-    }
-    */
     private clickMessage = async (deskItem:DeskItem) => {
         let {message, read} = deskItem;
+        if (typeof message === 'number') return;
         let boxId:BoxId = message as any;
         if (read !== 1) await this.controller.readMessage(boxId.id);
         let {unit} = this.controller;
-        //let tuid = this.controller.tuid_message;
-        //let msg = tuid.valueFromId(id);
         let msg = boxId.obj;
-        if (typeof message === 'number') return;
         let {type} = msg;
         switch (type) {
             default:
-                //nav.push(<JobPage msg={msg} />);
                 this.controller.jobPage(msg);
                 break;
             case 'sheetMsg':
-                //alert(JSON.stringify(msg));
                 let obj = JSON.parse(msg.content);
                 let {app:appId, id:sheetId, usq:usqId, sheet:sheetType} = obj;
                 await navToAppId(appId, usqId, unit.id, sheetType, sheetId);
@@ -48,34 +36,14 @@ export class DeskPage extends View<CUnitxUsq> {
     private renderMessage = (deskItem:DeskItem, index:number):JSX.Element => {
         return <this.msgRow {...deskItem} />;
     }
-    private clickPlus = async ():Promise<void> => {
-        //let templets = await store.unit.chat.getTemplets();
-        //nav.push(<JobsPage templets={templets} />);
-    }
-    private clickApps = () => {
-        //this.openPage(AppsPage);
-        //nav.push(<AppsPage />);
-        this.controller.showAppsPage();
-    }
-
     render() {
-        return <this.view />;
-    }
-    private view = () => {
         let {desk} = this.controller;
         let {items, bottomDiv} = desk;
-        /*
-        let right = <Button onClick={this.clickApps} color="success" size="sm">功能应用</Button>;
-        let footer = <div className="p-1">
-            <Button color="primary" size="sm" onClick={this.clickPlus}><FA name="plus" /></Button>
-            &nbsp; <div onClick={this.clickPlus}>发任务</div>
-        </div>;
-        */
         return <>
-            {this.controller.myFolders()}
+            {/*this.controller.myFolders()*/}
             <List className="my-1"
                 before={<Muted>读取中...</Muted>}
-                none={<div className="p-2"><small style={{color:'lightgray'}}>暂无待办事项</small></div>}
+                none={<Muted className="px-3 py-2">暂无待办事项</Muted>}
                 items={items} 
                 item={{
                     key:(item:any)=>item.message.id,
@@ -84,18 +52,14 @@ export class DeskPage extends View<CUnitxUsq> {
                     onClick:this.clickMessage}} />
             <div id={bottomDiv}/>
         </>;
-        //</Page>;
     }
 
     private msgRow = observer((deskItem: DeskItem) => {
         let userId = nav.user.id;
-        let {tuid_message, tuid_user} = this.controller;
         let {message, read} = deskItem;
-        //let msg:Message = tuid_message.valueFromId();
-        //let msg:Message = {id: ((id as any) as IdBox).id} as any;
         let rowCn = 'px-3 bg-white my-1';
         if (typeof message === 'number') {
-            return <LMR className={rowCn + ' py-2'}><small style={{color:'lightgray'}}>... {message} ...</small></LMR>;
+            return <LMR className={rowCn + ' py-2'}><Muted>... {message} ...</Muted></LMR>;
         }
         let messageTemplet = (msg: Message) => {
             let {date, type, fromUser, subject, discription, content} = msg;

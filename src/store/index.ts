@@ -20,134 +20,6 @@ const sysUnit:StickyUnit = {
     date: undefined,
 }
 
-export interface Item {
-    message: BoxId; // number;
-    branch: number;
-    done: number;
-    prevState: string;
-    state: string;
-    flow?: number;  // 如果undefined，则不是我当下需要处理的
-}
-export class Folder<T extends Item> extends PageItems<T> {
-    private unit:Unit;
-    private query:Query;
-    @observable undone:number;
-    @observable doing:number;
-
-    constructor(unit:Unit, query:Query) {
-        super(true);
-        this.unit = unit;
-        this.query = query;
-        this.appendPosition = 'head';
-        //if (query !== undefined) query.resetPage(30, {});
-    }
-    protected  async load():Promise<T[]> {
-        await this.query.loadSchema();
-        let ret = await this.query.page(this.param, this.pageStart, this.pageSize);
-        //let arr = ret['$page'];
-        return ret;
-    }
-    protected setPageStart(item:T) {
-        if (item === undefined)
-            this.pageStart = undefined;
-        else
-            this.pageStart = item.message;
-    }
-    remove(id:number) {
-        let item = this._items.find(v => v.message.id === id);
-        if (item !== undefined) this.items.remove(item);
-    }
-    updateItem(item:T, doneDelete: boolean = true) {
-        let {message, branch, done, flow, prevState, state} = item;
-        if (this.loaded === true) {
-            let index = this._items.findIndex(v => v.message === message);
-            if (index < 0) {
-                if (done === undefined || done < branch) {
-                    this.append(item);
-                    this.undone++;
-                }
-            }
-            else {
-                let _item = this._items[index];
-                if (doneDelete === true) {
-                    if (done >= branch) {
-                        item.done = done;
-                        this.undone--;
-                        this._items.splice(index, 1);
-                    }
-                }
-                _item.branch = branch;
-                _item.done = done;
-                _item.flow = flow;
-            }
-        }
-        else {
-            if (done<branch) this.undone++;
-            else this.undone--;
-        }
-        if (state.startsWith('#')) this.doing--;
-        if (!prevState) this.doing++;
-}
-/*
-    done(id:number) {
-        let index = this._items.findIndex(v => v.id === id);
-        if (index < 0) return;
-        let item = this._items[index];
-        if (item === undefined) return;
-        let {done, branch} = item;
-        ++done;
-        this.doing--;
-        if (done >= branch) {
-            item.done = done;
-            this.undone--;
-            this._items.splice(index, 1);
-        }
-    }
-*/
-    /*
-    changeState(id:number, branch:number, done:number) {
-        let item = this._items.find(v => v.id === id);
-        if (item === undefined) return;
-        item.branch = branch;
-        item.done = done;
-    }*/
-}
-
-export interface DeskItem extends Item {
-    read: number;
-    //state: string;
-}
-export class Desk extends Folder<DeskItem> {
-    @observable unread: number;
-    updateItem(item:DeskItem) {
-        super.updateItem(item);
-        if (this.loaded === true) {
-            if (this.unread === undefined) this.unread = 0;
-            ++this.unread;
-        }
-    }
-}
-
-export interface SendFolderItem extends Item {
-}
-export class SendFolder extends Folder<SendFolderItem> {
-}
-
-export interface PassFolderItem extends Item {
-}
-export class PassFolder extends Folder<PassFolderItem> {
-}
-
-export interface CcFolderItem extends Item {
-}
-export class CcFolder extends Folder<CcFolderItem> {
-}
-
-export interface AllFolderItem extends Item {
-}
-export class AllFolder extends Folder<AllFolderItem> {
-}
-
 export class UnitMessages extends PageItems<Message> {
     private unit:Unit;
     private query:Query;
@@ -260,10 +132,23 @@ export class Unit {
     }
 
     async loadMessages(): Promise<void> {
-        mainApi.readMessages(this.id);
-        this.messages.unread = 0;
+        await mainApi.messagesRead(this.id);
         if (this.messages.items !== undefined) return;
         await this.messages.first(undefined);
+    }
+
+    async messageReadClear() {
+        this.unread = 0;
+        this.messages.unread = 0;
+        let s = store.stickies.find(v => v.objId === this.id);
+        if (s !== undefined) {
+            let sObj: StickyUnit = s.obj as StickyUnit;
+            if (sObj !== undefined) {
+                sObj.subject = undefined;
+                sObj.unread = 0;
+            }
+        }
+        await mainApi.messagesRead(this.id);
     }
 
     async messageAct(id:number, action:'approve'|'refuse') {
@@ -290,24 +175,72 @@ export class Store {
 
     follow = new Fellow(this);
 
-    async onWs(msg: any) {
-        let {$unit, $io} = msg;
+    async onWs(message: any) {
+        let {from , to, body, push} = message;
+        if (body === undefined) return;
+        let {$type, $user, $unit, $io, action, data, msg} = body;
+        if ($type !== 'msg') return;
         let now = new Date;
-        this.units.forEach(async (unit, k) => {
-            if ($unit !== unit.id) return;
-            if (unit !== this.unit) {
-                unit.unread += $io;
-                unit.date = now;
-            }
-            //let {unitx} = unit;
-            //if (unitx !== undefined) await unitx.onWsMsg(msg);
-        });
-        if (msg.id === undefined) {
+        let ms = store.dataToMsg(data);
+        for (let item of this.units) {
+            let unit = item[1];
+            if ($unit !== unit.id) continue;
+            this.onStickyMessage(unit, $io, now, ms.message&&ms.message.subject);
+            break;
+        }
+        if (message.id === undefined) {
             // msgId=0，则是发送给界面的操作指令
-            this.processCommand(msg);
+            this.processCommand(message);
             return;
         }
-        this.processMessage(msg);
+        this.processMessage(message);
+    }
+
+    dataToMsg(data:string) {
+        let parts = data.split('\t');
+        function toNum(t:string):number {if (t) return Number(t)}
+        function toDate(t:string):Date {if (t) return new Date(Number(t)*1000)}
+        let id = toNum(parts[0]);
+        let date = toDate(parts[4]);
+        let branch = toNum(parts[8]);
+        let done = toNum(parts[9]);
+        let prevState = parts[10];
+        let state = parts[11];
+        
+        let m:Message;
+        if (date !== undefined) m = {
+            id: id,
+            fromUser: toNum(parts[1]),
+            fromUnit: toNum(parts[2]),
+            type: parts[3],
+            date: date,
+            subject: parts[5],
+            discription: parts[6],
+            content: parts[7],
+            //read: 0,
+            //state: parts[8],
+        };
+        return {
+            id: id,
+            message: m,
+            branch: branch,
+            done: done,
+            prevState: prevState,
+            state: state,
+        };
+    }
+
+    private onStickyMessage(unit:Unit, io:number, now:Date, discription:string) {
+        unit.unread += io;
+        unit.date = now;
+        if (this.stickies === undefined) return;
+        for (let s of this.stickies) {
+            if (s.objId !== unit.id) continue;
+            if (s.obj !== undefined) {
+                s.obj.discription = discription;
+            }
+            break;
+        }
     }
 
     private processCommand(cmd:Message) {
@@ -423,6 +356,7 @@ export class Store {
                 this.unitArray.splice(index, 1);
                 this.unitArray.unshift(unit);
             }
+            //unit.unread = 0;
         }
         meInFrame.unit = unitId;
         this.unit = unit;
@@ -435,7 +369,7 @@ export class Store {
             this.unit.unread = 0;
         }
     }
-
+    /*
     async unitCreate(name:string, msgId:number):Promise<number> {
         let ret = await mainApi.unitCreate(name, msgId);
         let {unit, sticky, removedMessages} = ret;
@@ -467,7 +401,7 @@ export class Store {
         }
         return unit;
     }
-
+    */
     async acceptFellowInvite(um:Message):Promise<void> {
         let sticky:Sticky = await mainApi.unitAddFellow(um.id);
         this.follow.removeInvite(um);

@@ -30,14 +30,15 @@ export class VAppsPage extends View<CUnitxUsq> { //} React.Component {
     }
     private renderRow = (app:App, index:number):JSX.Element => {
         let {id:appId, name, icon, discription} = app;
+        /*
         let unread:number = undefined;
         if (appId === 0) {
             unread = this.controller.unit.messages.unread;
             //let dict = store.messageUnreadDict;
             //unread = dict.get(unit);
-        }
+        }*/
         return <LMR className="px-3 py-2"
-            left={<Badge badge={unread}><img src={icon || consts.appItemIcon} /></Badge>}>
+            left={<Badge><img src={icon || consts.appItemIcon} /></Badge>}>
             <div className="px-3">
                 <div><b>{name}</b></div>
                 <small className="text-muted">{discription}</small>

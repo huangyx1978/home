@@ -19,8 +19,8 @@ class Home extends React.Component {
     private stickyClick = async (item:Sticky) => {
         let objId = item.objId;
         if (objId === 0) {
-            let crMessages = new CMessages();
-            await crMessages.start();
+            let cMessages = new CMessages();
+            await cMessages.start();
             return;
         }
         let unitId = objId;
@@ -56,14 +56,19 @@ class Home extends React.Component {
         }
     }
     private stickyUnit(date:Date, unit:StickyUnit, unread:number):JSX.Element {
-        let {name, nick, discription, icon, date:uDate} = unit;
+        let {name, nick, discription, icon, date:uDate, subject} = unit;
+        let vice;
+        if (subject !== undefined)
+            vice = <div className="small text-success">{subject}</div>;
+        else
+            vice = <div className="small text-muted">{discription}</div>;
         return <LMR className="px-3 py-2"
             left={<Badge badge={unread || unit.unread}><img src={icon || consts.appItemIcon} /></Badge>}
             right={<small className="text-muted"><EasyDate date={date} /></small>}
         >
             <div className="px-3">
                 <div><b>{nick || name}</b></div>
-                <div className="small text-muted">{discription}</div>
+                {vice}
             </div>
         </LMR>;
     }

@@ -34,30 +34,4 @@ export async function navToApp(app:App, unitId:number, usqId?:number, sheetType?
     app.url = adminUrl;
     app.urlDebug = undefined;
     nav.navToApp(adminUrl, unitId, usqId, sheetType, sheetId);
-    /*
-    else {
-        if (urlDebug
-            && document.location.hostname === 'localhost')
-        {
-            try {
-                let urlTry = urlDebug + 'manifest.json';
-                let ret = await fetch(urlTry, {
-                    method: "GET",
-                    mode: "no-cors", // no-cors, cors, *same-origin
-                    headers: {
-                        "Content-Type": "text/plain"
-                    },
-                });
-                url = urlDebug;
-                app.url = urlDebug;
-                app.urlDebug = undefined;
-                console.log('urlDebug %s is ok', urlDebug);
-            }
-            catch (err) {
-                console.log('urlDebug %s not run, use %s', urlDebug, url);
-            }
-        }
-        nav.navToApp(url, unitId, usqId, sheetType, sheetId);
-    }
-    */
 }

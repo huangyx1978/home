@@ -26,38 +26,22 @@ interface JobPageState {
 export class JobPage extends VPage<CUnitxUsq> {
     private msg: Message;
     private state: JobPageState;
-    //protected controller: CrUnitxUsq;
-//React.Component<JobPageProps, JobPageState> {
-/*
-    constructor(props) {
-        super(props);
-        this.finish = this.finish.bind(this);
-        this.decline = this.decline.bind(this);
-        this.edit = this.edit.bind(this);
-    }
-*/
+
     async showEntry(msg: Message) {
         this.msg = msg;
         this.state = await this.controller.getMessage(msg.id);
-        //this.setState(ret);
         this.openPage(this.view);
     }
     private finish = async () => {
-        //let {msg} = this.props;
         await this.controller.actMessage(this.msg, 'done', '#', [{user:0}]);
-        //store.unit.chat.done(msg.id);
-        //nav.pop();
         this.closePage();
     }
     private decline = async () => {
-        //let {msg} = this.props;
         await this.controller.actMessage(this.msg, 'decline', '#-', [{user:0}]);
         alert('显示做不了的理由, 然后选择。暂未完成设计！');
-        //nav.pop();
         this.closePage();
     }
     private edit = async () => {
-        //let {msg} = this.props;
         this.msg.subject += '.1';
     }
     private flowRender = (flow:any, index:number):JSX.Element => {
@@ -93,13 +77,13 @@ export class JobPage extends VPage<CUnitxUsq> {
         </span>;
     }
     private buildFlow(rows:Prop[]) {
-        if (this.state === null) return;
+        if (!this.state) return;
         let {flow, flows} = this.state;
         rows.push({
             type: 'component',
             full: true,
             component: <List className="w-100"
-                header={<Muted>流程</Muted>}
+                header={<Muted className="px-3 py-1">流程</Muted>}
                 items={flows} item={{render:this.flowRender}}
             />
         });
@@ -118,7 +102,6 @@ export class JobPage extends VPage<CUnitxUsq> {
         });
     }
     private view = () => {
-        //let {msg} = this.props;
         let {fromUser} = this.msg;
         let {tuid_message, tuid_user} = this.controller;
         let user = tuid_user.valueFromId(fromUser);
