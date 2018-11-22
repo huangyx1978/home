@@ -7,7 +7,7 @@ import {Message} from 'model';
 import {UserSpan} from './userSpan';
 import { CUnitxUsq } from './cUnitxUsq';
 import { Item, FolderPageItems } from './models';
-import { BoxId } from 'tonva-react-usql';
+import { BoxId, tv } from 'tonva-react-usql';
 
 export abstract class VFoldersView extends View<CUnitxUsq> {
     private renderMessage = (item:Item, index:number) => {
@@ -145,7 +145,12 @@ const MsgRow = (item: Item) => {
         return <LMR className={rowCn + ' py-2'}><small style={{color:'lightgray'}}>... {message} ...</small></LMR>;
     }
 
+    let tmo = typeof message.obj;
+    if (tmo === 'number' || tmo === 'string') {
+        return <>MSG: {message.id}</>;
+    }
     let {date, type, fromUser, subject, discription, content} = message.obj;
+    
     let right = done<branch?
         flow && <FA className="text-info" name="file-text-o" /> :
         <FA className="text-success" name="check-circle" />;
@@ -157,7 +162,7 @@ const MsgRow = (item: Item) => {
         header = <LMR 
             left={icon}
             right={right}>
-            {fromUser.content()}
+            {tv(fromUser)}
             {dateDiv}
         </LMR>;
         //<UserSpan userIds={[fromUser]} />

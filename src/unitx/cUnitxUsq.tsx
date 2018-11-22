@@ -27,6 +27,7 @@ export class CUnitxUsq extends CUsq {
     private action_newMessage: Action;
     private action_readMessage: Action;
     private action_actMessage: Action;
+    private action_sheetMessage: Action;
     private query_getDesk: Query;
     private query_getFolder: Query;
     private query_getFolderUndone: Query;
@@ -95,6 +96,7 @@ export class CUnitxUsq extends CUsq {
         this.tuid_user = this.entities.tuid('user'),
         this.action_readMessage = this.entities.action('readMessage'),
         this.action_newMessage = this.entities.action('newMessage'),
+        this.action_sheetMessage = this.entities.action('sheetMessage'),
         this.action_actMessage = this.entities.action('actMessage'),
         this.query_getDesk = this.entities.query('getDesk'),
         this.query_getFolder = this.entities.query('getFolder'),
@@ -178,6 +180,10 @@ export class CUnitxUsq extends CUsq {
                 default:
                     this.toFolder(p, this.dataToMsg(data));
                     break;
+                case '$sheet':
+                    console.log('ws:$sheet', msg);
+                    await this.changeSheetState(msg);
+                    break;
                 case '$away':
                     this.removeFromDesk(msg);
                     break;
@@ -223,43 +229,40 @@ export class CUnitxUsq extends CUsq {
     private toFolder(action:string, ms:MessageState) {
         let {id, message, branch, done, prevState, state} = ms;
         let folder: FolderPageItems<Item>;
-        let parts = action.split(',');
-        for (let p of parts) {
-            switch (p) {
-                default: return;
-                case '$desk':
-                    //this.changeUread(1);
-                    folder = this.desk;
-                    break;
-                case '$me': 
-                    folder = this.sendFolder;
-                    break;
-                case '$pass':
-                    folder = this.passFolder;
-                    break;
-                case '$cc':
-                    folder = this.ccFolder;
-                    break;
-            }
-            // folder === undefined, then chat not loaded
-            if (folder === undefined) return;
-            if (message !== undefined) {
-                let {fromUser} = message;
-                this.tuid_message.cacheValue(message);
-                this.tuid_user.useId(fromUser);
-            }
-            let item = {
-                message: id, 
-                read: 0, 
-                branch:branch, 
-                done:done, 
-                prevState: prevState, 
-                state: state
-            };
-            this.allFolder.updateItem(item, false);
-            folder.updateItem(item);
-            folder.scrollToBottom();
+        switch (action) {
+            default: return;
+            case '$desk':
+                //this.changeUread(1);
+                folder = this.desk;
+                break;
+            case '$me': 
+                folder = this.sendFolder;
+                break;
+            case '$pass':
+                folder = this.passFolder;
+                break;
+            case '$cc':
+                folder = this.ccFolder;
+                break;
         }
+        // folder === undefined, then chat not loaded
+        if (folder === undefined) return;
+        if (message !== undefined) {
+            let {fromUser} = message;
+            this.tuid_message.cacheValue(message);
+            this.tuid_user.useId(fromUser);
+        }
+        let item = {
+            message: id, 
+            read: 0, 
+            branch:branch, 
+            done:done, 
+            prevState: prevState, 
+            state: state
+        };
+        this.allFolder.updateItem(item, false);
+        folder.updateItem(item);
+        folder.scrollToBottom();
     }
     private changeUread(delta:number) {
         let unread = this.unit.unread;
@@ -269,6 +272,9 @@ export class CUnitxUsq extends CUsq {
                 this.unit.unread = unread;
             }
         }
+    }
+    private async changeSheetState({id, usq, state}:{id:number, usq:number, state:string}) {
+        await this.action_sheetMessage.submit({sheet:id, usq:usq, state:state});
     }
     private removeFromDesk(id:number) {
         //this.changeUread(-1);

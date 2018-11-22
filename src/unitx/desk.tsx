@@ -6,7 +6,7 @@ import {Page, nav, View} from 'tonva-tools';
 import {templetDict} from 'store';
 import {Message} from 'model';
 import { navToAppId } from 'navToApp';
-import { BoxId } from 'tonva-react-usql';
+import { BoxId, tv } from 'tonva-react-usql';
 import { CUnitxUsq } from './cUnitxUsq';
 import { UserSpan } from './userSpan';
 import { DeskItem } from './models';
@@ -98,7 +98,7 @@ export class DeskPage extends View<CUnitxUsq> {
             return <LMR className="bg-white" left={left} right={right}>{mid}</LMR>;
         };
     
-        return ((message as any) as BoxId).content(messageTemplet);
+        return tv(message, messageTemplet);
     });
 }
 

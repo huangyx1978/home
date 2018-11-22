@@ -142,6 +142,7 @@ export class Unit {
         this.messages.unread = 0;
         let s = store.stickies.find(v => v.objId === this.id);
         if (s !== undefined) {
+            s.date = undefined;
             let sObj: StickyUnit = s.obj as StickyUnit;
             if (sObj !== undefined) {
                 sObj.subject = undefined;
@@ -180,6 +181,7 @@ export class Store {
         if (body === undefined) return;
         let {$type, $user, $unit, $io, action, data, msg} = body;
         if ($type !== 'msg') return;
+        if (!data) return;
         let now = new Date;
         let ms = store.dataToMsg(data);
         for (let item of this.units) {
@@ -237,7 +239,7 @@ export class Store {
         for (let s of this.stickies) {
             if (s.objId !== unit.id) continue;
             if (s.obj !== undefined) {
-                s.obj.discription = discription;
+                (s.obj as StickyUnit).subject = discription;
             }
             break;
         }
