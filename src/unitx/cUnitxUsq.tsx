@@ -81,7 +81,7 @@ export class CUnitxUsq extends CUsq {
     
 
     constructor(unit: Unit) {
-        super('$$$/$unitx', 0, 0, undefined, {});
+        super(undefined, '$$$/$unitx', 0, 0, undefined, {});
         this.unit = unit;
     }
     
