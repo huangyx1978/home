@@ -1,4 +1,4 @@
-import { nav, getUrlOrDebug } from 'tonva-tools';
+import { nav, host } from 'tonva-tools';
 import { App } from 'model';
 import { store } from 'store';
 
@@ -30,7 +30,7 @@ export async function navToApp(app:App, unitId:number, usqId?:number, sheetType?
         alert('APP: ' + app.name + '\n' + app.discription + '\n尚未绑定服务');
         return;
     }
-    let adminUrl = await getUrlOrDebug(url, urlDebug, '');
+    let adminUrl = await host.getUrlOrDebug(url, urlDebug);
     app.url = adminUrl;
     app.urlDebug = undefined;
     nav.navToApp(adminUrl, unitId, usqId, sheetType, sheetId);
