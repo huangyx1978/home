@@ -1,6 +1,6 @@
 import {observable, computed} from 'mobx';
 import _ from 'lodash';
-import { Entities, Query, Tuid, BoxId } from 'tonva-react-usql';
+import { Entities, Query, Tuid, BoxId } from 'tonva-react-uq';
 import { PageItems, meInFrame } from 'tonva-tools';
 
 import mainApi, { messageApi } from 'mainApi';

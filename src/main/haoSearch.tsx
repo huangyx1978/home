@@ -5,7 +5,7 @@ import {nav, Page, LabelRow, meInFrame} from 'tonva-tools';
 import {store} from '../store';
 import consts from '../consts';
 import mainApi from '../mainApi';
-import { CUnitxUsq } from 'unitx/cUnitxUsq';
+import { CUnitxUq } from 'unitx/cUnitxUsq';
 //import {MainPage} from '../unitx';
 
 interface Hao {
@@ -156,8 +156,8 @@ class HaoFollow extends React.Component<HaoFollowProps, HaoFollowState> {
         nav.ceaseTop(2);
         await store.setUnit(hao);
         //nav.push(<>显示unitx MainPage</>); //<MainPage />);
-        let crUnitxUsq = new CUnitxUsq(store.unit);
-        await crUnitxUsq.start();
+        let crUnitxUq = new CUnitxUq(store.unit);
+        await crUnitxUq.start();
     }
     render() {
         let unit = this.state.hao;

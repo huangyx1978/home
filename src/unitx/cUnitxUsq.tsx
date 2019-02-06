@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {computed} from 'mobx';
 import {Page, Tab, nav, isBridged, VPage } from 'tonva-tools';
-import { CUsq, Query, Tuid, Action, BoxId } from 'tonva-react-usql';
+import { CUq, Query, Tuid, Action, BoxId } from 'tonva-react-uq';
 import {Action as MenuAction, DropdownActions} from 'tonva-react-form';
 import { store, Unit, Templet, UnitMessages } from 'store';
 import { DeskPage } from './desk';
@@ -23,7 +23,7 @@ interface MessageState {
     state: string;
 }
 
-export class CUnitxUsq extends CUsq {
+export class CUnitxUq extends CUq {
     private action_newMessage: Action;
     private action_readMessage: Action;
     private action_actMessage: Action;
@@ -343,7 +343,7 @@ export class CUnitxUsq extends CUsq {
     ];
 }
 
-class VUnitx extends VPage<CUnitxUsq> {
+class VUnitx extends VPage<CUnitxUq> {
     async showEntry() {
         this.openPage(this.view);
     }

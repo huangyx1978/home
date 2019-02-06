@@ -4,13 +4,13 @@ import {TonvaForm, FormRow, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, Ico
 import {Page, VPage} from 'tonva-tools';
 import {Templet} from 'store';
 import {TosControl} from './tosControl';
-import { CUnitxUsq } from './cUnitxUsq';
+import { CUnitxUq } from './cUnitxUsq';
 
 export interface JobEditProps {
     templet: Templet;
 }
 
-export class JobEdit extends VPage<CUnitxUsq> {
+export class JobEdit extends VPage<CUnitxUq> {
     private templet: Templet;
     //protected controller: CrUnitxUsq;
 //React.Component<JobEditProps> {

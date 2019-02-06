@@ -1,5 +1,5 @@
 import {observable} from 'mobx';
-import { BoxId, Query } from 'tonva-react-usql';
+import { BoxId, Query } from 'tonva-react-uq';
 import { PageItems } from 'tonva-tools';
 import { Unit } from 'store';
 

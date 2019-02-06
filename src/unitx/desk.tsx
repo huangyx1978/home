@@ -6,14 +6,14 @@ import {Page, nav, View} from 'tonva-tools';
 import {templetDict} from 'store';
 import {Message} from 'model';
 import { navToAppId } from 'navToApp';
-import { BoxId, tv } from 'tonva-react-usql';
-import { CUnitxUsq } from './cUnitxUsq';
+import { BoxId, tv } from 'tonva-react-uq';
+import { CUnitxUq } from './cUnitxUsq';
 import { UserSpan } from './userSpan';
 import { DeskItem } from './models';
 
 const light = {fontSize:'x-small', color:'lightgray'};
 
-export class DeskPage extends View<CUnitxUsq> {
+export class DeskPage extends View<CUnitxUq> {
     private clickMessage = async (deskItem:DeskItem) => {
         let {message, read} = deskItem;
         if (typeof message === 'number') return;

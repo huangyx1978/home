@@ -5,10 +5,10 @@ import consts from '../consts';
 import { App } from '../model';
 import { store } from '../store';
 import { navToApp } from 'navToApp';
-import { CUnitxUsq } from './cUnitxUsq';
+import { CUnitxUq } from './cUnitxUsq';
 
 //@observer
-export class VAppsPage extends View<CUnitxUsq> { //} React.Component {
+export class VAppsPage extends View<CUnitxUq> { //} React.Component {
     appClick = async (app:App) => {
         let unitId = this.controller.unit.id;
         let appId = app.id;

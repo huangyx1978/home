@@ -5,11 +5,11 @@ import {Page, nav, View, VPage} from 'tonva-tools';
 import {templetDict} from 'store';
 import {Message} from 'model';
 import {UserSpan} from './userSpan';
-import { CUnitxUsq } from './cUnitxUsq';
+import { CUnitxUq } from './cUnitxUsq';
 import { Item, FolderPageItems } from './models';
-import { BoxId, tv } from 'tonva-react-usql';
+import { BoxId, tv } from 'tonva-react-uq';
 
-export abstract class VFoldersView extends View<CUnitxUsq> {
+export abstract class VFoldersView extends View<CUnitxUq> {
     private renderMessage = (item:Item, index:number) => {
         return React.createElement(MsgRow, item);
     }

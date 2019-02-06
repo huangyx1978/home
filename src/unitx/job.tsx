@@ -3,7 +3,7 @@ import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 't
 import {Page, nav, VPage} from 'tonva-tools';
 import {Message} from 'model';
 import {UserSpan} from './userSpan';
-import { CUnitxUsq } from './cUnitxUsq';
+import { CUnitxUq } from './cUnitxUsq';
 
 const states = {
     '#': <span className="text-succeed">完成</span>,
@@ -23,7 +23,7 @@ interface JobPageState {
     flows: any[];
 }
 
-export class JobPage extends VPage<CUnitxUsq> {
+export class JobPage extends VPage<CUnitxUq> {
     private msg: Message;
     private state: JobPageState;
 
