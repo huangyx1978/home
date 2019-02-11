@@ -5,7 +5,7 @@ import {Page, nav, View, VPage} from 'tonva-tools';
 import {templetDict} from 'store';
 import {Message} from 'model';
 import {UserSpan} from './userSpan';
-import { CUnitxUq } from './cUnitxUsq';
+import { CUnitxUq } from './cUnitxUq';
 import { Item, FolderPageItems } from './models';
 import { BoxId, tv } from 'tonva-react-uq';
 

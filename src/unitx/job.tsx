@@ -3,7 +3,7 @@ import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 't
 import {Page, nav, VPage} from 'tonva-tools';
 import {Message} from 'model';
 import {UserSpan} from './userSpan';
-import { CUnitxUq } from './cUnitxUsq';
+import { CUnitxUq } from './cUnitxUq';
 
 const states = {
     '#': <span className="text-succeed">完成</span>,

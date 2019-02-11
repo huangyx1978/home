@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View } from 'tonva-tools';
 import {List, EasyDate, LMR, FA, Muted, PropGrid, Prop, Media, IconText} from 'tonva-react-form';
 import {Templet, sysTemplets} from 'store';
-import { CUnitxUq } from './cUnitxUsq';
+import { CUnitxUq } from './cUnitxUq';
 
 /*
 export interface JobsPageState {
@@ -11,7 +11,7 @@ export interface JobsPageState {
 */
 
 export class JobsPage extends View<CUnitxUq> { //} React.Component<{}, JobsPageState> {
-    //protected controller: CrUnitxUsq;
+    //protected controller: CrUnitxUq;
 
     private onClick = () => {
 

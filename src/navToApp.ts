@@ -4,7 +4,7 @@ import { store } from 'store';
 
 const cacheApps:{[id:number]: App} = {};
 
-export async function navToAppId(appId: number, usqId:number, unitId:number, sheetType?:number, sheetId?:number) {
+export async function navToAppId(appId: number, uqId:number, unitId:number, sheetType?:number, sheetId?:number) {
     let app:App;
     let {apps} = store.unit;
     if (apps !== undefined) {
@@ -21,10 +21,10 @@ export async function navToAppId(appId: number, usqId:number, unitId:number, she
         alert('cannot get app from id=' + appId);
         return;
     }
-    await navToApp(app, unitId, usqId, sheetType, sheetId);
+    await navToApp(app, unitId, uqId, sheetType, sheetId);
 }
 
-export async function navToApp(app:App, unitId:number, usqId?:number, sheetType?:number, sheetId?:number) {
+export async function navToApp(app:App, unitId:number, uqId?:number, sheetType?:number, sheetId?:number) {
     let {url, urlDebug} = app;
     if (!url) {
         alert('APP: ' + app.name + '\n' + app.discription + '\n尚未绑定服务');
@@ -33,5 +33,5 @@ export async function navToApp(app:App, unitId:number, usqId?:number, sheetType?
     let adminUrl = await host.getUrlOrDebug(url, urlDebug);
     app.url = adminUrl;
     app.urlDebug = undefined;
-    nav.navToApp(adminUrl, unitId, usqId, sheetType, sheetId);
+    nav.navToApp(adminUrl, unitId, uqId, sheetType, sheetId);
 }

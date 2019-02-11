@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {PropGrid, Prop, IconText} from 'tonva-react-form';
 import {Page, View} from 'tonva-tools';
-import { CUnitxUq } from './cUnitxUsq';
+import { CUnitxUq } from './cUnitxUq';
 
 export class Queries extends View<CUnitxUq> {
-    //protected controller: CrUnitxUsq;
+    //protected controller: CrUnitxUq;
 
     private rows:Prop[] = [
         '',

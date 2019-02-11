@@ -7,7 +7,7 @@ import {templetDict} from 'store';
 import {Message} from 'model';
 import { navToAppId } from 'navToApp';
 import { BoxId, tv } from 'tonva-react-uq';
-import { CUnitxUq } from './cUnitxUsq';
+import { CUnitxUq } from './cUnitxUq';
 import { UserSpan } from './userSpan';
 import { DeskItem } from './models';
 
@@ -28,8 +28,8 @@ export class DeskPage extends View<CUnitxUq> {
                 break;
             case 'sheetMsg':
                 let obj = JSON.parse(msg.content);
-                let {app:appId, id:sheetId, usq:usqId, sheet:sheetType} = obj;
-                await navToAppId(appId, usqId, unit.id, sheetType, sheetId);
+                let {app:appId, id:sheetId, uq:uqId, sheet:sheetType} = obj;
+                await navToAppId(appId, uqId, unit.id, sheetType, sheetId);
                 break;
         }
     }

@@ -5,7 +5,7 @@ import {nav, Page, LabelRow, meInFrame} from 'tonva-tools';
 import {store} from '../store';
 import consts from '../consts';
 import mainApi from '../mainApi';
-import { CUnitxUq } from 'unitx/cUnitxUsq';
+import { CUnitxUq } from 'unitx/cUnitxUq';
 //import {MainPage} from '../unitx';
 
 interface Hao {

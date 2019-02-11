@@ -5,7 +5,7 @@ import consts from '../consts';
 import { App } from '../model';
 import { store } from '../store';
 import { navToApp } from 'navToApp';
-import { CUnitxUq } from './cUnitxUsq';
+import { CUnitxUq } from './cUnitxUq';
 
 //@observer
 export class VAppsPage extends View<CUnitxUq> { //} React.Component {

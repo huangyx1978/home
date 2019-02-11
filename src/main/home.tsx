@@ -7,7 +7,7 @@ import consts from '../consts';
 import {store} from '../store';
 //import {MainPage} from '../unitx';
 import {Sticky, StickyUnit} from '../model';
-import { CUnitxUq } from 'unitx/cUnitxUsq';
+import { CUnitxUq } from 'unitx/cUnitxUq';
 import { CMessages } from 'messages';
 import { navToApp } from 'navToApp';
 
@@ -34,8 +34,8 @@ class Home extends React.Component {
             navToApp(adminApp, unitId);
             return;
         }
-        let crUnitxUsq = new CUnitxUq(store.unit);
-        await crUnitxUsq.start();
+        let crUnitxUq = new CUnitxUq(store.unit);
+        await crUnitxUq.start();
     }
     private stickyRender = (s:Sticky, index:number):JSX.Element => {
         let {type, date, objId, obj} = s;
