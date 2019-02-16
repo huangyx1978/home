@@ -89,6 +89,11 @@ export class CUnitxUq extends CUq {
         await this.entities.loadEntities();
     }
 
+    async loadUnitApps() {
+        if (this.unit.apps !== undefined) return;
+        await this.unit.loadApps();
+    }
+
     protected async internalStart() {
         await this.loadSchema();
 
@@ -345,6 +350,7 @@ export class CUnitxUq extends CUq {
 
 class VUnitx extends VPage<CUnitxUq> {
     async showEntry() {
+        await this.controller.loadUnitApps();
         this.openPage(this.view);
     }
 
@@ -359,10 +365,13 @@ class VUnitx extends VPage<CUnitxUq> {
         let {tabs, rightMenu, user} = this.controller;
         let {id, name, discription, apps, icon, owner, ownerName, ownerNick, isOwner, isAdmin} = this.controller.unit;
         if (ownerNick !== undefined) ownerNick = '- ' + ownerNick;
-        let right;
+        let right:any;
         if (id > 0 && owner!==user.id) {
             right = <DropdownActions actions={rightMenu} />;
         }
-        return <Page tabs={tabs} header={name} keepHeader={true} right={right} />;
+        //return <Page tabs={tabs} header={name} keepHeader={true} right={right} />;
+        return <Page header={name} right={right}>
+            {this.renderVm(VAppsPage)}
+        </Page>
     }
 }

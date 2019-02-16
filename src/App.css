@@ -32,3 +32,8 @@
   white-space: wrap;
   margin: 0.3em 0;
 }
+
+.w-30c {
+  width: 20rem;
+  min-width: 20rem !important;
+}

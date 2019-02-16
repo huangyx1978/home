@@ -64,7 +64,7 @@ export default class AppView extends React.Component {
     }
     render() {
         let loc = parent===null? 'null':parent.location.href;
-        let right = <DropdownActions actions={this.rightMenu} />;
+        let right = <DropdownActions actions={this.rightMenu} icon="navicon" />;
         return <Page tabs={tabs} right={right} />
     }
 }
