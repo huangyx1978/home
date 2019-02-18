@@ -26,8 +26,7 @@ export class Image extends React.Component<ImageProps> {
         this.src = defaultImage;
     }
     render() {
-        let {src, className, style} = this.props;
-        if (src === undefined) 
+        let {className, style} = this.props;
         return <img src={this.src} className={className} style={style} />;
     }
 }
