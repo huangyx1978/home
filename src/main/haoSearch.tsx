@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import {SearchBox, List, LMR, Muted, Badge, Media} from 'tonva-react-form';
+import {SearchBox, List, LMR, Muted, Badge, Media, Image} from 'tonva-react-form';
 import {nav, Page, LabelRow, meInFrame} from 'tonva-tools';
 import {store} from '../store';
 import consts from '../consts';
@@ -75,7 +75,7 @@ class HaoSearch extends React.Component<HaoSearchProps, State> {
     }
     private renderUnit = (item:any, index:number):JSX.Element => {
         let {nick, discription, name, icon} = item;
-        let left = <Badge><img src={icon || consts.appItemIcon} /></Badge>;
+        let left = <Badge><Image src={icon} /></Badge>;
         return <LMR className="px-3 py-2" left={left}>
             <div className="px-3">
                 <div>{name}</div>

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import { observable } from 'mobx';
 import { Controller, VPage, Page, nav } from "tonva-tools";
-import { LMR, FA, Badge, EasyDate, List } from 'tonva-react-form';
+import { LMR, FA, Badge, EasyDate, List, Image } from 'tonva-react-form';
 import { observer } from 'mobx-react';
 import consts from 'consts';
 import { Sticky, StickyUnit, sysUnit } from './model';
@@ -92,7 +92,7 @@ export class VHome extends VPage<CHome> {
         let {unit} = this.controller;
         if (unit === undefined) return null;
         let {icon, name} = unit;
-        let left = <img className="w-2c mr-3" src={icon || consts.appIcon} />;
+        let left = <Image className="w-2c mr-3" src={icon} />;
         let right = <FA name="ellipsis-h" />;
         return <LMR className={classNames('px-2', this.cnItems)}
             left={left} right={right}
@@ -132,7 +132,7 @@ export class VHome extends VPage<CHome> {
         let spanName:any = nick?
             <span>{nick} {name}</span> :
             <span>{name}</span>;
-        let left = <img className="w-2c mr-3" src={icon || consts.appIcon} />;
+        let left = <Image className="w-2c mr-3" src={icon} />;
         return <LMR className={classNames('px-2', this.cnItems)}
             left={left}
             onClick={this.onMeClick}>
@@ -186,7 +186,7 @@ export class VHome extends VPage<CHome> {
         else
             vice = <div className="small text-muted">{discription}</div>;
         return <LMR className="px-2 py-2"
-            left={<Badge size="xs" badge={unread || unit.unread}><img src={icon || consts.appItemIcon} /></Badge>}
+            left={<Badge size="xs" badge={unread || unit.unread}><Image src={icon} /></Badge>}
             right={<small className="text-muted"><EasyDate date={date} /></small>}
         >
             <div className="px-3">

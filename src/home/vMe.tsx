@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Media, PropGrid, Prop, FA, IconText, TonvaForm, FormRow, SubmitResult, Fields, List, LMR} from 'tonva-react-form';
+import {Media, PropGrid, Prop, FA, IconText, TonvaForm, FormRow, SubmitResult, Fields, List, LMR, Image} from 'tonva-react-form';
 import {nav, User, Page, VPage} from 'tonva-tools';
 import consts from 'consts';
 import mainApi from 'mainApi';
@@ -121,7 +121,7 @@ export class VMe extends VPage<CHome> {
         if (types.length > 0) unitType = <> &nbsp; <small className="text-muted">{types.join(', ')}</small></>;
 
         return <LMR className="py-2" right={right}>
-            <img className="w-1-5c mr-2" src={icon || consts.appIcon} />{name}{unitType}
+            <Image className="w-1-5c mr-2" src={icon} />{name}{unitType}
         </LMR>
     }
 

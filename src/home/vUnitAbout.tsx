@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { VPage, Page } from "tonva-tools";
 import { CHome } from "./cHome";
-import { LMR, Muted } from 'tonva-react-form';
+import { LMR, Muted, Image } from 'tonva-react-form';
 import consts from 'consts';
 
 export class VUnitAbout extends VPage<CHome> {
@@ -24,7 +24,7 @@ export class VUnitAbout extends VPage<CHome> {
                 进入管理
             </button>
         }
-        let divImg = <div className="mr-3"><img src={icon || consts.appItemIcon} /></div>;
+        let divImg = <div className="mr-3"><Image src={icon} /></div>;
         return <Page header={'关于 ' + name}>
             <LMR className="my-3 container-fluid" left={divImg} right={enterAdmins}>
                 <div className="row">

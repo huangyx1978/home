@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { nav, View } from 'tonva-tools';
-import { List, LMR, Badge, Action, Muted } from 'tonva-react-form';
+import { List, LMR, Badge, Action, Muted, Image } from 'tonva-react-form';
 import consts from '../consts';
 import { App } from '../model';
 import { store } from '../store';
@@ -38,7 +38,7 @@ export class VAppsPage extends View<CUnitxUq> { //} React.Component {
             //unread = dict.get(unit);
         }*/
         return <LMR className="px-3 py-2"
-            left={<Badge><img src={icon || consts.appItemIcon} /></Badge>}>
+            left={<Badge><Image src={icon} /></Badge>}>
             <div className="px-3">
                 <div><b>{name}</b></div>
                 <small className="text-muted">{discription}</small>
@@ -64,7 +64,7 @@ export class VAppsPage extends View<CUnitxUq> { //} React.Component {
         if (apps !== undefined) {
             appsView = <List items={apps} item={{render:this.renderRow, onClick:this.appClick}} />;
         }
-        let divImg = <div className="mr-3"><img src={icon || consts.appItemIcon} /></div>;
+        let divImg = <div className="mr-3"><Image src={icon} /></div>;
         return <div>
             <LMR className="my-3 container-fluid" left={divImg} right={enterAdmins}>
                 <div className="row">

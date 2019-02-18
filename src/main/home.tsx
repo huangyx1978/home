@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
-import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA} from 'tonva-react-form';
+import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA, Image} from 'tonva-react-form';
 import {nav, Page, meInFrame} from 'tonva-tools';
 import consts from '../consts';
 import {store} from '../store';
@@ -63,7 +63,7 @@ class Home extends React.Component {
         else
             vice = <div className="small text-muted">{discription}</div>;
         return <LMR className="px-3 py-2"
-            left={<Badge badge={unread || unit.unread}><img src={icon || consts.appItemIcon} /></Badge>}
+            left={<Badge badge={unread || unit.unread}><Image src={icon} /></Badge>}
             right={<small className="text-muted"><EasyDate date={date} /></small>}
         >
             <div className="px-3">
