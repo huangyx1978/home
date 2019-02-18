@@ -16,7 +16,7 @@ export class CMessages extends Controller {
     protected async internalStart(param?:any) {
         this.messages = new PageMessages;
         await this.messages.first(undefined);
-        this.showVPage(VMessages);
+        this.openVPage(VMessages);
     }
 
     onApplyItemClick = async (msg:Message) => {
@@ -24,7 +24,7 @@ export class CMessages extends Controller {
     }
 
     onApproveItemClick = async (msg:Message, unitType:number, title:string) => {
-        await this.showVPage(UnitCreatePage, {msg:msg, unitType:unitType, title:title});
+        await this.openVPage(UnitCreatePage, {msg:msg, unitType:unitType, title:title});
     }
     
     async unitCreate(unitName:string, msgId:number):Promise<number> {
@@ -71,7 +71,7 @@ export class CMessages extends Controller {
 class VMessages extends VPage<CMessages> {
     //protected controller: CrMessages;
 
-    async showEntry(param?:any) {
+    async open(param?:any) {
         this.openPage(this.messagesPage);
     }
 

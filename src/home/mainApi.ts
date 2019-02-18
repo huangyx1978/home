@@ -35,7 +35,7 @@ class MainApi extends CenterApi {
         return ret;
     }
 
-    async adminUnits(): Promise<any[]> {
+    async adminUnits(): Promise<any[][]> {
         return await this.get('tie/user-admin-units');
     }
 
@@ -70,6 +70,10 @@ class MainApi extends CenterApi {
 
     async unitCreate(name:string, message:number):Promise<any> {
         return await this.post('unit/create', {name:name, message:message});
+    }
+
+    async unitCreateDirect(data:{name:string, type:'dev'|'unit', isPublic:number}):Promise<any> {
+        return await this.post('unit/create-direct', data);
     }
 
     async saveMessage(

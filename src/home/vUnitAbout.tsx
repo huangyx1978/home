@@ -5,7 +5,7 @@ import { LMR, Muted } from 'tonva-react-form';
 import consts from 'consts';
 
 export class VUnitAbout extends VPage<CHome> {
-    async showEntry() {
+    async open() {
         this.openPage(this.page);
     }
 

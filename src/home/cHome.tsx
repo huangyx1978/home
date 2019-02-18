@@ -4,26 +4,35 @@ import { observable } from 'mobx';
 import { Controller, VPage, Page, nav } from "tonva-tools";
 import mainApi from './mainApi';
 import { Unit } from './unit';
-import { Sticky, StickyUnit, sysUnit, App } from './model';
+import { Sticky, StickyUnit, sysUnit, App, Grant } from './model';
 import { VMe } from './vMe';
 import { VHome } from './vHome';
 import { VUnitAbout } from './vUnitAbout';
 import { navToApp } from 'navToApp';
+import { CMessages } from 'messages';
 
 export class CHome extends Controller {
     @observable stickies: Sticky[];
     @observable units = new Map<number, Unit>();
     @observable unit:Unit = undefined;
     adminUnits: Unit[];
+    grant: Grant;
     private adminApp: App;
 
     protected async internalStart() {
         //this.loadStickies();
         await this.showUnit(undefined);
-        this.showVPage(VHome);
+        this.openVPage(VHome);
     }
 
     async showUnit(unitId: number) {
+        /*
+        if (unitId === 0) {
+            let cMessages = new CMessages();
+            await cMessages.start();
+            return;
+        }*/
+
         if (this.unit === undefined) {
             this.unit = new Unit(undefined);
             await this.unit.loadApps();
@@ -42,9 +51,11 @@ export class CHome extends Controller {
     }
 
     async showUnitAbout() {
-        this.showVPage(VUnitAbout);
+        this.openVPage(VUnitAbout);
     }
-
+    reloadStickies() {
+        this.stickies = undefined;
+    }
     async loadStickies() {
         if (this.stickies !== undefined) return;
         let stickies = [];
@@ -103,8 +114,8 @@ export class CHome extends Controller {
         });
         return;
         */
-        let index = stickies.findIndex(v => (v.type === 0 || v.type === 3) && v.objId === 0);
-        if (index < 0) {
+        //let index = stickies.findIndex(v => (v.type === 0 || v.type === 3) && v.objId === 0);
+        //if (index < 0) {
             //let unit0 = this.units.get(0);
             //if (unit0 === undefined) return;
             let sticky:StickyUnit = _.clone(sysUnit);
@@ -121,32 +132,45 @@ export class CHome extends Controller {
                 //icon: icon,
             });
             return;
+        //}
+        //if (index > 0) {
+        //    let sticky = stickies.splice(index, 1)[0];
+        //    stickies.unshift(sticky);
+        //}
+    }
+
+    async loadAdminUnits() {
+        if (this.adminUnits !== undefined) return;
+        let ret = await mainApi.adminUnits();
+        this.adminUnits = [];
+        for (let r of ret[0]) {
+            let {id, name, nick, discription, icon, type, isAdmin, isOwner} = r;
+            let unit = new Unit(id);
+            unit.name = name;
+            unit.nick = nick;
+            unit.discription = discription;
+            unit.icon = icon;
+            unit.type = type;
+            unit.isAdmin = isAdmin;
+            unit.isOwner = isOwner;
+            this.adminUnits.push(unit);
         }
-        if (index > 0) {
-            let sticky = stickies.splice(index, 1)[0];
-            stickies.unshift(sticky);
+        let r1 = ret[1];
+        if (r1.length === 0) {
+            this.grant = {
+                allowDev: 0,
+                sumDev: 0,
+                allowUnit: 0,
+                sumUnit: 0,
+            };
+        }
+        else {
+            this.grant = r1[0];
         }
     }
 
     async showMe() {
-        if (this.adminUnits === undefined) {
-            let ret = await mainApi.adminUnits();
-            this.adminUnits = [];
-            for (let r of ret) {
-                let {id, name, nick, discription, icon, type, isAdmin, isOwner} = r;
-                let unit = new Unit(id);
-                unit.name = name;
-                unit.nick = nick;
-                unit.discription = discription;
-                unit.icon = icon;
-                unit.type = type;
-                unit.isAdmin = isAdmin;
-                unit.isOwner = isOwner;
-                this.adminUnits.push(unit);
-            }
-        }
-        this.showVPage(VMe);
-        //nav.push(<Page header="我"><Me /></Page>);
+        this.openVPage(VMe);
     }
 
     async navToAdmin(unit?: Unit) {
@@ -155,7 +179,8 @@ export class CHome extends Controller {
         }
         if (!unit) unit = this.unit;
         if (!unit) return;
-        navToApp(this.adminApp, unit.id);
+        await navToApp(this.adminApp, unit.id);
+        await this.unit.loadApps(); // 重新加载unit及其apps
     }
 
     async logout() {
@@ -166,5 +191,9 @@ export class CHome extends Controller {
         //this.cacheUsers.dict.clear();
         //this.cacheUnits.dict.clear();
         //this.follow.logout();
+    }
+    
+    async unitCreate(data:any): Promise<any> {
+        return await mainApi.unitCreateDirect(data);
     }
 }

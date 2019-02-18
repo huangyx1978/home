@@ -27,7 +27,7 @@ export class JobPage extends VPage<CUnitxUq> {
     private msg: Message;
     private state: JobPageState;
 
-    async showEntry(msg: Message) {
+    async open(msg: Message) {
         this.msg = msg;
         this.state = await this.controller.getMessage(msg.id);
         this.openPage(this.view);

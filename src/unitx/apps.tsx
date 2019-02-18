@@ -48,7 +48,7 @@ export class VAppsPage extends View<CUnitxUq> { //} React.Component {
     clickToAdmin = async () => {
         let adminApp = await store.getAdminApp();
         let unitId = this.controller.unit.id;
-        navToApp(adminApp, unitId);
+        await navToApp(adminApp, unitId);
     }
     render() {
         let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = this.controller.unit;

@@ -49,7 +49,12 @@ export interface App {
     urlDebug: string;
     //apis?: {[name:string]: Api};
 }
-
+export interface Grant {
+    allowDev: number;
+    sumDev: number;
+    allowUnit: number;
+    sumUnit: number;
+}
 /*
 export interface UnitBase {
     id: number;

@@ -3,7 +3,7 @@ import { VPage, Page, nav } from 'tonva-tools';
 import { CHome } from './cHome';
 
 export class VAbout extends VPage<CHome> {
-    async showEntry() {
+    async open() {
         this.openPage(this.page);
     }
 

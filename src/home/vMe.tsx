@@ -7,11 +7,11 @@ import { VAbout } from './vAbout';
 import { CHome } from './cHome';
 import { Unit } from './unit';
 
-const applyUnit = "申请创建小号";
-const applyDev = "申请开发应用";
+const applyUnit = "创建小号";
+const applyDev = "创建开发号";
 
 export class VMe extends VPage<CHome> {
-    async showEntry() {
+    async open() {
         this.openPage(this.page);
     }
 
@@ -20,7 +20,7 @@ export class VMe extends VPage<CHome> {
     }
 
     private confirmLogout = () => {
-        return <Page header="确认安全退出">
+        return <Page header="安全退出" back="close">
             <div className="m-5 border border-info bg-white rounded p-3 text-center">
                 <div>退出当前账号不会删除任何历史数据，下次登录依然可以使用本账号</div>
                 <div className="mt-3">
@@ -31,25 +31,33 @@ export class VMe extends VPage<CHome> {
     }
 
     private about = () => {
-        this.showVPage(VAbout);
+        this.openVPage(VAbout);
     }
 
     private apply = () => {
-        let rows:Prop[] = [
-            '',
-            {
-                type: 'component', 
-                component: <IconText iconClass="text-info mr-2" icon="laptop" text={applyUnit} />,
-                onClick: this.applyUnit
-            },
-            '=',
-            {
-                type: 'component', 
-                component: <IconText iconClass="text-info mr-2" icon="desktop" text={applyDev} />,
-                onClick: this.applyDev
-            },
-        ];
-        nav.push(<Page header="申请">
+        let {allowDev, sumDev, allowUnit, sumUnit} = this.controller.grant;
+        let rows:Prop[] = [];
+        if (allowDev > sumDev) {
+            rows.push(
+                '',
+                {
+                    type: 'component', 
+                    component: <IconText iconClass="text-info mr-2" icon="laptop" text={applyUnit} />,
+                    onClick: this.applyUnit
+                },
+            );
+        }
+        if (allowUnit > sumUnit) {
+            rows.push(
+                '=',
+                {
+                    type: 'component', 
+                    component: <IconText iconClass="text-info mr-2" icon="desktop" text={applyDev} />,
+                    onClick: this.applyDev
+                },
+            );
+        }
+        nav.push(<Page header="创建">
             <PropGrid rows={rows} values={{}} />
         </Page>);
     }
@@ -138,13 +146,20 @@ export class VMe extends VPage<CHome> {
                     item={{render:this.renderAdminUnit, onClick:this.clickAdminUnit}} />
             });
         }
+
+        let {allowDev, sumDev, allowUnit, sumUnit} = this.controller.grant;
+        if (allowDev > sumDev || allowUnit > sumUnit) {
+            rows.push(
+                '',
+                {
+                    type: 'component', 
+                    component: <IconText iconClass="text-info mr-2" icon="envelope-o" text="创建" />,
+                    onClick: this.apply
+                },
+            );
+        }
+
         rows.push(
-            '',
-            {
-                type: 'component', 
-                component: <IconText iconClass="text-info mr-2" icon="envelope-o" text="申请" />,
-                onClick: this.apply
-            },
             '',
             {
                 type: 'component', 

@@ -31,7 +31,7 @@ class Home extends React.Component {
         if (store.unit.type === 1) {
             // dev clicked
             let adminApp = await store.getAdminApp();
-            navToApp(adminApp, unitId);
+            await navToApp(adminApp, unitId);
             return;
         }
         let crUnitxUq = new CUnitxUq(store.unit);

@@ -33,5 +33,5 @@ export async function navToApp(app:App, unitId:number, uqId?:number, sheetType?:
     let adminUrl = await host.getUrlOrDebug(url, urlDebug);
     app.url = adminUrl;
     app.urlDebug = undefined;
-    nav.navToApp(adminUrl, unitId, uqId, sheetType, sheetId);
+    await nav.navToApp(adminUrl, unitId, uqId, sheetType, sheetId);
 }

@@ -39,7 +39,7 @@ export class VApps extends View<CHome> { //} React.Component {
     clickToAdmin = async () => {
         let adminApp = undefined; //await store.getAdminApp();
         let unitId = this.controller.unit.id;
-        navToApp(adminApp, unitId);
+        await navToApp(adminApp, unitId);
     }
     render() {
         let {unit} = this.controller;

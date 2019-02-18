@@ -83,7 +83,7 @@ export class UnitCreatePage extends VPage<CMessages> { // React.Component<{title
         name: {name:'name', type:'string', maxLength:250, required:true },
     };
 
-    async showEntry({title, unitType, msg}:{title:string, unitType:number, msg:Message}) {
+    async open({title, unitType, msg}:{title:string, unitType:number, msg:Message}) {
         this.title = title;
         this.unitType = unitType;
         this.msg = msg;

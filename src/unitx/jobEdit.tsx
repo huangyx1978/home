@@ -35,7 +35,7 @@ export class JobEdit extends VPage<CUnitxUq> {
     };
     private rows:FormRow[];
 
-    async showEntry(templet: Templet) {
+    async open(templet: Templet) {
         this.templet = templet;
         let {content} = templet;
         let {needTo} = content;

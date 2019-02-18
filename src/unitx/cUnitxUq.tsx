@@ -121,7 +121,7 @@ export class CUnitxUq extends CUq {
         this.allFolder = new AllFolder(this.unit, this.query_getFolder);
 
         await this.loadFoldsUndone();
-        await this.showVPage(VUnitx);
+        await this.openVPage(VUnitx);
     }
 
     protected async onDispose() {
@@ -134,11 +134,11 @@ export class CUnitxUq extends CUq {
     }
 
     jobPage(msg: Message) {
-        this.showVPage(JobPage, msg);
+        this.openVPage(JobPage, msg);
     }
 
     jobEdit(templet: Templet) {
-        this.showVPage(JobEdit, templet);
+        this.openVPage(JobEdit, templet);
     }
 
     myFolders() {
@@ -349,7 +349,7 @@ export class CUnitxUq extends CUq {
 }
 
 class VUnitx extends VPage<CUnitxUq> {
-    async showEntry() {
+    async open() {
         await this.controller.loadUnitApps();
         this.openPage(this.view);
     }
@@ -358,7 +358,7 @@ class VUnitx extends VPage<CUnitxUq> {
         let adminApp = await store.getAdminApp();
         let unitId = this.controller.unit.id;
         isBridged();
-        nav.navToApp(adminApp.url, unitId);
+        await nav.navToApp(adminApp.url, unitId);
     }
 
     private view = () => {
