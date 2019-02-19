@@ -18,14 +18,14 @@ export class VHome extends VPage<CHome> {
 
     async open() {
         document.addEventListener('click', this.handleDocumentClick);
-        document.addEventListener('touchstart', this.handleDocumentClick);
+        //document.addEventListener('touchstart', this.handleDocumentClick);
         this.regConfirmClose(this.confirmClose)
         this.openPage(this.page);
     }
 
     private confirmClose = async ():Promise<boolean> => {
         document.removeEventListener('click', this.handleDocumentClick);
-        document.removeEventListener('touchstart', this.handleDocumentClick);
+        //document.removeEventListener('touchstart', this.handleDocumentClick);
         return true;
     }
 

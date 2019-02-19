@@ -12,6 +12,7 @@ export interface SearchBoxProps {
     size?: 'sm' | 'md' | 'lg';
     inputClassName?: string;
     onSearch: (key:string)=>Promise<void>;
+    allowEmptySearch?: boolean;
 }
 
 /*
@@ -36,9 +37,11 @@ export class SearchBox extends React.Component<SearchBoxProps> { //}, SearchBoxS
         this.key = evt.target.value;
         if (this.key !== undefined) {
             this.key = this.key.trim();
+            if (this.key === '') this.key = undefined;
         }
-        this.disabled = !this.key;
-        //this.setState({disabled: !this.key});
+        if (this.props.allowEmptySearch !== true) {
+            this.disabled = !this.key;
+        }
     }
     /*
     ref = (input: HTMLInputElement) => {
@@ -50,8 +53,10 @@ export class SearchBox extends React.Component<SearchBoxProps> { //}, SearchBoxS
     onSubmit = async (evt: React.FormEvent<any>) => {
         evt.preventDefault();
         if (this.key === null) this.key = this.props.initKey || '';
-        if (!this.key) return;
-        if (this.input) this.input.disabled = true;
+        if (this.props.allowEmptySearch !== true) {
+            if (!this.key) return;
+            if (this.input) this.input.disabled = true;
+        }
         await this.props.onSearch(this.key);
         if (this.input) this.input.disabled = false;
     }

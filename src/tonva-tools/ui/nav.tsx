@@ -15,7 +15,6 @@ import '../css/animation.css';
 import { WsBase, wsBridge } from '../net/wsChannel';
 import { resOptions } from './res';
 import { Loading } from './loading';
-import { resolve } from 'url';
 
 const regEx = new RegExp('Android|webOS|iPhone|iPad|' +
     'BlackBerry|Windows Phone|'  +

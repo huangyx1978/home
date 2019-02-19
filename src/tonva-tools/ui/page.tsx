@@ -183,7 +183,7 @@ export class Page extends React.Component<PageProps, PageState> {
                     </div>
                 })
             }</div>;
-        let titleBar:any;
+        let titleBar;
         if (header !== false) {
             titleBar = <TitleBar 
                 back={back} 
