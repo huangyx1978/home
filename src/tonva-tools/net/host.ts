@@ -2,7 +2,7 @@ export const isDevelopment = process.env.NODE_ENV === 'development';
 
 const centerHost = process.env['REACT_APP_CENTER_HOST'];
 const centerDebugHost = 'localhost:3000'; //'192.168.86.64';
-const resHost = process.env['REACT_APP_RES_HOST'];
+const resHost = process.env['REACT_APP_RES_HOST'] || centerHost;
 const resDebugHost = 'localhost:3015'; //'192.168.86.63';
 const uqDebugHost = 'localhost:3015'; //'192.168.86.63';
 const uqDebugBuilderHost = 'localhost:3009';
