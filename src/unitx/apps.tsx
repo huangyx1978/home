@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { nav, View } from 'tonva-tools';
-import { List, LMR, Badge, Action, Muted, Image } from 'tonva-react-form';
+import { nav, View, Image } from 'tonva-tools';
+import { List, LMR, Badge, Action, Muted } from 'tonva-react-form';
 import consts from '../consts';
 import { App } from '../model';
 import { store } from '../store';

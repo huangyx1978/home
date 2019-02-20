@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { VPage, Page } from "tonva-tools";
+import { VPage, Page, Image } from "tonva-tools";
 import { CHome } from "./cHome";
-import { LMR, Muted, Image } from 'tonva-react-form';
-import consts from 'consts';
+import { LMR, Muted } from 'tonva-react-form';
 
 export class VUnitAbout extends VPage<CHome> {
     async open() {

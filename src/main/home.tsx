@@ -1,11 +1,9 @@
 import * as React from 'react';
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
-import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA, Image} from 'tonva-react-form';
-import {nav, Page, meInFrame} from 'tonva-tools';
-import consts from '../consts';
+import {List, LMR, Badge, EasyDate, Muted, PropGrid, Prop, FA} from 'tonva-react-form';
+import {nav, Page, meInFrame, Image} from 'tonva-tools';
 import {store} from '../store';
-//import {MainPage} from '../unitx';
 import {Sticky, StickyUnit} from '../model';
 import { CUnitxUq } from 'unitx/cUnitxUq';
 import { CMessages } from 'messages';

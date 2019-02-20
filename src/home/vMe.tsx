@@ -1,11 +1,14 @@
 import * as React from 'react';
-import {Media, PropGrid, Prop, FA, IconText, TonvaForm, FormRow, SubmitResult, Fields, List, LMR, Image} from 'tonva-react-form';
-import {nav, User, Page, VPage} from 'tonva-tools';
-import consts from 'consts';
+import {Media, PropGrid, Prop, FA, IconText, TonvaForm, FormRow, SubmitResult, Fields, List, LMR} from 'tonva-react-form';
+import {nav, User, Page, VPage, Image} from 'tonva-tools';
 import mainApi from 'mainApi';
 import { VAbout } from './vAbout';
 import { CHome } from './cHome';
 import { Unit } from './unit';
+import { VChangePassword } from './vChangePassword';
+import { VEditMeInfo } from './vEditMeInfo';
+import { observer } from 'mobx-react';
+import { userSpan } from './userSpan';
 
 const applyUnit = "创建小号";
 const applyDev = "创建开发号";
@@ -32,6 +35,10 @@ export class VMe extends VPage<CHome> {
 
     private about = () => {
         this.openVPage(VAbout);
+    }
+
+    private onEditMe = () => {
+        this.openVPage(VEditMeInfo);
     }
 
     private apply = () => {
@@ -104,7 +111,7 @@ export class VMe extends VPage<CHome> {
         return;
     }
     private changePassword = () => {
-        nav.push(<ChangePasswordPage />);
+        this.openVPage(VChangePassword);
     }
 
     private renderAdminUnit = (unit:Unit, index:number):JSX.Element => {
@@ -129,13 +136,22 @@ export class VMe extends VPage<CHome> {
         this.controller.navToAdmin(unit);
     }
 
-    page = () => {
+    page = observer(() => {
         const {user} = nav;
+        let {name, nick, id, icon} = user;
         let rows:Prop[] = [
             '',
             {
                 type: 'component', 
-                component: <Media icon={consts.appIcon} main={user.name} discription={String(user.id)} />
+                component: <LMR className="py-2 cursor-pointer w-100"
+                    left={<Image className="w-3c h-3c mr-3" src={icon} />}
+                    right={<FA className="align-self-end" name="chevron-right" />}
+                    onClick={this.onEditMe}>
+                    <div>
+                        <div>{userSpan(name, nick)}</div>
+                        <div>{id}</div>
+                    </div>
+                </LMR>
             },
         ];
         if (this.controller.adminUnits.length > 0) {
@@ -184,54 +200,5 @@ export class VMe extends VPage<CHome> {
         return <Page header="我">
             <PropGrid rows={rows} values={{}} />
         </Page>;
-    }
-}
-
-class ChangePasswordPage extends React.Component {
-    private form: TonvaForm;
-    private onSubmit = async (values:any):Promise<SubmitResult> => {
-        let {formView} = this.form;
-        let {orgPassword, newPassword, newPassword1} = values;
-        if (newPassword !== newPassword1) {
-            formView.setError('newPassword1', '新密码错误，请重新输入');
-            return;
-        }
-        let ret = await mainApi.resetPassword({orgPassword: orgPassword, newPassword:newPassword});
-        if (ret === false) {
-            formView.setError('orgPassword', '原密码错误');
-            return;
-        }
-        nav.replace(<Page header="修改密码" back="close">
-            <div className="m-3  text-success">
-                密码修改成功！
-            </div>
-        </Page>);
-        return;
-    }
-    render() {
-        let rows = [
-            {
-                label: '原密码', 
-                field: {name:'orgPassword', type: 'string', maxLength: 60, required: true},
-                face: {type: 'password', placeholder: '输入原来的密码'}
-            },
-            {
-                label: '新密码', 
-                field: {name:'newPassword', type: 'string', maxLength: 60, required: true},
-                face: {type: 'password', placeholder: '输入新设的密码'}
-            },
-            {
-                label: '确认密码', 
-                field: {name:'newPassword1', type: 'string', maxLength: 60, required: true},
-                face: {type: 'password', placeholder: '再次输入新设密码'}
-            },
-        ];
-        return <Page header="修改密码">
-            <TonvaForm 
-                ref={tf => this.form = tf}
-                className="m-3" 
-                formRows={rows} 
-                onSubmit={this.onSubmit} />
-        </Page>;
-    }
+    })
 }

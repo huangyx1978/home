@@ -1,13 +1,13 @@
 import { StatelessComponent } from 'react';
-import { Context } from './context';
-import { FieldRule, ContextRule } from './rules';
+import { Context } from '../form/context';
+import { FieldRule, ContextRule } from '../form/rules';
 import { ItemSchema } from './schema';
-import { FieldProps } from './field';
-import { Widget } from './widgets';
+import { FieldProps } from '../form/field';
+import { Widget } from '../form/widgets';
 
 export type TypeWidget = new (context:Context, itemSchema:ItemSchema, fieldProps:FieldProps, children: React.ReactNode) => Widget;
 
-export type UiType =  'form' | 'arr' | 'group' | 'button' | 'submit' | 'custom'
+export type UiType =  'form' | 'arr' | 'group' | 'button' | 'submit' | 'custom' | 'image'
     | 'id'
     | 'text' | 'textarea' | 'password' 
     | 'date' | 'datetime' | 'select' | 'url' | 'email'
@@ -32,6 +32,10 @@ export interface UiItem {
 export interface UiCustom extends UiItem {
     widget: 'custom';
     WidgetClass: TypeWidget;
+}
+
+export interface UiImageItem extends UiItem {
+    widget: 'image',
 }
 
 export interface UiIdItem extends UiItem {

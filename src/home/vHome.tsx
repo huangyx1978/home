@@ -2,14 +2,14 @@ import * as React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { observable } from 'mobx';
-import { Controller, VPage, Page, nav } from "tonva-tools";
-import { LMR, FA, Badge, EasyDate, List, Image } from 'tonva-react-form';
+import { Controller, VPage, Page, nav, Image } from "tonva-tools";
+import { LMR, FA, Badge, EasyDate, List } from 'tonva-react-form';
 import { observer } from 'mobx-react';
-import consts from 'consts';
 import { Sticky, StickyUnit, sysUnit } from './model';
 import { VApps } from './vApps';
 import { CHome } from './cHome';
 import { VCreate } from './vCreate';
+import { userSpan } from './userSpan';
 
 export class VHome extends VPage<CHome> {
     private elToggleButton: HTMLDivElement;
@@ -51,15 +51,9 @@ export class VHome extends VPage<CHome> {
         let left = <div ref={v => this.elToggleButton=v} className="p-2 cursor-pointer">
             <FA name="navicon" size="lg" />
         </div>
-        /*
-        let header = <LMR className="w-100 text-center align-items-center" left={left}>
-            {unit? unit.name : '同花'}
-        </LMR>;
-        */
         let header = unit? unit.name : '同花';
         let cnMain = "flex-fill";
         let sideBar = this.sideBar();
-        //let sideBar = <div>ddd</div>;
         return <Page header={header} right={left} sideBar={sideBar}>
             <div className="d-flex h-100">
                 <div className={cnMain}>
@@ -92,9 +86,9 @@ export class VHome extends VPage<CHome> {
         let {unit} = this.controller;
         if (unit === undefined) return null;
         let {icon, name} = unit;
-        let left = <Image className="w-2c mr-3" src={icon} />;
+        let left = <Image className="w-2c h-2c mr-3" src={icon} />;
         let right = <FA name="ellipsis-h" />;
-        return <LMR className={classNames('px-2', this.cnItems)}
+        return <LMR className={classNames('px-3', this.cnItems)}
             left={left} right={right}
             onClick={this.onAboutUnit}>
             <span>{name}</span>
@@ -129,14 +123,11 @@ export class VHome extends VPage<CHome> {
     private meItem() {
         let {user} = nav;
         let {nick, icon, name} = user;
-        let spanName:any = nick?
-            <span>{nick} {name}</span> :
-            <span>{name}</span>;
-        let left = <Image className="w-2c mr-3" src={icon} />;
-        return <LMR className={classNames('px-2', this.cnItems)}
+        let left = <Image className="w-2c h-2c mr-3" src={icon} />;
+        return <LMR className={classNames('px-3', this.cnItems)}
             left={left}
             onClick={this.onMeClick}>
-            <div className="my-3">{spanName}</div>
+            <div className="my-3">{userSpan(name, nick)}</div>
         </LMR>
     }
 
@@ -185,7 +176,7 @@ export class VHome extends VPage<CHome> {
             vice = <div className="small text-success">{subject}</div>;
         else
             vice = <div className="small text-muted">{discription}</div>;
-        return <LMR className="px-2 py-2"
+        return <LMR className="px-3 py-2"
             left={<Badge size="xs" badge={unread || unit.unread}><Image src={icon} /></Badge>}
             right={<small className="text-muted"><EasyDate date={date} /></small>}
         >

@@ -1,4 +1,4 @@
-export type DataType = 'id' | 'integer' | 'number' | 'string' | 'date' | 'boolean' 
+export type DataType = 'id' | 'integer' | 'number' | 'string' | 'image' | 'date' | 'boolean' 
     | 'object' | 'arr' | 'button' | 'submit';
 
 export interface ItemSchema {
@@ -36,6 +36,10 @@ export interface BoolSchema extends ItemSchema {
 export interface StringSchema extends ItemSchema {
     type: 'string';
     maxLength?: number;
+}
+
+export interface ImageSchema extends ItemSchema {
+    type: 'image';
 }
 
 export interface DateSchema extends ItemSchema {

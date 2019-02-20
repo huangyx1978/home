@@ -7,7 +7,7 @@
 /coverage
 
 # production
-#/build
+/build/dist
 /build/static/js/*.js.map
 
 # misc

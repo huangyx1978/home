@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { nav } from './nav';
 
 export interface ResUploaderProps {
-    url: string;
+    //url: string;
     className?: string;
     multiple?: boolean;
     onFilesChange?: (evt: React.ChangeEvent<HTMLInputElement>) => void;
@@ -11,7 +12,7 @@ export class ResUploader extends React.Component<ResUploaderProps> {
     private fileInput: HTMLInputElement;
 
     upload = async ():Promise<string> => {
-        let {url} = this.props;
+        let resUrl = nav.resUrl + 'upload';
         var files:FileList = this.fileInput.files;
         var data = new FormData();
         let len = files.length;
@@ -22,7 +23,7 @@ export class ResUploader extends React.Component<ResUploaderProps> {
   
         try {
             let abortController = new AbortController();
-            let res = await fetch(url, {
+            let res = await fetch(resUrl, {
                 method: "POST",
                 body: data,
                 signal: abortController.signal,
@@ -31,7 +32,7 @@ export class ResUploader extends React.Component<ResUploaderProps> {
             return ':' + json.res.id;
         }
         catch (err) {
-            console.error('%s %s', url, err);
+            console.error('%s %s', resUrl, err);
         }
     }
     render() {

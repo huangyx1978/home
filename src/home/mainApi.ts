@@ -105,6 +105,10 @@ class MainApi extends CenterApi {
     async resetPassword(param: {orgPassword:string, newPassword:string}) {
         return await this.post('tie/reset-password', param);
     }
+
+    async userSetProp(prop:string, value:any) {
+        await this.post('tie/user-set-prop', {prop:prop, value:value});
+    }
 }
 
 const mainApi = new MainApi('tv/', undefined);
