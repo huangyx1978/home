@@ -15,6 +15,7 @@ import '../css/animation.css';
 import { WsBase, wsBridge } from '../net/wsChannel';
 import { resOptions } from './res';
 import { Loading } from './loading';
+import { Callbacks } from './callbacks';
 
 const regEx = new RegExp('Android|webOS|iPhone|iPad|' +
     'BlackBerry|Windows Phone|'  +
@@ -488,6 +489,21 @@ export class Nav {
         this.local.user.set(this.user);
     }
 
+    private loginCallbacks = new Callbacks<(user: User)=>void>();
+    private logoutCallbacks = new Callbacks<()=>void>();
+    registerLoginCallback(callback: (user:User)=>void) {
+        this.loginCallbacks.register(callback);
+    }
+    unregisterLoginCallback(callback: (user:User)=>void) {
+        this.loginCallbacks.unregister(callback);
+    }
+    registerLogoutCallback(callback: ()=>void) {
+        this.logoutCallbacks.register(callback);
+    }
+    unregisterLogoutCallback(callback: ()=>void) {
+        this.logoutCallbacks.unregister(callback);
+    }
+
     async logined(user: User) {
         let ws:WSChannel = this.ws = new WSChannel(this.wsHost, user.token);
         ws.connect();
@@ -496,7 +512,7 @@ export class Nav {
         this.user = user;
         this.saveLocalUser();
         netToken.set(user.id, user.token);
-        //this.user = new UserInNav(user);
+        this.loginCallbacks.call(user);
         await this.showAppView();
     }
 
@@ -522,8 +538,8 @@ export class Nav {
         let guest = this.local.guest.get();
         setCenterToken(0, guest && guest.token);
         this.ws = undefined;
+        this.logoutCallbacks.call();
         if (notShowLogin === true) return;
-        //await this.showLogin();
         await nav.start();
     }
 

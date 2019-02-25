@@ -30,6 +30,14 @@ export class UserApi extends CenterApi {
     {
         return await this.post('register', params);
     }
+
+    async setVerify(account:string, type:'mobile'|'email') {
+        return await this.post('set-verify', {account:account, type:type});
+    }
+
+    async checkVerify(account:string, verify:string) {
+        return await this.post('check-verify', {account:account, verify:verify});
+    }
 }
 
 const userApi = new UserApi('tv/user/', undefined);
