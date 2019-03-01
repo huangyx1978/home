@@ -2,7 +2,7 @@ import * as React from 'react';
 import _ from 'lodash';
 import { observable } from 'mobx';
 import { Controller, VPage, Page, nav } from "tonva-tools";
-import mainApi from './mainApi';
+import mainApi from '../mainApi';
 import { Unit } from './unit';
 import { Sticky, StickyUnit, sysUnit, App, Grant } from './model';
 import { VMe } from './vMe';

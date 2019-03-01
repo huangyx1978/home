@@ -1,11 +1,9 @@
-/*
 import * as React from 'react';
-import { VPage, Page, Form, ItemSchema, UiSchema, StringSchema, UiTextItem, UiPasswordItem, ButtonSchema, Edit, ImageSchema, nav, UiImageItem } from 'tonva-tools';
-import { CHome } from './cHome';
-import mainApi from '../mainApi';
 import { observable } from 'mobx';
+import { VPage, Page, Form, ItemSchema, UiSchema, StringSchema, UiTextItem, UiPasswordItem, ButtonSchema, Edit, ImageSchema, nav, UiImageItem } from '../ui';
+import userApi from './userApi';
 
-export class VEditMeInfo extends VPage<CHome> {
+export class EditMeInfo extends React.Component {
     private schema:ItemSchema[] = [
         {name:'nick', type:'string'} as StringSchema,
         {name:'icon', type:'image'} as ImageSchema
@@ -18,24 +16,24 @@ export class VEditMeInfo extends VPage<CHome> {
     }
     @observable private data:any;
 
-    async open() {
+    constructor(props:any) {
+        super(props);
         let {nick, icon} = nav.user;
         this.data = {
             nick: nick,
             icon: icon,
         }
-        this.openPage(this.page);
     }
 
     private onItemChanged = async (itemSchema:ItemSchema, newValue:any, preValue:any) => {
         let {name} = itemSchema;
-        await mainApi.userSetProp(name, newValue);
+        await userApi.userSetProp(name, newValue);
         this.data[name] = newValue;
         nav.user[name] = newValue;
         nav.saveLocalUser();
     }
 
-    private page = ():JSX.Element => {
+    render() {
         return <Page header="个人信息">
             <Edit schema={this.schema} uiSchema={this.uiSchema}
                 data={this.data}
@@ -43,4 +41,3 @@ export class VEditMeInfo extends VPage<CHome> {
         </Page>;
     }
 }
-*/

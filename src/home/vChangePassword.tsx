@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { VPage, Page, Form, ItemSchema, UiSchema, StringSchema, UiTextItem, UiPasswordItem, Context, ButtonSchema, UiButton } from 'tonva-tools';
 import { CHome } from './cHome';
-import mainApi from './mainApi';
+import mainApi from '../mainApi';
 
 export class VChangePassword extends VPage<CHome> {
     private schema: ItemSchema[] = [

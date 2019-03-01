@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { observable } from 'mobx';
-import mainApi from "./mainApi";
+import mainApi from "../mainApi";
 import { App, sysUnit } from './model';
 
 export class Unit {

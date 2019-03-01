@@ -210,7 +210,20 @@ export class NavView extends React.Component<Props, State> {
     }
 
     popTo(key: number) {
-        throw new Error('to be designed');
+        if (key === undefined) return;
+        if (this.stack.find(v => v.key === key) === undefined) return;
+        while (this.stack.length >0) {
+            let len = this.stack.length;
+            let top = this.stack[len-1];
+            if (top.key === key) break;
+            this.pop();
+        }
+    }
+
+    topKey():number {
+        let len = this.stack.length;
+        if (len === 0) return undefined;
+        return this.stack[len-1].key;
     }
 
     removeCeased() {
@@ -586,6 +599,12 @@ export class Nav {
     }
     pop(level:number = 1) {
         this.nav.pop(level);
+    }
+    getTopKey():number {
+        return this.nav.topKey();
+    }
+    popTo(key:number) {
+        this.nav.popTo(key);
     }
     clear() {
         this.nav.clear();

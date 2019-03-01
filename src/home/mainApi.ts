@@ -1,3 +1,4 @@
+/*
 import {CenterApi, User} from 'tonva-tools';
 import {App} from 'model';
 
@@ -134,3 +135,4 @@ class MessageApi extends CenterApi {
 }
 
 export const messageApi = new MessageApi('tv/', false);
+*/

@@ -1,13 +1,13 @@
 import * as React from 'react';
+import { observer } from 'mobx-react';
 import {Media, PropGrid, Prop, FA, IconText, TonvaForm, FormRow, SubmitResult, Fields, List, LMR} from 'tonva-react-form';
-import {nav, User, Page, VPage, Image} from 'tonva-tools';
+import {nav, User, Page, VPage, Image, EditMeInfo} from 'tonva-tools';
 import mainApi from 'mainApi';
 import { VAbout } from './vAbout';
 import { CHome } from './cHome';
 import { Unit } from './unit';
 import { VChangePassword } from './vChangePassword';
-import { VEditMeInfo } from './vEditMeInfo';
-import { observer } from 'mobx-react';
+//import { VEditMeInfo } from './vEditMeInfo';
 import { userSpan } from './userSpan';
 
 const applyUnit = "创建小号";
@@ -38,7 +38,8 @@ export class VMe extends VPage<CHome> {
     }
 
     private onEditMe = () => {
-        this.openVPage(VEditMeInfo);
+        this.openPageElement(<EditMeInfo />);
+        //this.openVPage(VEditMeInfo);
     }
 
     private apply = () => {
