@@ -60,17 +60,10 @@ export class Unit {
     async loadApps(): Promise<void> {
         let apps:App[];
         let ret = await mainApi.apps(this.id);
-        if (ret === undefined) {
-            apps = [];
-        }
-        else {
-            apps = ret.apps;
-        }
-        if (ret === undefined) {
-            ret = {};
-            _.assign(ret, sysUnit);
-        }
-        else if (ret.id === 0) {
+        if (ret === undefined) return;
+
+        apps = ret.apps;
+        if (ret.id === 0) {
             _.assign(ret, sysUnit);
         }
         _.assign(this, ret);

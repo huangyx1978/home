@@ -155,7 +155,7 @@ class ChangePasswordPage extends React.Component {
             formView.setError('newPassword1', '新密码错误，请重新输入');
             return;
         }
-        let ret = await mainApi.resetPassword({orgPassword: orgPassword, newPassword:newPassword});
+        let ret = await mainApi.changePassword({orgPassword: orgPassword, newPassword:newPassword});
         if (ret === false) {
             formView.setError('orgPassword', '原密码错误');
             return;

@@ -53,12 +53,20 @@ export class VHome extends VPage<CHome> {
         </div>
         let header = unit? unit.name : '同花';
         let cnMain = "flex-fill";
+        let content:any;
+        if (unit === undefined) {
+            let {nick, name} = nav.user;
+            content = <div className="p-3">欢迎你，{nick || name}</div>;
+        }
+        else {
+            content = <div className={cnMain}>
+                {this.renderVm(VApps)}
+            </div>;
+        }
         let sideBar = this.sideBar();
         return <Page header={header} right={left} sideBar={sideBar}>
             <div className="d-flex h-100">
-                <div className={cnMain}>
-                    {this.renderVm(VApps)}
-                </div>
+                {content}
             </div>
         </Page>;
     });
@@ -134,13 +142,17 @@ export class VHome extends VPage<CHome> {
     private sideBar() {
         if (this.sideBarOpened === false) return null;
         let {stickies} = this.controller;
+        let item = {
+            render: this.stickyRender, 
+            onClick: this.stickyClick, 
+            key: (v:Sticky) => String(v.objId)
+        };
         return <div className="w-30c position-absolute bg-white h-100 shadow-lg border-right border-light"
             style={{zIndex:1001, right:0, overflowX: 'hidden', overflowY: 'auto'}}
             ref={v => this.elSideBar = v}>
             {this.meItem()}
             {this.aboutUnit()}
-            <List items={stickies}
-                item={{render: this.stickyRender, onClick: this.stickyClick, key: (v:Sticky) => String(v.objId)}} />
+            <List items={stickies} item={item} none={null} />
             {this.itemCreate()}
         </div>
     }

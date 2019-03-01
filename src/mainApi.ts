@@ -94,8 +94,8 @@ class MainApi extends CenterApi {
         return await this.get('unit/members-from-name', param);
     }
 
-    async resetPassword(param: {orgPassword:string, newPassword:string}) {
-        return await this.post('tie/reset-password', param);
+    async changePassword(param: {orgPassword:string, newPassword:string}) {
+        return await this.post('tie/change-password', param);
     }
 }
 

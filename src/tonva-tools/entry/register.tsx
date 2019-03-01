@@ -61,6 +61,15 @@ export class RegisterController extends Controller {
     account: string;
     type:'mobile'|'email';
     password: string;
+    verify: string;
+
+    accountPageCaption = '账号密码';
+    accountLabel = '注册账号';
+    accountSubmitCaption = '注册新账号'; 
+    passwordPageCaption = '账号密码';
+    passwordSubmitCaption = '注册新账号'; 
+    successText = '注册成功';
+
     protected async internalStart() {
         this.openVPage(AccountPage);
     }
@@ -108,6 +117,63 @@ export class RegisterController extends Controller {
         }
         return msg + ' 已经被注册过了';
     }
+
+    async checkAccount():Promise<string> {
+        let ret = await userApi.isExists(this.account);
+        let error = this.accountError(ret);
+        if (error !== undefined) return error;
+        ret = await userApi.setVerify(this.account, this.type);
+        this.toVerify(this.account);
+        return;
+    }
+
+    protected accountError(isExists: number) {
+        if (isExists > 0) return '已经被注册使用了';
+    }
+
+    async execute() {
+        let params = {
+            nick: undefined,
+            user: this.account, 
+            pwd: this.password,
+            country: undefined,
+            mobile: undefined,
+            email: undefined,
+            verify: this.verify
+        }
+        switch (this.type) {
+            case 'mobile': params.mobile = this.account; break;
+            case 'email': params.email = this.account; break;
+        }
+        let ret = await userApi.register(params);
+        if (ret === 0) {
+            nav.clear();
+            this.toSuccess();
+            return;
+        }
+        return this.regReturn(ret);
+    }
+}
+
+export class ForgetController extends RegisterController {
+    accountPageCaption = '密码找回';
+    accountLabel = '账号';
+    accountSubmitCaption = '注册新账号'; 
+    passwordPageCaption = '重置密码';
+    passwordSubmitCaption = '提交'; 
+    successText = '成功修改密码';
+
+    async execute() {
+        let ret = await userApi.resetPassword(this.account, this.password, this.verify, this.type);
+        nav.clear();
+        this.toSuccess();
+        return undefined;
+        //return this.regReturn(ret);
+    }
+
+    protected accountError(isExists: number) {
+        if (isExists === 0) return '请输入正确的账号';
+    }
 }
 
 class AccountPage extends VPage<RegisterController> {
@@ -118,35 +184,26 @@ class AccountPage extends VPage<RegisterController> {
         //{name: 'rePwd', type: 'string', required: true, maxLength: 100} as StringSchema,
         {name: 'verify', type: 'submit'},
     ]
-
-    private uiSchema: UiSchema = {
-        items: {
-            user: {
-                widget: 'text',
-                label: '注册账号',
-                placeholder: '手机号或邮箱',
-                //WidgetClass: AccountInput
-            } as UiTextItem, 
-            /*
-            verify: {
-                widget: 'text',
-                label: '验证码',
-                placeholder: '请输入验证码'
-            } as UiTextItem,
-            */
-            //pwd: {widget: 'password', placeholder: '密码', label: '密码'} as UiPasswordItem,
-            //rePwd: {widget: 'password', placeholder: '重复密码', label: '重复密码'} as UiPasswordItem,
-            verify: {widget: 'button', className: 'btn btn-primary btn-block mt-3', label: '发送验证码'} as UiButton,
-        }
-    }
+    private uiSchema: UiSchema;
             
     protected res: RegisterRes = resLang(registerRes);
     async open() {
-        this.openPage(this.page);
+        this.uiSchema = {
+            items: {
+                user: {
+                    widget: 'text',
+                    label: this.controller.accountLabel,
+                    placeholder: '手机号或邮箱',
+                } as UiTextItem, 
+                verify: {widget: 'button', className: 'btn btn-primary btn-block mt-3', label: '发送验证码'} as UiButton,
+            }
+        }
+                
+            this.openPage(this.page);
     }
 
     private page = ():JSX.Element => {
-        return <Page header="账号注册">
+        return <Page header={this.controller.accountPageCaption}>
             <div className="w-max-20c my-5 py-5"
                 style={{marginLeft:'auto', marginRight:'auto'}}>
                 {tonvaTop}
@@ -157,43 +214,31 @@ class AccountPage extends VPage<RegisterController> {
     }
 
     private onSubmit = async (name:string, context:Context):Promise<string> => {
-        //if (name === 'user') {
-            context.clearContextErrors();
-            let user = 'user';
-            let value = context.getValue(user);
-            let sender = getSender(value);
-            if (sender === undefined) {
-                context.setError(user, '必须是手机号或邮箱');
+        context.clearContextErrors();
+        let user = 'user';
+        let value = context.getValue(user);
+        let sender = getSender(value);
+        if (sender === undefined) {
+            context.setError(user, '必须是手机号或邮箱');
+            return;
+        }
+        let type:'mobile'|'email' = sender.type as 'mobile'|'email';
+        if (type === 'mobile') {
+            if (value.length !== 11 || value[0] !== '1') {
+                context.setError(user, '请输入正确的手机号');
                 return;
             }
-            let type:'mobile'|'email' = sender.type as 'mobile'|'email';
-            if (type === 'mobile') {
-                if (value.length !== 11 || value[0] !== '1') {
-                    context.setError(user, '请输入正确的手机号');
-                    return;
-                }
-            }
-            this.controller.type = type;
-            let ret = await userApi.setVerify(value, type);
-            if (ret < 0) {
-                context.setError(user, '已经被注册使用了');
-                return;
-            }
-            this.controller.toVerify(value);
-            //this.openPage(this.verifyPage)
-        //    return;
-        //}
-        //alert(name + ' 注册');
-        //return;
+        }
+        this.controller.account = value;
+        this.controller.type = type;
+        let ret = await this.controller.checkAccount();
+        if (ret !== undefined) context.setError(user, ret);
     }
 }
 
 class VerifyPage extends VPage<RegisterController> {
     private schema: Schema = [
         {name: 'verify', type: 'number', required: true, maxLength: 6} as NumSchema,
-        //{name: 'verify', type: 'string', required: true, maxLength: 6} as StringSchema,
-        //{name: 'pwd', type: 'string', required: true, maxLength: 100} as StringSchema,
-        //{name: 'rePwd', type: 'string', required: true, maxLength: 100} as StringSchema,
         {name: 'submit', type: 'submit'},
     ]
 
@@ -206,18 +251,8 @@ class VerifyPage extends VPage<RegisterController> {
                 widget: 'text',
                 label: '验证码',
                 placeholder: '请输入验证码',
-                //WidgetClass: AccountInput
                 onChanged: this.onVerifyChanged,
             } as UiTextItem, 
-            /*
-            verify: {
-                widget: 'text',
-                label: '验证码',
-                placeholder: '请输入验证码'
-            } as UiTextItem,
-            */
-            //pwd: {widget: 'password', placeholder: '密码', label: '密码'} as UiPasswordItem,
-            //rePwd: {widget: 'password', placeholder: '重复密码', label: '重复密码'} as UiPasswordItem,
             submit: {
                 widget: 'button', 
                 className: 'btn btn-primary btn-block mt-3', 
@@ -230,7 +265,8 @@ class VerifyPage extends VPage<RegisterController> {
         this.openPage(this.page);
     }
     private onSubmit = async (name:string, context:Context):Promise<string> => {
-        let ret = await userApi.checkVerify(this.controller.account, context.getValue('verify'));
+        let verify = this.controller.verify = context.getValue('verify');
+        let ret = await userApi.checkVerify(this.controller.account, verify);
         if (ret === 0) {
             context.setError('verify', '验证码错误');
             return;
@@ -266,48 +302,30 @@ class PasswordPage extends VPage<RegisterController> {
         {name: 'rePwd', type: 'string', required: true, maxLength: 100} as StringSchema,
         {name: 'submit', type: 'submit'},
     ]
-
-    private uiSchema: UiSchema = {
-        items: {
-            pwd: {widget: 'password', placeholder: '密码', label: '密码'} as UiPasswordItem,
-            rePwd: {widget: 'password', placeholder: '重复密码', label: '重复密码'} as UiPasswordItem,
-            submit: {widget: 'button', className: 'btn btn-primary btn-block mt-3', label: '注册新账号'} as UiButton,
-        }
-    }
+    private uiSchema: UiSchema;
     async open() {
+        this.uiSchema = {
+            items: {
+                pwd: {widget: 'password', placeholder: '密码', label: '密码'} as UiPasswordItem,
+                rePwd: {widget: 'password', placeholder: '重复密码', label: '重复密码'} as UiPasswordItem,
+                submit: {widget: 'button', className: 'btn btn-primary btn-block mt-3', label: this.controller.passwordSubmitCaption} as UiButton,
+            }
+        }
         this.openPage(this.page);
     }
     private onSubmit = async (name:string, context:Context):Promise<string> => {
         let values = context.form.data;
         let {pwd, rePwd} = values;
-        if (pwd !== rePwd) {
+        if (!pwd || pwd !== rePwd) {
             context.setValue('pwd', '');
             context.setValue('rePwd', '');
             return '密码错误，请重新输入密码！';
         }
-        let {account, type} = this.controller;
-        let params = {
-            nick: undefined,
-            user: account, 
-            pwd: pwd,
-            country: undefined,
-            mobile: undefined,
-            email: undefined,
-        }
-        switch (type) {
-            case 'mobile': params.mobile = account; break;
-            case 'email': params.email = account; break;
-        }
-        let ret = await userApi.register(params);
-        if (ret === 0) {
-            nav.clear();
-            this.controller.toSuccess();
-            return;
-        }
-        return this.controller.regReturn(ret);
+        this.controller.password = pwd;
+        return await this.controller.execute();
     }
     private page = ():JSX.Element => {
-        return <Page header="账号密码">
+        return <Page header={this.controller.passwordPageCaption}>
             <div className="w-max-20c my-5 py-5"
                 style={{marginLeft:'auto', marginRight:'auto'}}>
                 注册账号<br/>
@@ -326,13 +344,13 @@ class RegSuccess extends VPage<RegisterController> {
     }
 
     private page = () => {
-        const {account} = this.controller;
+        const {account, successText} = this.controller;
         return (
         <Page header={false}>
             <div className="container w-max-30c">
                 <form className="my-5">
                     <div className="py-5">
-                        账号 <strong className="text-primary">{account} </strong> 注册成功！
+                        账号 <strong className="text-primary">{account} </strong> {successText}！
                     </div>
                     <button className="btn btn-success btn-block" onClick={() => this.controller.login()}>
                         直接登录

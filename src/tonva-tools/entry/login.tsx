@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {nav, Page, Form, Schema, UiSchema, UiTextItem, UiPasswordItem, Context, UiButton, resLang, StringSchema} from '../ui';
-import { RegisterController } from './register';
-import Forget from './forget';
+import { RegisterController, ForgetController } from './register';
 import userApi from './userApi';
 import { LoginRes, loginRes } from './res';
 import { tonvaTop, getSender } from './tools';
+import { User } from '../user';
 
 const schema: Schema = [
     {name: 'username', type: 'string', required: true, maxLength: 100} as StringSchema,
@@ -12,7 +12,12 @@ const schema: Schema = [
     {name: 'login', type: 'submit'},
 ];
 
-export default class Login extends React.Component<{withBack?:boolean}> {
+export interface LoginProps {
+    withBack?: boolean;
+    callback?: (user:User) => Promise<void>
+}
+
+export default class Login extends React.Component<LoginProps> {
     private res: LoginRes = resLang(loginRes);
     private uiSchema: UiSchema = {
         items: {
@@ -41,12 +46,16 @@ export default class Login extends React.Component<{withBack?:boolean}> {
             return type + '或密码错！';
         }
         console.log("onLoginSubmit: user=%s pwd:%s", user.name, user.token);
-        await nav.logined(user);
+        await nav.logined(user, this.props.callback);
     }
     private clickReg = () => {
         //nav.replace(<RegisterView />);
         let register = new RegisterController(undefined);
         register.start();
+    }
+    private clickForget = () => {
+        let forget = new ForgetController(undefined);
+        forget.start();
     }
     render() {
         let footer = <div className='text-center'>
@@ -71,7 +80,7 @@ export default class Login extends React.Component<{withBack?:boolean}> {
                 <div className="h-3c" />
                 <Form schema={schema} uiSchema={this.uiSchema} onButtonClick={this.onSubmit} requiredFlag={false} />
                 <button className="btn btn-link btn-block"
-                    onClick={() => nav.push(<Forget />)}>
+                    onClick={() => this.clickForget()}>
                     忘记密码
                 </button>
             </div>

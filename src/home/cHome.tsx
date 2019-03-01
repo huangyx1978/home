@@ -34,9 +34,11 @@ export class CHome extends Controller {
         }*/
 
         if (this.unit === undefined) {
-            this.unit = new Unit(undefined);
-            await this.unit.loadApps();
-            this.units[this.unit.id] = this.unit;
+            let unit = new Unit(undefined);
+            await unit.loadApps();
+            if (unit.id === undefined) return;
+            this.unit = unit;
+            this.units[unit.id] = this.unit;
             return;
         }
         if (this.unit.id === unitId) {
@@ -60,7 +62,6 @@ export class CHome extends Controller {
         if (this.stickies !== undefined) return;
         let stickies = [];
         let ret = await mainApi.stickies();
-        //if (this.stickies === undefined) this.stickies = [];
         let t0:Sticky[] = ret[0];
         let t4 = ret[4];
         for (let s of t0) {
@@ -73,8 +74,8 @@ export class CHome extends Controller {
                     unit.name = name;
                     unit.discription = discription;
                     unit.icon = icon;
-                    //unit.unread = unread;
-                    //unit.date = date;
+                    unit.unread = unread;
+                    unit.date = date;
                     unit.owner = owner;
                     this.units.set(id, unit);
                     break;
@@ -86,13 +87,6 @@ export class CHome extends Controller {
             let {unread, date} = sys;
             this.addSysUnitStick(stickies, unread, date);
         }
-        /*
-        for (let i=0; i<30; i++) {
-            let s = _.clone(stickies[0]);
-            s.id = 10000 + i;
-            s.objId = 10000 + i;
-            stickies.push(s);
-        } */
         this.stickies = stickies;
     }
 
