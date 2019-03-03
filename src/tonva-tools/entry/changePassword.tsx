@@ -1,10 +1,8 @@
-/*
 import * as React from 'react';
-import { VPage, Page, Form, ItemSchema, UiSchema, StringSchema, UiTextItem, UiPasswordItem, Context, ButtonSchema, UiButton } from 'tonva-tools';
-import { CHome } from './cHome';
-import mainApi from '../mainApi';
+import { VPage, Page, Form, ItemSchema, UiSchema, StringSchema, UiTextItem, UiPasswordItem, Context, ButtonSchema, UiButton, nav } from '../ui';
+import { CenterAppApi } from '../net';
 
-export class VChangePassword extends VPage<CHome> {
+export class ChangePasswordPage extends React.Component {
     private schema: ItemSchema[] = [
         {name:'orgPassword', type: 'string', maxLength: 60, required: true} as StringSchema,
         {name:'newPassword', type: 'string', maxLength: 60, required: true} as StringSchema,
@@ -32,9 +30,6 @@ export class VChangePassword extends VPage<CHome> {
             } as UiButton,
         }
     };
-    async open() {
-        this.openPage(this.page);
-    }
 
     private onSubmit = async (name:string, context: Context):Promise<any> => {
         let {orgPassword, newPassword, newPassword1} = context.data;
@@ -42,12 +37,13 @@ export class VChangePassword extends VPage<CHome> {
             context.setError('newPassword1', '新密码错误，请重新输入');
             return;
         }
-        let ret = await mainApi.changePassword({orgPassword: orgPassword, newPassword:newPassword});
+        let centerAppApi = new CenterAppApi('tv/', undefined);
+        let ret = await centerAppApi.changePassword({orgPassword: orgPassword, newPassword:newPassword});
         if (ret === false) {
             context.setError('orgPassword', '原密码错误');
             return;
         }
-        this.replacePageElement(<Page header="修改密码" back="close">
+        nav.replace(<Page header="修改密码" back="close">
             <div className="m-3  text-success">
                 密码修改成功！
             </div>
@@ -55,7 +51,7 @@ export class VChangePassword extends VPage<CHome> {
         return;
     }
 
-    private page = ():JSX.Element => {
+    render() {
         return <Page header="修改密码">
             <Form
                 className="m-3" 
@@ -66,4 +62,3 @@ export class VChangePassword extends VPage<CHome> {
         </Page>;
     }
 }
-*/

@@ -108,8 +108,8 @@ function hideFrameBack(hash:string) {
 }
 async function initSubWin(message:any) {
     console.log('initSubWin: set nav.user', message);
-    nav.user = message; // message.user;
-    setCenterToken(message.id, message.token);
+    let user = nav.user = message; // message.user;
+    setCenterToken(user.id, user.token);
     await nav.showAppView();
 }
 async function onReceiveAppApiMessage(hash: string, apiName: string): Promise<UqToken> {

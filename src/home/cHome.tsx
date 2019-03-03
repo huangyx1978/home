@@ -181,7 +181,7 @@ export class CHome extends Controller {
         this.stickies.splice(0, this.stickies.length);
         this.units.clear();
         this.unit = undefined;
-        nav.logout();
+        //nav.logout();
         //this.cacheUsers.dict.clear();
         //this.cacheUnits.dict.clear();
         //this.follow.logout();

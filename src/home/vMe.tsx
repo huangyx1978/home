@@ -6,7 +6,7 @@ import mainApi from 'mainApi';
 import { VAbout } from './vAbout';
 import { CHome } from './cHome';
 import { Unit } from './unit';
-import { VChangePassword } from './vChangePassword';
+//import { VChangePassword } from './vChangePassword';
 //import { VEditMeInfo } from './vEditMeInfo';
 import { userSpan } from './userSpan';
 
@@ -19,9 +19,14 @@ export class VMe extends VPage<CHome> {
     }
 
     private exit = () => {
-        this.openPage(this.confirmLogout);
+        nav.showLogout(async ()=>{
+            this.controller.logout();
+        });
+
+        //this.openPage(this.confirmLogout);
     }
 
+    /*
     private confirmLogout = () => {
         return <Page header="安全退出" back="close">
             <div className="m-5 border border-info bg-white rounded p-3 text-center">
@@ -32,7 +37,7 @@ export class VMe extends VPage<CHome> {
             </div>
         </Page>;
     }
-
+    */
     private about = () => {
         this.openVPage(VAbout);
     }
@@ -111,8 +116,9 @@ export class VMe extends VPage<CHome> {
         </Page>);
         return;
     }
-    private changePassword = () => {
-        this.openVPage(VChangePassword);
+    private changePassword = async () => {
+        await nav.changePassword();
+        //this.openVPage(VChangePassword);
     }
 
     private renderAdminUnit = (unit:Unit, index:number):JSX.Element => {
@@ -127,9 +133,9 @@ export class VMe extends VPage<CHome> {
         if (isHao === true) types.push('小号');
         if (isDev === true) types.push('开发号');
         if (types.length > 0) unitType = <> &nbsp; <small className="text-muted">{types.join(', ')}</small></>;
-
-        return <LMR className="py-2" right={right}>
-            <Image className="w-1-5c mr-2" src={icon} />{name}{unitType}
+        let left = <Image className="w-1-5c mr-2" src={icon} />;
+        return <LMR className="py-2" left={left} right={right}>
+            {name}{unitType}
         </LMR>
     }
 
@@ -150,7 +156,7 @@ export class VMe extends VPage<CHome> {
                     onClick={this.onEditMe}>
                     <div>
                         <div>{userSpan(name, nick)}</div>
-                        <div>{id}</div>
+                        <div className="small"><span className="text-muted">ID:</span> {id>10000?id:String(id+10000).substr(1)}</div>
                     </div>
                 </LMR>
             },
