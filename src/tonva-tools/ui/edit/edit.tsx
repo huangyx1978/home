@@ -65,12 +65,7 @@ export class Edit extends React.Component<EditProps> {
         let value:any = this.props.data[name];
         switch (type) {
             default:
-                if (value) {
-                    divValue = <b>{value}</b>;
-                }
-                else {
-                    divValue = <small className="text-muted">(无内容)</small>;
-                }                
+                divValue = value? <b>{value}</b> : <small className="text-muted">(无)</small>;
                 break;
             case 'image':
                 divValue = <Image className="w-4c h-4c" src={value} />;
