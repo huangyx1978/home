@@ -15,7 +15,7 @@ importScripts("/app/workbox-v3.6.3/workbox-sw.js");
 workbox.setConfig({modulePathPrefix: "/app/workbox-v3.6.3"});
 
 importScripts(
-  "/app/precache-manifest.41200f841f4974b52e673982941a464c.js"
+  "/app/precache-manifest.e56a2890783d33db0f502d6bbd342554.js"
 );
 
 workbox.clientsClaim();

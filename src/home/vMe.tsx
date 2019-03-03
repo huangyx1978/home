@@ -133,7 +133,7 @@ export class VMe extends VPage<CHome> {
         if (isHao === true) types.push('小号');
         if (isDev === true) types.push('开发号');
         if (types.length > 0) unitType = <> &nbsp; <small className="text-muted">{types.join(', ')}</small></>;
-        let left = <Image className="w-1-5c mr-2" src={icon} />;
+        let left = <Image className="w-1-5c h-1-5c mr-2" src={icon} />;
         return <LMR className="py-2" left={left} right={right}>
             {name}{unitType}
         </LMR>
