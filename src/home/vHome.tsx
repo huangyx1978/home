@@ -55,8 +55,14 @@ export class VHome extends VPage<CHome> {
         let cnMain = "flex-fill";
         let content:any;
         if (unit === undefined) {
-            let {nick, name} = nav.user;
-            content = <div className="p-3">欢迎你，{nick || name}</div>;
+            let {user} = nav;
+            if (user !== undefined) {
+                let {nick, name} = user;
+                content = <div className="p-3">欢迎你，{nick || name}</div>;
+            }
+            else {
+                content = <div className="p-3">no unit, no user</div>;
+            }
         }
         else {
             content = <div className={cnMain}>
@@ -130,6 +136,7 @@ export class VHome extends VPage<CHome> {
 
     private meItem() {
         let {user} = nav;
+        if (user === undefined) return null;
         let {nick, icon, name} = user;
         let left = <Image className="w-2c h-2c mr-3" src={icon} />;
         return <LMR className={classNames('px-3', this.cnItems)}

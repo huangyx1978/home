@@ -6,6 +6,7 @@ import { Context } from '../context';
 import { ItemSchema } from '../../schema';
 import { Rule, RuleRequired, RuleCustom, FieldRule } from '../rules';
 import { computed, observable, reaction } from 'mobx';
+import { observer } from 'mobx-react';
 
 export abstract class Widget {
     protected name: string;
@@ -168,10 +169,18 @@ export abstract class Widget {
 
     protected abstract render():JSX.Element;
 
-    renderContainer():JSX.Element {
+    container = observer(():JSX.Element => {
         if (this.visible === false) return null;
         let {form, inNode} = this.context;
         if (inNode === true) return this.render();
+        let label:any = this.label;
+        if (this.itemSchema.required === true && form.props.requiredFlag !== false) {
+            if (label !== null) label = <>{label}&nbsp;<span className="text-danger">*</span></>;
+        }
+        return form.FieldContainer(label, this.render());
+    })
+
+    protected get label():string {
         let label:any;
         if (this.ui === undefined) {
             label = this.name;
@@ -179,12 +188,9 @@ export abstract class Widget {
         else {
             let uiLabel = this.ui.label;
             if (uiLabel === null) label = null;
-            label = uiLabel || this.name;
+            else label = uiLabel || this.name;
         }
-        if (this.itemSchema.required === true && form.props.requiredFlag !== false) {
-            if (label !== null) label = <>{label}&nbsp;<span className="text-danger">*</span></>;
-        }
-        return form.FieldContainer(label, this.render());
+        return label;
     }
 
     protected renderTemplet():JSX.Element | undefined {

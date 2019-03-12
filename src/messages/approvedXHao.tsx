@@ -1,3 +1,4 @@
+/*
 import React from 'react';
 import className from 'classnames';
 import _ from 'lodash';
@@ -6,8 +7,10 @@ import {Page, nav, VPage} from 'tonva-tools';
 import {Message} from './model';
 import {store} from 'store';
 import {tagStyle, tagEndStyle} from './message';
-import { CMessages } from './cMessages';
+*/
+//import { CMessages } from './cMessages';
 
+/*
 const Approved = (
     msg:Message, unitType:number, title:string,
     onClick:(msg:Message, unitType:number, title:string)=>Promise<void>) => 
@@ -20,7 +23,7 @@ const Approved = (
         if (pointer === false) return;
         nav.push(<UnitCreatePage title={this.title} unitType={this.unitType} msg={msg} />);
     }
-    render() {*/
+    render() {
         let {fromUser, date, state} = msg;
         let bg, py, style;
         let right;
@@ -139,3 +142,4 @@ export class UnitCreatePage extends VPage<CMessages> { // React.Component<{title
         </Page>
     }
 }
+*/

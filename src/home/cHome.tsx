@@ -9,7 +9,7 @@ import { VMe } from './vMe';
 import { VHome } from './vHome';
 import { VUnitAbout } from './vUnitAbout';
 import { navToApp } from 'navToApp';
-import { CMessages } from 'messages';
+//import { CMessages } from 'messages';
 
 export class CHome extends Controller {
     @observable stickies: Sticky[];
@@ -20,7 +20,6 @@ export class CHome extends Controller {
     private adminApp: App;
 
     protected async internalStart() {
-        //this.loadStickies();
         await this.showUnit(undefined);
         this.openVPage(VHome);
     }
@@ -181,10 +180,7 @@ export class CHome extends Controller {
         this.stickies.splice(0, this.stickies.length);
         this.units.clear();
         this.unit = undefined;
-        //nav.logout();
-        //this.cacheUsers.dict.clear();
-        //this.cacheUnits.dict.clear();
-        //this.follow.logout();
+        nav.logout();
     }
     
     async unitCreate(data:any): Promise<any> {

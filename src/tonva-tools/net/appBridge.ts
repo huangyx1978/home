@@ -140,13 +140,34 @@ async function onAppApiReturn(message:any) {
 }
 
 export function setMeInFrame(appHash: string):AppInFrame {
-    let parts = appHash.split('-');
-    let len = parts.length;
-    meInFrame.hash = parts[0].substr(3);
-    if (len>0) meInFrame.unit = Number(parts[1]);
-    if (len>1) meInFrame.page = parts[2];
-    if (len>2) meInFrame.param = parts.slice(3);
+    if (appHash) {
+        let parts = appHash.split('-');
+        let len = parts.length;
+        if (len > 0) {
+            let p = 1;
+            meInFrame.hash = parts[p++];
+            if (len>0) meInFrame.unit = Number(parts[p++]);
+            if (len>1) meInFrame.page = parts[p++];
+            if (len>2) meInFrame.param = parts.slice(p++);
+        }
+    }
     return meInFrame;
+}
+
+export function getExHashPos():number {
+    let hash = document.location.hash;
+    if (hash !== undefined && hash.length > 0) {
+        let pos = hash.lastIndexOf('#tv-');
+        if (pos < 0) pos = hash.lastIndexOf('#tvdebug-');
+        return pos;
+    }
+    return -1;
+}
+
+export function getExHash():string {
+    let pos = getExHashPos();
+    if (pos < 0) return undefined;
+    return document.location.hash.substring(pos);
 }
 
 export function appUrl(url: string, unitId: number, page?:string, param?:any[]):{url:string; hash:string} {
@@ -159,7 +180,7 @@ export function appUrl(url: string, unitId: number, page?:string, param?:any[]):
             break;
         }
     }
-    url += '#tv' + u + '-' + unitId;
+    url += '#tv-' + u + '-' + unitId;
     if (page !== undefined) {
         url += '-' + page;
         if (param !== undefined) {
@@ -169,16 +190,6 @@ export function appUrl(url: string, unitId: number, page?:string, param?:any[]):
         }
     }
     return {url: url, hash: u};
-}
-
-export async function loadAppUqs(appOwner:string, appName): Promise<App> {
-    let centerAppApi = new CenterAppApi('tv/', undefined);
-    let unit = meInFrame.unit;
-    let ret = await centerAppApi.uqs(unit, appOwner, appName);
-    centerAppApi.checkUqs(unit, appOwner, appName).then(v => {
-        if (v === false) nav.start();
-    });
-    return ret;
 }
 
 export async function appUq(uq:string, uqOwner:string, uqName:string): Promise<UqToken> {

@@ -1,8 +1,9 @@
+/*
 import React, { StatelessComponent } from 'react';
 import { Controller, VPage, View } from 'tonva-tools';
 import { Page } from 'tonva-tools';
 import { ApplyUnit, ApplyDev } from './applyXHao';
-import { ApprovedUnit, ApprovedDev, UnitCreatePage } from './approvedXHao';
+//import { ApprovedUnit, ApprovedDev, UnitCreatePage } from './approvedXHao';
 import { Message, PageMessages } from './model';
 import { List } from 'tonva-react-form';
 import mainApi from 'mainApi';
@@ -107,3 +108,4 @@ class VMessages extends VPage<CMessages> {
         </Page>;
     }
 }
+*/

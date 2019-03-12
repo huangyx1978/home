@@ -31,7 +31,7 @@ export async function navToApp(app:App, unitId:number, uqId?:number, sheetType?:
         return;
     }
     let adminUrl:string = url;
-    if (urlDebug !== undefined) {
+    if (urlDebug) {
         let ret = await host.localCheck(urlDebug);
         if (ret === true) adminUrl = urlDebug;
     }

@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import {Media, PropGrid, Prop, FA, IconText, TonvaForm, FormRow, SubmitResult, Fields, List, LMR} from 'tonva-react-form';
+import {PropGrid, Prop, FA, IconText, SubmitResult, List, LMR} from 'tonva-react-form';
 import {nav, User, Page, VPage, Image, EditMeInfo} from 'tonva-tools';
 import mainApi from 'mainApi';
 import { VAbout } from './vAbout';
 import { CHome } from './cHome';
 import { Unit } from './unit';
-//import { VChangePassword } from './vChangePassword';
-//import { VEditMeInfo } from './vEditMeInfo';
 import { userSpan } from './userSpan';
 
 const applyUnit = "创建小号";
@@ -81,6 +79,7 @@ export class VMe extends VPage<CHome> {
         this.showApplyPage('dev');
     }
     private showApplyPage(type:'unit'|'dev') {
+        /*
         let fields:Fields = {
             name: {name:'name', type:'string', maxLength:50, required:true },
             phone: {name:'phone', type:'string', maxLength:20 },
@@ -96,6 +95,8 @@ export class VMe extends VPage<CHome> {
                 className="m-3" 
                 formRows={rows} onSubmit={(values:any) => this.onApplySubmit(type, values)} />
         </Page>);
+        */
+        // 上面的代码不用了
     }
     private onApplySubmit = async (type:'unit'|'dev', values:any):Promise<SubmitResult> => {
         let ret = await mainApi.saveMessage({
@@ -145,6 +146,11 @@ export class VMe extends VPage<CHome> {
 
     page = observer(() => {
         const {user} = nav;
+        if (user === undefined) {
+            return <Page header="loged out">
+                loged out
+            </Page>
+        }
         let {name, nick, id, icon} = user;
         let rows:Prop[] = [
             '',
