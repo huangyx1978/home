@@ -51,7 +51,7 @@ export class VHome extends VPage<CHome> {
         let left = <div ref={v => this.elToggleButton=v} className="p-2 cursor-pointer">
             <FA name="navicon" size="lg" />
         </div>
-        let header = unit? unit.name : '同花';
+        let header = unit? unit.nick || unit.name : '同花';
         let cnMain = "flex-fill";
         let content:any;
         if (unit === undefined) {
@@ -99,13 +99,19 @@ export class VHome extends VPage<CHome> {
     private aboutUnit() {
         let {unit} = this.controller;
         if (unit === undefined) return null;
-        let {icon, name} = unit;
+        let {icon, name, nick} = unit;
         let left = <Image className="w-2c h-2c mr-3" src={icon} />;
         let right = <FA name="ellipsis-h" />;
+        let nameDiv = nick? 
+            <div>
+                <div>{nick}</div>
+                <div className="small text-muted">{name}</div>
+            </div>
+            : name;
         return <LMR className={classNames('px-3', this.cnItems)}
             left={left} right={right}
             onClick={this.onAboutUnit}>
-            <span>{name}</span>
+            {nameDiv}
         </LMR>;
     }
 

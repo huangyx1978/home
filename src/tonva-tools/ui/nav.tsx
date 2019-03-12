@@ -5,9 +5,9 @@ import {Page} from './page';
 import {netToken} from '../net/netToken';
 import FetchErrorView from './fetchErrorView';
 import {FetchError} from '../fetchError';
-import {appUrl, setMeInFrame, logoutUqTokens, getExHash, getExHashPos} from '../net/appBridge';
+import {appUrl, setAppInFrame, logoutUqTokens, getExHash, getExHashPos} from '../net/appBridge';
 import {LocalData} from '../local';
-import {guestApi, logoutApis, setCenterUrl, setCenterToken, WSChannel, meInFrame, isDevelopment, host} from '../net';
+import {guestApi, logoutApis, setCenterUrl, setCenterToken, WSChannel, appInFrame, isDevelopment, host} from '../net';
 import { WsBase, wsBridge } from '../net/wsChannel';
 import { resOptions } from './res';
 import { Loading } from './loading';
@@ -395,7 +395,7 @@ export class Nav {
         await this.ws.receive(msg);
     }
 
-    private async getUnitName() {
+    private async getPredefinedUnitName() {
         try {
             let unitRes = await fetch('unit.json', {});
             //if (unitRes)
@@ -408,17 +408,17 @@ export class Nav {
         }
     }
 
-    private async loadUnit() {
+    private async loadPredefinedUnit() {
         let unitName:string;
         let unit = this.local.unit.get();
         if (unit !== undefined) {
             if (isDevelopment !== true) return unit.id;
-            unitName = await this.getUnitName();
+            unitName = await this.getPredefinedUnitName();
             if (unitName === undefined) return;
             if (unit.name === unitName) return unit.id;
         }
         else {
-            unitName = await this.getUnitName();
+            unitName = await this.getPredefinedUnitName();
             if (unitName === undefined) return;
         }
         let unitId = await guestApi.unitFromName(unitName);
@@ -447,9 +447,6 @@ export class Nav {
             this.wsHost = ws;
             setCenterUrl(url);
             
-            let unit = await this.loadUnit();
-            meInFrame.unit = unit;
-
             let guest:Guest = this.local.guest.get();
             if (guest === undefined) {
                 guest = await guestApi.guest();
@@ -457,20 +454,24 @@ export class Nav {
             nav.setGuest(guest);
 
             let exHash = getExHash();
-            let mif = setMeInFrame(exHash);
+            let appInFrame = setAppInFrame(exHash);
             if (exHash !== undefined && window !== window.parent) {
-                if (mif !== undefined) {
+                // is in frame
+                if (appInFrame !== undefined) {
                     this.ws = wsBridge;
                     console.log('this.ws = wsBridge in sub frame');
                     //nav.user = {id:0} as User;
                     if (self !== window.parent) {
-                        window.parent.postMessage({type:'sub-frame-started', hash: mif.hash}, '*');
+                        window.parent.postMessage({type:'sub-frame-started', hash: appInFrame.hash}, '*');
                     }
                     // 下面这一句，已经移到 appBridge.ts 里面的 initSubWin，也就是响应从main frame获得user之后开始。
                     //await this.showAppView();
                     return;
                 }
             }
+
+            let predefinedUnit = await this.loadPredefinedUnit();
+            appInFrame.predefinedUnit = predefinedUnit;
 
             let user: User = this.local.user.get();
             if (user === undefined) {
@@ -552,6 +553,7 @@ export class Nav {
     }
 
     async logout(callback?:()=>Promise<void>) { //notShowLogin?:boolean) {
+        appInFrame.unit = undefined;
         this.local.logoutClear();
         this.user = undefined; //{} as User;
         logoutApis();

@@ -1,9 +1,10 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { Page, loadAppUqs, nav, meInFrame, Controller, TypeVPage, VPage, resLang, getExHash, isDevelopment} from 'tonva-tools';
+import { Page, loadAppUqs, nav, appInFrame, Controller, TypeVPage, VPage, resLang, getExHash, isDevelopment} from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
 import { CUq, EntityType, UqUI } from './uq';
 import { centerApi } from '../centerApi';
+import { LocalData } from 'tonva-tools/local';
 
 export interface RoleAppUI {
     CApp?: typeof CApp;
@@ -55,7 +56,7 @@ export class CApp extends Controller {
 
     protected async loadUqs(): Promise<string[]> {
         let retErrors:string[] = [];
-        let unit = meInFrame.unit;
+        let unit = appInFrame.unit;
         let app = await loadAppUqs(this.appOwner, this.appName);
         let {id, uqs} = app;
         this.id = id;
@@ -147,31 +148,31 @@ export class CApp extends Controller {
     protected get VAppMain():TypeVPage<CApp> {return (this.ui&&this.ui.main) || VAppMain}
     protected async beforeStart():Promise<boolean> {
         try {
-            let {unit} = meInFrame;
             if (isDevelopment === true) {
+                let {predefinedUnit} = appInFrame;
                 let app = await loadAppUqs(this.appOwner, this.appName);
                 let {id} = app;
                 this.id = id;
                 let {user} = nav;
                 if (user !== undefined && user.id > 0) {
-                    await this.loadAppUnits();
+                    this.appUnits = await centerApi.userAppUnits(this.id);
                     switch (this.appUnits.length) {
                         case 0:
-                            this.showUnsupport(unit);
+                            this.showUnsupport(predefinedUnit);
                             return false;
                         case 1:
                             let appUnit = this.appUnits[0].id;
                             if (appUnit === undefined || appUnit < 0 || 
-                                unit !== undefined && appUnit != unit)
+                                predefinedUnit !== undefined && appUnit != predefinedUnit)
                             {
-                                this.showUnsupport(unit);
+                                this.showUnsupport(predefinedUnit);
                                 return false;
                             }
-                            meInFrame.unit = appUnit;
+                            appInFrame.unit = appUnit;
                             break;
                         default:
-                            if (unit>0 && this.appUnits.find(v => v.id===unit) !== undefined) {
-                                meInFrame.unit = unit;
+                            if (predefinedUnit>0 && this.appUnits.find(v => v.id===predefinedUnit) !== undefined) {
+                                appInFrame.unit = predefinedUnit;
                                 break;
                             }
                             nav.push(<this.selectUnitPage />)
@@ -222,7 +223,7 @@ export class CApp extends Controller {
         nav.clear();
     }
 
-    private showUnsupport(unit:number) {
+    private showUnsupport(predefinedUnit: number) {
         this.clearPrevPages();
         let {user} = nav;
         let userName:string = user? user.name : '[未登录]';
@@ -237,8 +238,8 @@ export class CApp extends Controller {
                     <div className="col">{`${this.appOwner}/${this.appName}`}</div>
                 </div>
                 <div className="form-group row">
-                    <div className="col-2">小号:</div>
-                    <div className="col">{unit || <small className="text-muted">[无小号]</small>}</div>
+                    <div className="col-2">预设小号:</div>
+                    <div className="col">{predefinedUnit || <small className="text-muted">[无预设小号]</small>}</div>
                 </div>
                 <div className="form-group row">
                     <div className="col-2">
@@ -249,10 +250,25 @@ export class CApp extends Controller {
                         <ul className="p-0">
                             <li>没有小号运行 {this.ui.appName}</li>
                             <li>用户 <b>{userName}</b> 没有加入任何一个运行{this.ui.appName}的小号</li>
-                            <li>用户 <b>{userName}</b> 没有加入小号 unit={unit}</li>
+                            {
+                                predefinedUnit && 
+                                <li>预设小号 <b>{predefinedUnit}</b> 没有运行App {this.ui.appName}</li>
+                            }
                         </ul>
                     </div>
                 </div>
+                {
+                    predefinedUnit || 
+                    <div className="form-group row">
+                    <div className="col-2"></div>
+                    <div className="col">
+                        预设小号定义在 public/unit.json 文件中。
+                        定义了这个文件的程序，只能由url直接启动。
+                        用户第一次访问app之后，会缓存在localStorage里。<br/>
+                        如果要删去缓存的预定义Unit，logout然后再login。
+                    </div>
+                </div>
+                }
             </div>
         </Page>)
     }
@@ -291,15 +307,6 @@ export class CApp extends Controller {
         return;
     }
 
-    private async loadAppUnits() {
-        let ret = await centerApi.userAppUnits(this.id);
-        this.appUnits = ret;
-        /*
-        if (ret.length === 1) {
-            meInFrame.unit = ret[0].id;
-        }*/
-    }
-
     renderRow = (item: any, index: number):JSX.Element => {
         let {id, nick, name} = item;
         return <LMR className="px-3 py-2" right={'id: ' + id}>
@@ -307,7 +314,7 @@ export class CApp extends Controller {
         </LMR>;
     }
     onRowClick = async (item: any) => {
-        meInFrame.unit = item.id; // 25;
+        appInFrame.unit = item.id; // 25;
         await this.start();
     }
 
@@ -329,7 +336,7 @@ class VAppMain extends VPage<CApp> {
 
     protected appPage() {
         let {caption} = this.controller;
-        return <Page header={caption} logout={async()=>{meInFrame.unit = undefined}}>
+        return <Page header={caption} logout={async()=>{appInFrame.unit = undefined}}>
             {this.appContent()}
         </Page>;
     }

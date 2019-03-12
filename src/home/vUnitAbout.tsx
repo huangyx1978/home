@@ -14,7 +14,7 @@ export class VUnitAbout extends VPage<CHome> {
 
     private page = ():JSX.Element => {
         let {unit} = this.controller;
-        let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = unit;
+        let {id, name, nick, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = unit;
         if (ownerNick) ownerNick = '- ' + ownerNick;
         let enterAdmins:any;
         if (isOwner === 1 || isAdmin === 1) {
@@ -23,11 +23,15 @@ export class VUnitAbout extends VPage<CHome> {
                 进入管理
             </button>
         }
-        let divImg = <div className="mr-3"><Image src={icon} /></div>;
-        return <Page header={'关于 ' + name}>
+        let divImg = <div className="mr-3 w-4c h-4c"><Image src={icon} /></div>;
+        return <Page header={'关于 ' + (nick || name) }>
             <LMR className="my-3 container-fluid" left={divImg} right={enterAdmins}>
-                <div className="row">
-                    <h6 className="col-12">{name}</h6>
+                <div className="mb-3">
+                    {nick? <>
+                        <div><b>{nick}</b></div>
+                        <div className="small text-muted">{name}</div>
+                    </>
+                    : name}
                 </div>
                 <div className="row">
                     <label className="small text-dark col-3">简介：</label>

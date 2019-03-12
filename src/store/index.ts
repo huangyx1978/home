@@ -1,7 +1,7 @@
 import {observable, computed} from 'mobx';
 import _ from 'lodash';
 import { Entities, Query, Tuid, BoxId } from 'tonva-react-uq';
-import { PageItems, meInFrame } from 'tonva-tools';
+import { PageItems, appInFrame } from 'tonva-tools';
 
 import mainApi, { messageApi } from 'mainApi';
 import {Sticky, Tie, App, Message, StickyUnit} from 'model';
@@ -360,7 +360,7 @@ export class Store {
             }
             //unit.unread = 0;
         }
-        meInFrame.unit = unitId;
+        appInFrame.unit = unitId;
         this.unit = unit;
     }
 

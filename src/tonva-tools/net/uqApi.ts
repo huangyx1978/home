@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import {HttpChannel} from './httpChannel';
 import {HttpChannelUI, HttpChannelNavUI} from './httpChannelUI';
-import {appUq, meInFrame, logoutUqTokens} from './appBridge';
+import {appUq, appInFrame, logoutUqTokens} from './appBridge';
 import {ApiBase} from './apiBase';
 import { host } from './host';
 import { nav } from '../ui';

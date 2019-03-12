@@ -67,10 +67,11 @@ export class CHome extends Controller {
             switch (s.type) {
                 case 3: 
                     let u = s.obj = t4.find(v => v.id === s.objId);
-                    let {id, type, name, discription, icon, unread, date, owner} = u;
+                    let {id, type, name, nick, discription, icon, unread, date, owner} = u;
                     let unit = new Unit(id);
                     unit.type = type;
                     unit.name = name;
+                    unit.nick = nick;
                     unit.discription = discription;
                     unit.icon = icon;
                     unit.unread = unread;
@@ -81,11 +82,13 @@ export class CHome extends Controller {
             }
         }
         stickies.push(...t0);
+        // 2019-03-12: 先不处理系统消息
+        /*
         let sys = ret[5][0];
         if (sys !== undefined) {
             let {unread, date} = sys;
             this.addSysUnitStick(stickies, unread, date);
-        }
+        }*/
         this.stickies = stickies;
     }
 
