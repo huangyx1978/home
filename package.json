@@ -11,7 +11,8 @@
     "mobx": "^5.5.2",
     "mobx-react": "^5.3.6",
     "react": "^16.6.3",
-    "react-dom": "^16.6.3"
+    "react-dom": "^16.6.3",
+    "react-markdown": "^4.0.6"
   },
   "scripts": {
     "start": "set PORT=3100 && react-scripts-ts start",

@@ -1,9 +1,45 @@
 import * as React from 'react';
 import { VPage, Page, Image } from "tonva-tools";
-import { CHome } from "./cHome";
 import { LMR, Muted } from 'tonva-react-form';
+import { CHome } from "./cHome";
+import ReactMarkdown from 'react-markdown';
+import { unitDefaultMarkDown } from './unitDefaultMarkDown';
 
 export class VUnitAbout extends VPage<CHome> {
+/*
+# Live demo
+    这是一段markdown描述的内容。放在unit的discription字段中。
+    Changes are automatically rendered as you type.
+    * Implements [GitHub Flavored Markdown](https://github.github.com/gfm/)
+    * Renders actual, "native" React DOM elements
+    * Allows you to escape or skip HTML (try toggling the checkboxes above)
+    * If you escape or skip the HTML, no \`dangerouslySetInnerHTML\` is used! Yay!
+    ## HTML block below
+    <blockquote>
+      This blockquote will change based on the HTML settings above.
+    </blockquote>
+    ## How about some code?
+    \`\`\`js
+    var React = require('react');
+    var Markdown = require('react-markdown');
+    React.render(
+      <Markdown source="# Your markdown here" />,
+      document.getElementById('content')
+    );
+    \`\`\`
+    Pretty neat, eh?
+    ## Tables?
+    | Feature   | Support |
+    | --------- | ------- |
+    | tables    | ✔ |
+    | alignment | ✔ |
+    | wewt      | ✔ |
+    ## More info?
+    Read usage information and more on [GitHub](//github.com/rexxars/react-markdown)
+    ---------------
+    A component by [Espen Hovlandsdal](https://espen.codes/)
+`;
+*/
     async open() {
         this.openPage(this.page);
     }
@@ -24,6 +60,7 @@ export class VUnitAbout extends VPage<CHome> {
             </button>
         }
         let divImg = <div className="mr-3 w-4c h-4c"><Image src={icon} /></div>;
+
         return <Page header={'关于 ' + (nick || name) }>
             <LMR className="my-3 container-fluid" left={divImg} right={enterAdmins}>
                 <div className="mb-3">
@@ -34,14 +71,13 @@ export class VUnitAbout extends VPage<CHome> {
                     : name}
                 </div>
                 <div className="row">
-                    <label className="small text-dark col-3">简介：</label>
-                    <div className="col-9">{discription || <Muted>无</Muted>}</div>
-                </div>
-                <div className="row">
                     <label className="small text-dark col-3">发布者：</label>
                     <div className="col-9">{ownerName} {ownerNick}</div>
                 </div>
             </LMR>
+            <div className="bg-white p-3">
+                <ReactMarkdown source={discription || unitDefaultMarkDown} />
+            </div>
         </Page>;
     }
 }

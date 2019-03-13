@@ -9,6 +9,7 @@ import { VMe } from './vMe';
 import { VHome } from './vHome';
 import { VUnitAbout } from './vUnitAbout';
 import { navToApp } from 'navToApp';
+import { VMyUnits } from './vMyUnits';
 //import { CMessages } from 'messages';
 
 export class CHome extends Controller {
@@ -54,6 +55,12 @@ export class CHome extends Controller {
     async showUnitAbout() {
         this.openVPage(VUnitAbout);
     }
+
+    async showMyUnits() {
+        await this.loadAdminUnits();
+        this.openVPage(VMyUnits);
+    }
+
     reloadStickies() {
         this.stickies = undefined;
     }
@@ -135,7 +142,7 @@ export class CHome extends Controller {
         //}
     }
 
-    async loadAdminUnits() {
+    private async loadAdminUnits() {
         if (this.adminUnits !== undefined) return;
         let ret = await mainApi.adminUnits();
         this.adminUnits = [];

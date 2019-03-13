@@ -1,9 +1,11 @@
 import * as React from 'react';
+import ReactMarkdown from 'react-markdown';
 import { List, LMR, Muted, Badge } from 'tonva-react-form';
 import { View, Image } from "tonva-tools";
 import { CHome } from './cHome';
 import { navToApp } from 'navToApp';
 import { App } from './model';
+import { unitDefaultMarkDown } from './unitDefaultMarkDown';
 
 export class VApps extends View<CHome> { //} React.Component {
     appClick = async (app:App) => {
@@ -45,6 +47,9 @@ export class VApps extends View<CHome> { //} React.Component {
         if (!unit) return null;
         //let {id, name, discription, apps, icon, ownerName, ownerNick, isOwner, isAdmin} = unit;
         let {apps} = unit;
+        if (apps === undefined || apps.length === 0) {
+            return <ReactMarkdown className="bg-white p-3" source={unit.discription || unitDefaultMarkDown} />;
+        }
         /*
         if (ownerNick) ownerNick = '- ' + ownerNick;
         let enterAdmins;
@@ -55,10 +60,7 @@ export class VApps extends View<CHome> { //} React.Component {
             </button>
         }
         */
-        let appsView:any;
-        if (apps !== undefined) {
-            appsView = <List items={apps} item={{render:this.renderRow, onClick:this.appClick}} />;
-        }
-        return appsView;
+
+        return <List items={apps} item={{render:this.renderRow, onClick:this.appClick}} />;
     }
 }

@@ -2,14 +2,9 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import {PropGrid, Prop, FA, IconText, SubmitResult, List, LMR} from 'tonva-react-form';
 import {nav, User, Page, VPage, Image, EditMeInfo} from 'tonva-tools';
-import mainApi from 'mainApi';
 import { VAbout } from './vAbout';
 import { CHome } from './cHome';
-import { Unit } from './unit';
 import { userSpan } from './userSpan';
-
-const applyUnit = "创建小号";
-const applyDev = "创建开发号";
 
 export class VMe extends VPage<CHome> {
     async open() {
@@ -44,7 +39,7 @@ export class VMe extends VPage<CHome> {
         this.openPageElement(<EditMeInfo />);
         //this.openVPage(VEditMeInfo);
     }
-
+/*
     private apply = () => {
         let {allowDev, sumDev, allowUnit, sumUnit} = this.controller.grant;
         let rows:Prop[] = [];
@@ -78,7 +73,8 @@ export class VMe extends VPage<CHome> {
     private applyDev = () => {
         this.showApplyPage('dev');
     }
-    private showApplyPage(type:'unit'|'dev') {
+*/
+    //private showApplyPage(type:'unit'|'dev') {
         /*
         let fields:Fields = {
             name: {name:'name', type:'string', maxLength:50, required:true },
@@ -97,7 +93,8 @@ export class VMe extends VPage<CHome> {
         </Page>);
         */
         // 上面的代码不用了
-    }
+    //}
+    /*
     private onApplySubmit = async (type:'unit'|'dev', values:any):Promise<SubmitResult> => {
         let ret = await mainApi.saveMessage({
             toUser: -1,
@@ -117,11 +114,8 @@ export class VMe extends VPage<CHome> {
         </Page>);
         return;
     }
-    private changePassword = async () => {
-        await nav.changePassword();
-        //this.openVPage(VChangePassword);
-    }
-
+    */
+/*
     private renderAdminUnit = (unit:Unit, index:number):JSX.Element => {
         let {name, icon, isAdmin, isOwner, isDev, isHao} = unit;
         let right:any, unitType:any;
@@ -143,6 +137,11 @@ export class VMe extends VPage<CHome> {
     private clickAdminUnit = (unit:Unit) => {
         this.controller.navToAdmin(unit);
     }
+*/
+
+    private changePassword = async () => {
+        await nav.changePassword();
+    }
 
     page = observer(() => {
         const {user} = nav;
@@ -158,15 +157,22 @@ export class VMe extends VPage<CHome> {
                 type: 'component', 
                 component: <LMR className="py-2 cursor-pointer w-100"
                     left={<Image className="w-3c h-3c mr-3" src={icon} />}
-                    right={<FA className="align-self-end" name="chevron-right" />}
-                    onClick={this.onEditMe}>
+                    right={<FA className="align-self-end" name="chevron-right" />}>
                     <div>
                         <div>{userSpan(name, nick)}</div>
                         <div className="small"><span className="text-muted">ID:</span> {id>10000?id:String(id+10000).substr(1)}</div>
                     </div>
-                </LMR>
+                </LMR>,
+                onClick: this.onEditMe
             },
+            '',
+            {
+                type: 'component',
+                component: <IconText iconClass="text-info mr-2" icon="envelope-o" text="我的小号" />,
+                onClick: ()=>this.controller.showMyUnits(),
+            }
         ];
+/*
         if (this.controller.adminUnits.length > 0) {
             rows.push('');
             rows.push({
@@ -187,7 +193,7 @@ export class VMe extends VPage<CHome> {
                 },
             );
         }
-
+*/
         rows.push(
             '',
             {

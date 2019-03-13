@@ -8,7 +8,6 @@ import { observer } from 'mobx-react';
 import { Sticky, StickyUnit, sysUnit } from './model';
 import { VApps } from './vApps';
 import { CHome } from './cHome';
-import { VCreate } from './vCreate';
 import { userSpan } from './userSpan';
 
 export class VHome extends VPage<CHome> {
@@ -34,7 +33,6 @@ export class VHome extends VPage<CHome> {
             if (this.sideBarOpened === false) {
                 await Promise.all([
                     this.controller.loadStickies(),
-                    this.controller.loadAdminUnits()
                 ]);
             }
             this.toggleOpen();
@@ -115,31 +113,6 @@ export class VHome extends VPage<CHome> {
         </LMR>;
     }
 
-    private itemCreate() {
-        let {allowDev, sumDev, allowUnit, sumUnit} = this.controller.grant;
-        let items:{icon:string, type:string, caption:string}[] = [];
-        if (allowDev > sumDev) items.push({icon:'laptop', type:'dev', caption: '创建开发号'});
-        if (allowUnit > sumUnit) items.push({icon: 'desktop', type:'unit', caption: '创建小号'});
-        if (items.length === 0) return;
-        let first = true;
-        return <>
-            {items.map((v,index) => {
-                let cnItems = ['px-3', this.cnItems];
-                if (first === true) {
-                    cnItems.push('border-top');
-                    first = false;
-                }
-                let {icon, type, caption} = v;
-                let left = <FA name={icon} size='lg' className="text-info mr-3" />;
-                return <LMR key={index} className={classNames(cnItems)}
-                    left={left}
-                    onClick={() => this.openVPage(VCreate, v)}>
-                    {caption}
-                </LMR>;
-            })}
-        </>;
-    }
-
     private meItem() {
         let {user} = nav;
         if (user === undefined) return null;
@@ -166,7 +139,6 @@ export class VHome extends VPage<CHome> {
             {this.meItem()}
             {this.aboutUnit()}
             <List items={stickies} item={item} none={null} />
-            {this.itemCreate()}
         </div>
     }
     private stickyClick = async (item:Sticky) => {
