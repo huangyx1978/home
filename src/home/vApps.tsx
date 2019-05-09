@@ -28,11 +28,11 @@ export class VApps extends View<CHome> { //} React.Component {
         }
     }
     private renderRow = (app:App, index:number):JSX.Element => {
-        let {id:appId, name, icon, discription} = app;
+        let {id:appId, name, caption, icon, discription} = app;
         return <LMR className="px-3 py-2"
             left={<Badge><Image src={icon} /></Badge>}>
             <div className="px-3">
-                <div><b>{name}</b></div>
+                <div><b>{caption || name}</b></div>
                 <small className="text-muted">{discription}</small>
             </div>
         </LMR>;

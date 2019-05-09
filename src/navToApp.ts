@@ -30,10 +30,10 @@ export async function navToApp(app:App, unitId:number, uqId?:number, sheetType?:
         alert('APP: ' + app.name + '\n' + app.discription + '\n尚未绑定服务');
         return;
     }
-    let adminUrl:string = url;
+    let realUrl:string = url;
     if (urlDebug) {
         let ret = await host.localCheck(urlDebug);
-        if (ret === true) adminUrl = urlDebug;
+        if (ret === true) realUrl = urlDebug;
     }
-    await nav.navToApp(adminUrl, unitId, uqId, sheetType, sheetId);
+    await nav.navToApp(realUrl, unitId, uqId, sheetType, sheetId);
 }

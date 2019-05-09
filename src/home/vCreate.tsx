@@ -52,7 +52,7 @@ export class VCreate extends VPage<CHome> {
         let error:string;
         switch (unitId) {
             default:
-                this.controller.reloadStickies();
+                await this.controller.reloadStickies();
                 this.closePage();
                 this.openPageElement(<Page>
                     <div className="p-3 text-success">

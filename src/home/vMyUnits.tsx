@@ -5,6 +5,7 @@ import { VPage, Page, Image, nav } from "tonva-tools";
 import { Prop, List, IconText, LMR, PropGrid, FA } from 'tonva-react-form';
 import { Unit } from './unit';
 import { VCreate } from './vCreate';
+import { observer } from 'mobx-react';
 
 const applyUnit = "创建小号";
 const applyDev = "创建开发号";
@@ -16,34 +17,24 @@ export class VMyUnits extends VPage<CHome> {
         this.openPage(this.page);
     }
 
-    private page = ():JSX.Element => {
-        let rows:Prop[] = [];
-        if (this.controller.adminUnits.length > 0) {
+    private page = observer(():JSX.Element => {
+        let elUnits:any;
+        let {adminUnits} = this.controller;
+        if (adminUnits && adminUnits.length > 0) {
+            let rows:Prop[] = [];
             rows.push('');
             rows.push({
                 type: 'component', 
-                component: <List className="w-100" items={this.controller.adminUnits} 
+                component: <List className="w-100" items={adminUnits} 
                     item={{render:this.renderAdminUnit, onClick:this.clickAdminUnit}} />
             });
+            elUnits = <PropGrid rows={rows} values={{}} />;
         }
-        /*
-        let {allowDev, sumDev, allowUnit, sumUnit} = this.controller.grant;
-        if (allowDev > sumDev || allowUnit > sumUnit) {
-            rows.push(
-                '',
-                {
-                    type: 'component', 
-                    component: <IconText iconClass="text-info mr-2" icon="envelope-o" text="创建" />,
-                    onClick: this.apply
-                },
-            );
-        }
-        */
         return <Page header="我的小号">
-            <PropGrid rows={rows} values={{}} />
             {this.itemCreate()}
+            {elUnits}
         </Page>
-    }
+    });
 
     private itemCreate() {
         let {allowDev, sumDev, allowUnit, sumUnit} = this.controller.grant;
@@ -54,7 +45,7 @@ export class VMyUnits extends VPage<CHome> {
         let first = true;
         return <>
             {items.map((v,index) => {
-                let cnItems = ['px-3 mt-3', classItems];
+                let cnItems = ['px-3 bg-white', classItems];
                 if (first === true) {
                     cnItems.push('border-top');
                     first = false;

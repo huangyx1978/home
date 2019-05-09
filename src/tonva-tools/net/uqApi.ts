@@ -254,6 +254,10 @@ export class UqApi extends ApiBase {
         return await this.get('sheet/' + name + '/statecount');
     }
 
+    async mySheets(name:string, data:object) {
+        return await this.post('sheet/' + name + '/my-sheets', data);
+    }
+
     async getSheet(name:string, id:number):Promise<any> {
         return await this.get('sheet/' + name + '/get/' + id);
     }
@@ -410,11 +414,17 @@ export class UqTokenApi extends CenterApi {
             let uq = this.local.uqs[un];
             if (uq !== undefined) {
                 let {tick, value} = uq;
-                if ((nowTick - tick) < 24*3600*1000) {
+                if (value !== undefined && (nowTick - tick) < 24*3600*1000) {
                     return _.clone(value);
                 }
             }
             let ret = await this.get('app-uq', params);
+            if (ret === undefined) {
+                let {unit, uqOwner, uqName} = params;
+                let err = `center get app-uq(unit=${unit}, '${uqOwner}/${uqName}') - not exists or no unit-service`;
+                throw err;
+            }
+
             this.local.uqs[un] = {
                 tick: nowTick,
                 value: ret,

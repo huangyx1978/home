@@ -168,7 +168,7 @@ export class VMe extends VPage<CHome> {
             '',
             {
                 type: 'component',
-                component: <IconText iconClass="text-info mr-2" icon="envelope-o" text="我的小号" />,
+                component: <IconText iconClass="text-info mr-2" icon="laptop" text="我的小号" />,
                 onClick: ()=>this.controller.showMyUnits(),
             }
         ];

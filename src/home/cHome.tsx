@@ -16,7 +16,7 @@ export class CHome extends Controller {
     @observable stickies: Sticky[];
     @observable units = new Map<number, Unit>();
     @observable unit:Unit = undefined;
-    adminUnits: Unit[];
+    @observable adminUnits: Unit[];
     grant: Grant;
     private adminApp: App;
 
@@ -61,8 +61,13 @@ export class CHome extends Controller {
         this.openVPage(VMyUnits);
     }
 
-    reloadStickies() {
+    async reloadStickies() {
         this.stickies = undefined;
+        this.adminUnits = undefined;
+        await Promise.all([
+            this.loadStickies(),
+            this.loadAdminUnits()
+        ]);
     }
     async loadStickies() {
         if (this.stickies !== undefined) return;

@@ -40,6 +40,7 @@ export interface UserBase {
 export interface App {
     id: number;
     name: string;
+    caption: string;
     discription: string;
     icon: string;
     owner: number;
