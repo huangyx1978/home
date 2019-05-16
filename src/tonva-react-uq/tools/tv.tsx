@@ -35,6 +35,14 @@ function boxIdContent(bi: number|BoxId, ui:TvTemplet, x:any) {
 }
 
 const Tv = observer(({tuidValue, ui, x, nullUI}:Props) => {
+    if (tuidValue === undefined) {
+        if (nullUI === undefined) return <>[undefined]</>;
+        return nullUI();
+    }
+    if (tuidValue === null) {
+        if (nullUI === undefined) return <>[null]</>;
+        return nullUI();
+    }
     let ttv = typeof tuidValue;
     switch (ttv) {
         default:
@@ -45,16 +53,11 @@ const Tv = observer(({tuidValue, ui, x, nullUI}:Props) => {
                 if (ret !== undefined) return ret;
                 return <>{tuidValue}</>;
             }
-        case 'undefined':
-            break;
         case 'object':
-            if (tuidValue !== null) return boxIdContent(tuidValue, ui, x);
-            break;
+            return boxIdContent(tuidValue, ui, x);
         case 'number':
             return <>id...{tuidValue}</>;
-    }       
-    if (nullUI === undefined) return <>.</>;
-    return nullUI();
+    }
 });
 
 export const tv = (tuidValue:number|BoxId, ui?:TvTemplet, x?:any, nullUI?:()=>JSX.Element):JSX.Element => {

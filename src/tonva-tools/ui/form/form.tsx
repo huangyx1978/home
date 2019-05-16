@@ -213,7 +213,7 @@ export class Form extends React.Component<FormProps> {
     }
 
     protected DefaultContainer = (content:JSX.Element): JSX.Element => {
-        return <form className={classNames(this.props.className)}>
+        return <form className={classNames(this.props.className)} onSubmit={e=>e.preventDefault()}>
             {content}
         </form>;
     }
@@ -250,7 +250,6 @@ export class Form extends React.Component<FormProps> {
         </div>;
     }
     RowContainer = (content:JSX.Element): JSX.Element => {
-        //return <div className="row">{content}</div>;
         let cn = classNames({
             'py-3': true
         });

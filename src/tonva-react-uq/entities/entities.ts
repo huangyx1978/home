@@ -199,7 +199,7 @@ export class Entities {
     newTuid(name:string, id:number):TuidMain {
         let tuid = this.tuids[name];
         if (tuid !== undefined) return tuid;
-        tuid = this.tuids[name] = new TuidMain(this, name, id);
+        tuid = this.tuids[name] = new TuidMain(this, undefined, name, id);
         this.tuidArr.push(tuid);
         return tuid;
     }
