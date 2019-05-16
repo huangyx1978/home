@@ -414,7 +414,7 @@ export class Nav {
     }
 
     private async loadPredefinedUnit() {
-        let envUnit = process.env.UNIT;
+        let envUnit = process.env.REACT_APP_UNIT;
         if (envUnit !== undefined) {
             return Number(envUnit);
         }
