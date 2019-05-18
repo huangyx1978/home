@@ -73,9 +73,7 @@ window.addEventListener('message', async function(evt) {
             bridgeCenterApiReturn(message);
             break;
         case 'app-api':
-            console.log("receive PostMessage: %s", JSON.stringify(message));
             let ret = await onReceiveAppApiMessage(message.hash, message.apiName);
-            console.log("onReceiveAppApiMessage: %s", JSON.stringify(ret));
             (evt.source as Window).postMessage({
                 type: 'app-api-return', 
                 apiName: message.apiName,
@@ -116,7 +114,12 @@ async function initSubWin(message:any) {
 async function onReceiveAppApiMessage(hash: string, apiName: string): Promise<UqToken> {
     let appInFrame = appsInFrame[hash];
     if (appInFrame === undefined) return {name:apiName, url:undefined, urlDebug:undefined, token:undefined};
-    let unit = getUnit();
+    //let unit = getUnit();
+    let {unit, predefinedUnit} = appInFrame;
+    unit = unit || predefinedUnit;
+    if (!unit) {
+        console.error('no unit defined in unit.json or not logined in', unit);
+    }
     let parts = apiName.split('/');
     let ret = await uqTokenApi.uq({unit: unit, uqOwner: parts[0], uqName: parts[1]});
     return {name: apiName, url: ret.url, urlDebug:ret.urlDebug, token: ret.token};

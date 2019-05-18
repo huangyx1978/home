@@ -27,7 +27,7 @@ export class SelectItemEdit extends ItemEdit {
         let content = list?
             list.map((v, index:number) => {
                 let {title, value} = v;
-                return <div key={index} className="px-3 py-2 cursor-pointer bg-white mb-1" onClick={()=>resolve(this.newValue)}>
+                return <div key={index} className="px-3 py-2 cursor-pointer bg-white mb-1" onClick={()=>{this.onChange(value); resolve(this.newValue)}}>
                     {title || value}
                 </div>;
             })
