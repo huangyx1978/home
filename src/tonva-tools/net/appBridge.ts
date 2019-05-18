@@ -121,7 +121,9 @@ async function onReceiveAppApiMessage(hash: string, apiName: string): Promise<Uq
         console.error('no unit defined in unit.json or not logined in', unit);
     }
     let parts = apiName.split('/');
-    let ret = await uqTokenApi.uq({unit: unit, uqOwner: parts[0], uqName: parts[1]});
+    let param = {unit: unit, uqOwner: parts[0], uqName: parts[1]};
+    console.log('uqTokenApi.uq onReceiveAppApiMessage', param);
+    let ret = await uqTokenApi.uq(param);
     return {name: apiName, url: ret.url, urlDebug:ret.urlDebug, token: ret.token};
 }
 
