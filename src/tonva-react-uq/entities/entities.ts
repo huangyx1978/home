@@ -99,6 +99,10 @@ export class Entities {
     historyArr: History[] = [];
     pendingArr: Pending[] = [];
 
+    async init() {
+        await this.uqApi.init();
+    }
+
     async loadAccess() {
         let accesses = await this.uqApi.loadAccess();
         if (accesses === undefined) return;

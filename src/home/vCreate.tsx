@@ -25,7 +25,7 @@ export class VCreate extends VPage<CHome> {
         if (type === 'unit') {
             schema.push({name: 'isPublic', type: 'boolean', } as BoolSchema);
         }
-        schema.push({name: 'submit', type: 'button'});
+        schema.push({name: 'submit', type: 'submit'});
         let uiSchema:UiSchema = {
             items: {
                 name: {widget: 'text', label: label, placeholder: '区别于其它的唯一名称'} as UiTextItem,

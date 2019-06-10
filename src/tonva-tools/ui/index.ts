@@ -1,5 +1,5 @@
 export * from './nav';
-export * from './titleBar';
+export * from './pageHeader';
 export * from './page';
 export * from './VM';
 export * from './schema';
