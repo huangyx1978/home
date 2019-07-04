@@ -1,8 +1,8 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { VPage, Page, Form, ItemSchema, StringSchema, UiSchema, UiTextItem, UiButton, Context, UiCheckItem, BoolSchema } from "tonva-tools";
+import { VPage, Page, Form, ItemSchema, StringSchema, UiSchema, UiTextItem, UiButton, Context, UiCheckItem, BoolSchema } from 'tonva';
 import { CHome } from "./cHome";
-import { FA } from 'tonva-react-form';
+import { FA } from 'tonva';
 
 const lables = {
     dev: '开发号',

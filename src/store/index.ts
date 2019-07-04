@@ -1,7 +1,7 @@
 import {observable, computed} from 'mobx';
 import _ from 'lodash';
-import { Entities, Query, Tuid, BoxId } from 'tonva-react-uq';
-import { PageItems, appInFrame } from 'tonva-tools';
+import { Query } from 'tonva';
+import { PageItems, appInFrame } from 'tonva';
 
 import mainApi, { messageApi } from 'mainApi';
 import {Sticky, Tie, App, Message, StickyUnit} from 'model';

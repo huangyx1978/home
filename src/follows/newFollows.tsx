@@ -1,7 +1,8 @@
+/*
 import * as React from 'react';
 import {observer} from 'mobx-react';
-import {nav, Page, } from 'tonva-tools';
-import {ListView, ListItem} from 'tonva-react-form';
+import {nav, Page, } from 'tonva';
+import {ListView, ListItem} from 'tonva';
 import mainApi from 'mainApi';
 import {store} from 'store';
 import {Message} from 'model';
@@ -35,7 +36,7 @@ export default class NewFollows extends React.Component<{}, null> {
             <div className="card">
                 <div className="card-body">
                     <div className="card-title">小号成员</div>
-                    <div className="card-text">你已成为{/*um.from.name*/}-{/*um.from.nick*/}的成员。</div>
+                    <div className="card-text">你已成为{}-{}的成员。</div>
                     <button className="btn btn-primary" onClick={()=>nav.back()}>完成</button>
                 </div>
             </div>
@@ -72,3 +73,4 @@ export default class NewFollows extends React.Component<{}, null> {
         </Page>
     }
 }
+*/

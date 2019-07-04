@@ -1,4 +1,4 @@
-import { nav, host } from 'tonva-tools';
+import { nav, host } from 'tonva';
 import { App } from 'model';
 import { store } from 'store';
 

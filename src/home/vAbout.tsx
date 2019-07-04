@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { VPage, Page, nav } from 'tonva-tools';
+import { VPage, Page, nav } from 'tonva';
 import { CHome } from './cHome';
 
 export class VAbout extends VPage<CHome> {

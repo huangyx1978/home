@@ -1,8 +1,8 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { CHome } from "./cHome";
-import { VPage, Page, Image, nav } from "tonva-tools";
-import { Prop, List, IconText, LMR, PropGrid, FA } from 'tonva-react-form';
+import { VPage, Page, Image, nav } from 'tonva';
+import { Prop, List, IconText, LMR, PropGrid, FA } from 'tonva';
 import { Unit } from './unit';
 import { VCreate } from './vCreate';
 import { observer } from 'mobx-react';

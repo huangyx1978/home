@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {NavView, nav} from 'tonva-tools';
+import {NavView, nav} from 'tonva';
 import { CHome } from 'home';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';

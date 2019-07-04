@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { VPage, Page, Image } from "tonva-tools";
-import { LMR, Muted } from 'tonva-react-form';
+import { VPage, Page, Image } from 'tonva';
+import { LMR, Muted } from 'tonva';
 import { CHome } from "./cHome";
 import ReactMarkdown from 'react-markdown';
 import { unitDefaultMarkDown } from './unitDefaultMarkDown';

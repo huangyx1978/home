@@ -1,4 +1,4 @@
-import {CenterApi, User} from 'tonva-tools';
+import {CenterApi, User} from 'tonva';
 import {App} from 'model';
 
 class MainApi extends CenterApi {
@@ -137,7 +137,7 @@ export const messageApi = new MessageApi('tv/', false);
 
 
 /*
-import {CenterApi, User} from 'tonva-tools';
+import {CenterApi, User} from 'tonva';
 import {App} from 'model';
 
 class MainApi extends CenterApi {

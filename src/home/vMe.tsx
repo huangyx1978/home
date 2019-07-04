@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import {PropGrid, Prop, FA, IconText, SubmitResult, List, LMR} from 'tonva-react-form';
-import {nav, User, Page, VPage, Image, EditMeInfo} from 'tonva-tools';
+import {PropGrid, Prop, FA, IconText, LMR} from 'tonva';
+import {nav, User, Page, VPage, Image, EditMeInfo} from 'tonva';
 import { VAbout } from './vAbout';
 import { CHome } from './cHome';
 import { userSpan } from './userSpan';

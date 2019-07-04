@@ -1,8 +1,8 @@
 import * as React from 'react';
 import className from 'classnames';
 import _ from 'lodash';
-import {List, EasyDate, LMR, FA} from 'tonva-react-form';
-import {Page, nav} from 'tonva-tools';
+import {List, EasyDate, LMR, FA} from 'tonva';
+import {Page, nav} from 'tonva';
 import {Message} from './model';
 import {UnitSpan, UserSpan} from '../tools';
 import {tagStyle, tagEndStyle} from './message';

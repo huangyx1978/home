@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { PageItems } from "tonva-tools";
+import { PageItems } from 'tonva';
 import mainApi from '../mainApi';
 
 export interface Message {

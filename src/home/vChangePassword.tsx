@@ -1,6 +1,6 @@
 /*
 import * as React from 'react';
-import { VPage, Page, Form, ItemSchema, UiSchema, StringSchema, UiTextItem, UiPasswordItem, Context, ButtonSchema, UiButton } from 'tonva-tools';
+import { VPage, Page, Form, ItemSchema, UiSchema, StringSchema, UiTextItem, UiPasswordItem, Context, ButtonSchema, UiButton } from 'tonva';
 import { CHome } from './cHome';
 import mainApi from '../mainApi';
 

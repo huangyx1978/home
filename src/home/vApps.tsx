@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
-import { List, LMR, Muted, Badge } from 'tonva-react-form';
-import { View, Image } from "tonva-tools";
+import { List, LMR, Muted, Badge } from 'tonva';
+import { View, Image } from 'tonva';
 import { CHome } from './cHome';
 import { navToApp } from 'navToApp';
 import { App } from './model';
