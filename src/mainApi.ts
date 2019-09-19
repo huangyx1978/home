@@ -1,7 +1,7 @@
-import {CenterApi, User} from 'tonva';
+import {CenterApiBase} from 'tonva';
 import {App} from 'model';
 
-class MainApi extends CenterApi {
+class MainApi extends CenterApiBase {
     async stickies():Promise<any[][]> {
         return await this.get('sticky/list', {start:0, pageSize:30});
     }
@@ -114,7 +114,7 @@ class MainApi extends CenterApi {
 const mainApi = new MainApi('tv/', undefined);
 export default mainApi;
 
-class MessageApi extends CenterApi {
+class MessageApi extends CenterApiBase {
     //async messages():Promise<any[]> {
     //    return await this.get('tie/messages', {});
     //}

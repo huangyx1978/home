@@ -1,4 +1,4 @@
-export const isDevelopment = process.env.NODE_ENV === 'development';
+import { env } from '../tool';
 
 const centerHost = process.env['REACT_APP_CENTER_HOST'];
 const centerDebugHost = 'localhost:3000'; //'192.168.86.64';
@@ -33,12 +33,16 @@ const hosts:{[name:string]:HostValue} = {
     }
 }
 
-function centerUrlFromHost(host:string) {
+function urlFromHost(host:string):string {
     if (host.startsWith('https://') === true) {
         if (host.endsWith('/')) return host;
         return host + '/';
     }
     return `http://${host}/`;
+}
+
+function centerUrlFromHost(host:string):string {
+    return urlFromHost(host);
 }
 function centerWsFromHost(host:string) {
     let https = 'https://';
@@ -48,6 +52,10 @@ function centerWsFromHost(host:string) {
         return 'wss://' + host + '/tv/';
     }
     return `ws://${host}/tv/`
+}
+export function resUrlFromHost(host:string) {
+    let url = urlFromHost(host);
+    return url + 'res/';
 }
 
 const fetchOptions = {
@@ -59,12 +67,14 @@ const fetchOptions = {
 };
 
 class Host {
+    testing: boolean;
     url: string;
     ws: string;
     resHost: string;
 
-    async start() {
-        if (isDevelopment === true) {
+    async start(testing:boolean) {
+        this.testing = testing;
+        if (env.isDevelopment === true) {
             await this.tryLocal();
         }
         let host = this.getCenterHost();
@@ -115,7 +125,7 @@ class Host {
         if (hash.includes('sheet_debug') === true) {
             return value;
         }
-        if (isDevelopment === true) {
+        if (env.isDevelopment === true) {
             if (local === true) return value;
         }
         return centerHost;
@@ -127,27 +137,31 @@ class Host {
         if (hash.includes('sheet_debug') === true) {
             return value;
         }
-        if (isDevelopment === true) {
+        if (env.isDevelopment === true) {
             if (local === true) return value;
         }
         return resHost;
     }
 
-    getUrlOrDebug(url:string, urlDebug:string):string {
-        if (isDevelopment !== true) return url;
-        if (!urlDebug) return url;
-        for (let i in hosts) {
-            let host = hosts[i];
-            let {value, local} = host;
-            let hostString = `://${i}/`;
-            let pos = urlDebug.indexOf(hostString);
-            if (pos > 0) {
-                if (local === false) return url;
-                urlDebug = urlDebug.replace(hostString, `://${value}/`);
-                return urlDebug;
-            }
+    getUrlOrDebug(url:string, debugHost:string = 'uqhost'):string {
+        if (env.isDevelopment === false) return url;
+        let host = hosts[debugHost];
+        if (host === undefined) return url;
+        let {value, local} = host;
+        if (local === false) return url;
+        return `http://${value}/`;
+    }
+    getUrlOrTest(db:string, url:string, urlTest:string):string {
+        let path:string;
+        if (this.testing === true) {
+            if (urlTest !== '-') url = urlTest;
+            path = 'uq/test/' + db + '/';
         }
-        return url;
+        else {
+            path = 'uq/prod/' + db + '/';
+        }
+        url = this.getUrlOrDebug(url);
+        return url + path;
     }
 
     async localCheck(urlDebug: string):Promise<boolean> {
@@ -186,3 +200,10 @@ async function localCheck(url:string):Promise<boolean> {
         return false;
     }
 }
+
+/*
+export interface IUqForChannel {
+    uq: string;
+    uqVersion: number;
+}
+*/
